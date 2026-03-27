@@ -1,0 +1,37 @@
+aid: metronome
+name: Metronome
+description: >-
+  Metronome is a usage-based billing platform providing real-time metering,
+  pricing, and revenue recognition for API and cloud services.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - FinOps
+  - Usage-Based Billing
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/metronome/refs/heads/main/apis.yml
+created: '2026-03-27'
+modified: '2026-03-27'
+specificationVersion: '0.19'
+apis:
+  - aid: metronome:metronome
+    name: Metronome
+    description: >-
+      Metronome is a usage-based billing platform providing real-time metering,
+      pricing, and revenue recognition for API and cloud services.
+    humanURL: https://metronome.com/
+    tags:
+      - FinOps
+    properties:
+      - type: Documentation
+        url: https://docs.metronome.com/
+      - type: Getting Started
+        url: https://docs.metronome.com/
+common:
+  - type: Website
+    url: https://metronome.com/
+  - type: Documentation
+    url: https://docs.metronome.com/
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
