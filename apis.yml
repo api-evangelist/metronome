@@ -34,7 +34,7 @@ apis:
     properties:
       - type: Documentation
         url: https://docs.metronome.com/
-      - type: Getting Started
+      - type: GettingStarted
         url: https://docs.metronome.com/
       - type: OpenAPI
         url: >-
@@ -44,7 +44,7 @@ common:
     url: https://metronome.com/
   - type: Documentation
     url: https://docs.metronome.com/
-  - type: Status
+  - type: StatusPage
     url: https://status.metronome.com/
 maintainers:
   - FN: Kin Lane
