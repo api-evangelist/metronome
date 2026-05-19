@@ -1,0 +1,248 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Custom fields
+  description: 'Metronome — Custom fields. 5 operations. Lead operation: Create a custom field key. Self-contained Naftiko
+    capability covering one Metronome business surface.'
+  tags:
+  - Metronome
+  - Custom fields
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-custom-fields
+    baseUri: https://api.metronome.com
+    description: Metronome — Custom fields business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-customFields-addKey
+      path: /v1/customFields/addKey
+      operations:
+      - name: addcustomfieldkeyv1
+        method: POST
+        description: Create a custom field key
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customFields-deleteValues
+      path: /v1/customFields/deleteValues
+      operations:
+      - name: deletecustomfieldsv1
+        method: POST
+        description: Delete custom fields
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customFields-listKeys
+      path: /v1/customFields/listKeys
+      operations:
+      - name: listcustomfieldkeysv1
+        method: POST
+        description: List custom field keys
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customFields-removeKey
+      path: /v1/customFields/removeKey
+      operations:
+      - name: disablecustomfieldkeyv1
+        method: POST
+        description: Delete a custom field key
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customFields-setValues
+      path: /v1/customFields/setValues
+      operations:
+      - name: setcustomfieldsv1
+        method: POST
+        description: Set custom field values
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-custom-fields-rest
+    port: 8080
+    description: REST adapter for Metronome — Custom fields. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/customfields/addkey
+      name: v1-customfields-addkey
+      description: REST surface for v1-customFields-addKey.
+      operations:
+      - method: POST
+        name: addcustomfieldkeyv1
+        description: Create a custom field key
+        call: metronome-custom-fields.addcustomfieldkeyv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customfields/deletevalues
+      name: v1-customfields-deletevalues
+      description: REST surface for v1-customFields-deleteValues.
+      operations:
+      - method: POST
+        name: deletecustomfieldsv1
+        description: Delete custom fields
+        call: metronome-custom-fields.deletecustomfieldsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customfields/listkeys
+      name: v1-customfields-listkeys
+      description: REST surface for v1-customFields-listKeys.
+      operations:
+      - method: POST
+        name: listcustomfieldkeysv1
+        description: List custom field keys
+        call: metronome-custom-fields.listcustomfieldkeysv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customfields/removekey
+      name: v1-customfields-removekey
+      description: REST surface for v1-customFields-removeKey.
+      operations:
+      - method: POST
+        name: disablecustomfieldkeyv1
+        description: Delete a custom field key
+        call: metronome-custom-fields.disablecustomfieldkeyv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customfields/setvalues
+      name: v1-customfields-setvalues
+      description: REST surface for v1-customFields-setValues.
+      operations:
+      - method: POST
+        name: setcustomfieldsv1
+        description: Set custom field values
+        call: metronome-custom-fields.setcustomfieldsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-custom-fields-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Custom fields. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-custom-field-key
+      description: Create a custom field key
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-custom-fields.addcustomfieldkeyv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-custom-fields
+      description: Delete custom fields
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-custom-fields.deletecustomfieldsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-custom-field-keys
+      description: List custom field keys
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-custom-fields.listcustomfieldkeysv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-custom-field-key
+      description: Delete a custom field key
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-custom-fields.disablecustomfieldkeyv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-custom-field-values
+      description: Set custom field values
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-custom-fields.setcustomfieldsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,164 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Payments
+  description: 'Metronome — Payments. 3 operations. Lead operation: Attempt payment for an invoice. Self-contained Naftiko
+    capability covering one Metronome business surface.'
+  tags:
+  - Metronome
+  - Payments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-payments
+    baseUri: https://api.metronome.com
+    description: Metronome — Payments business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-payments-attempt
+      path: /v1/payments/attempt
+      operations:
+      - name: attemptpaymentv1
+        method: POST
+        description: Attempt payment for an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-payments-cancel
+      path: /v1/payments/cancel
+      operations:
+      - name: cancelpaymentv1
+        method: POST
+        description: Cancel a payment for an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-payments-list
+      path: /v1/payments/list
+      operations:
+      - name: listpaymentsv1
+        method: POST
+        description: List payments for an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-payments-rest
+    port: 8080
+    description: REST adapter for Metronome — Payments. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/v1/payments/attempt
+      name: v1-payments-attempt
+      description: REST surface for v1-payments-attempt.
+      operations:
+      - method: POST
+        name: attemptpaymentv1
+        description: Attempt payment for an invoice
+        call: metronome-payments.attemptpaymentv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/cancel
+      name: v1-payments-cancel
+      description: REST surface for v1-payments-cancel.
+      operations:
+      - method: POST
+        name: cancelpaymentv1
+        description: Cancel a payment for an invoice
+        call: metronome-payments.cancelpaymentv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/list
+      name: v1-payments-list
+      description: REST surface for v1-payments-list.
+      operations:
+      - method: POST
+        name: listpaymentsv1
+        description: List payments for an invoice
+        call: metronome-payments.listpaymentsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-payments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Payments. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: attempt-payment-invoice
+      description: Attempt payment for an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-payments.attemptpaymentv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-payment-invoice
+      description: Cancel a payment for an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-payments.cancelpaymentv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-payments-invoice
+      description: List payments for an invoice
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-payments.listpaymentsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

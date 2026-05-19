@@ -1,0 +1,122 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Packages
+  description: 'Metronome — Packages. 2 operations. Lead operation: Archive a package. Self-contained Naftiko capability covering
+    one Metronome business surface.'
+  tags:
+  - Metronome
+  - Packages
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-packages
+    baseUri: https://api.metronome.com
+    description: Metronome — Packages business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-packages-archive
+      path: /v1/packages/archive
+      operations:
+      - name: archivepackagev1
+        method: POST
+        description: Archive a package
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-packages-get
+      path: /v1/packages/get
+      operations:
+      - name: getpackagev1
+        method: POST
+        description: Get a package
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-packages-rest
+    port: 8080
+    description: REST adapter for Metronome — Packages. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/v1/packages/archive
+      name: v1-packages-archive
+      description: REST surface for v1-packages-archive.
+      operations:
+      - method: POST
+        name: archivepackagev1
+        description: Archive a package
+        call: metronome-packages.archivepackagev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/packages/get
+      name: v1-packages-get
+      description: REST surface for v1-packages-get.
+      operations:
+      - method: POST
+        name: getpackagev1
+        description: Get a package
+        call: metronome-packages.getpackagev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-packages-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Packages. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: archive-package
+      description: Archive a package
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-packages.archivepackagev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-package
+      description: Get a package
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-packages.getpackagev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

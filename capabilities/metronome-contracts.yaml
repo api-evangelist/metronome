@@ -1,0 +1,878 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Contracts
+  description: 'Metronome — Contracts. 20 operations. Lead operation: Create a customer and provision a contract.. Self-contained
+    Naftiko capability covering one Metronome business surface.'
+  tags:
+  - Metronome
+  - Contracts
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-contracts
+    baseUri: https://api.metronome.com
+    description: Metronome — Contracts business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-composite-createCustomerWithContract
+      path: /v1/composite/createCustomerWithContract
+      operations:
+      - name: createcustomerwithcontractv1
+        method: POST
+        description: Create a customer and provision a contract.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-amend
+      path: /v1/contracts/amend
+      operations:
+      - name: amendcontractv1
+        method: POST
+        description: Amend a contract
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-archive
+      path: /v1/contracts/archive
+      operations:
+      - name: archivecontractv1
+        method: POST
+        description: Archive a contract
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-create
+      path: /v1/contracts/create
+      operations:
+      - name: createcontractv1
+        method: POST
+        description: Create a contract
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-createHistoricalInvoices
+      path: /v1/contracts/createHistoricalInvoices
+      operations:
+      - name: createhistoricalcontractusageinvoicesv1
+        method: POST
+        description: Create historical invoices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-get
+      path: /v1/contracts/get
+      operations:
+      - name: getcontractv1
+        method: POST
+        description: Get a contract (v1)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-getContractRateSchedule
+      path: /v1/contracts/getContractRateSchedule
+      operations:
+      - name: getcontractrateschedulev1
+        method: POST
+        description: Get the rate schedule for a contract
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-getSubscriptionQuantityHistory
+      path: /v1/contracts/getSubscriptionQuantityHistory
+      operations:
+      - name: getsubscriptionquantityhistoryv1
+        method: POST
+        description: Get subscription quantity history
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-getSubscriptionSeatsHistory
+      path: /v1/contracts/getSubscriptionSeatsHistory
+      operations:
+      - name: getsubscriptionseatshistoryv1
+        method: POST
+        description: Get subscription seats history
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-list
+      path: /v1/contracts/list
+      operations:
+      - name: listcontractsv1
+        method: POST
+        description: List customer contracts (v1)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-scheduleProServicesInvoice
+      path: /v1/contracts/scheduleProServicesInvoice
+      operations:
+      - name: scheduleproservicesinvoicev1
+        method: POST
+        description: Schedule ProService invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-setUsageFilter
+      path: /v1/contracts/setUsageFilter
+      operations:
+      - name: setusagefilterv1
+        method: POST
+        description: Set a contract usage filter
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-updateEndDate
+      path: /v1/contracts/updateEndDate
+      operations:
+      - name: updatecontractenddatev1
+        method: POST
+        description: Update the contract end date
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-updateInvoiceIssueDate
+      path: /v1/contracts/updateInvoiceIssueDate
+      operations:
+      - name: updateinvoiceissuedatev1
+        method: POST
+        description: Update invoice issue date
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-packages-create
+      path: /v1/packages/create
+      operations:
+      - name: createpackagev1
+        method: POST
+        description: Create a package
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-packages-listContractsOnPackage
+      path: /v1/packages/listContractsOnPackage
+      operations:
+      - name: listcontractsonpackagev1
+        method: POST
+        description: List contracts associated with a package
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-edit
+      path: /v2/contracts/edit
+      operations:
+      - name: editcontractv2
+        method: POST
+        description: Edit a contract
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-get
+      path: /v2/contracts/get
+      operations:
+      - name: getcontractv2
+        method: POST
+        description: Get a contract (v2)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-getEditHistory
+      path: /v2/contracts/getEditHistory
+      operations:
+      - name: getcontractedithistoryv2
+        method: POST
+        description: Get contract edit history
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-list
+      path: /v2/contracts/list
+      operations:
+      - name: listcontractsv2
+        method: POST
+        description: List customer contracts (v2)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-contracts-rest
+    port: 8080
+    description: REST adapter for Metronome — Contracts. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/composite/createcustomerwithcontract
+      name: v1-composite-createcustomerwithcontract
+      description: REST surface for v1-composite-createCustomerWithContract.
+      operations:
+      - method: POST
+        name: createcustomerwithcontractv1
+        description: Create a customer and provision a contract.
+        call: metronome-contracts.createcustomerwithcontractv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/amend
+      name: v1-contracts-amend
+      description: REST surface for v1-contracts-amend.
+      operations:
+      - method: POST
+        name: amendcontractv1
+        description: Amend a contract
+        call: metronome-contracts.amendcontractv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/archive
+      name: v1-contracts-archive
+      description: REST surface for v1-contracts-archive.
+      operations:
+      - method: POST
+        name: archivecontractv1
+        description: Archive a contract
+        call: metronome-contracts.archivecontractv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/create
+      name: v1-contracts-create
+      description: REST surface for v1-contracts-create.
+      operations:
+      - method: POST
+        name: createcontractv1
+        description: Create a contract
+        call: metronome-contracts.createcontractv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/createhistoricalinvoices
+      name: v1-contracts-createhistoricalinvoices
+      description: REST surface for v1-contracts-createHistoricalInvoices.
+      operations:
+      - method: POST
+        name: createhistoricalcontractusageinvoicesv1
+        description: Create historical invoices
+        call: metronome-contracts.createhistoricalcontractusageinvoicesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/get
+      name: v1-contracts-get
+      description: REST surface for v1-contracts-get.
+      operations:
+      - method: POST
+        name: getcontractv1
+        description: Get a contract (v1)
+        call: metronome-contracts.getcontractv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/getcontractrateschedule
+      name: v1-contracts-getcontractrateschedule
+      description: REST surface for v1-contracts-getContractRateSchedule.
+      operations:
+      - method: POST
+        name: getcontractrateschedulev1
+        description: Get the rate schedule for a contract
+        call: metronome-contracts.getcontractrateschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/getsubscriptionquantityhistory
+      name: v1-contracts-getsubscriptionquantityhistory
+      description: REST surface for v1-contracts-getSubscriptionQuantityHistory.
+      operations:
+      - method: POST
+        name: getsubscriptionquantityhistoryv1
+        description: Get subscription quantity history
+        call: metronome-contracts.getsubscriptionquantityhistoryv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/getsubscriptionseatshistory
+      name: v1-contracts-getsubscriptionseatshistory
+      description: REST surface for v1-contracts-getSubscriptionSeatsHistory.
+      operations:
+      - method: POST
+        name: getsubscriptionseatshistoryv1
+        description: Get subscription seats history
+        call: metronome-contracts.getsubscriptionseatshistoryv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/list
+      name: v1-contracts-list
+      description: REST surface for v1-contracts-list.
+      operations:
+      - method: POST
+        name: listcontractsv1
+        description: List customer contracts (v1)
+        call: metronome-contracts.listcontractsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/scheduleproservicesinvoice
+      name: v1-contracts-scheduleproservicesinvoice
+      description: REST surface for v1-contracts-scheduleProServicesInvoice.
+      operations:
+      - method: POST
+        name: scheduleproservicesinvoicev1
+        description: Schedule ProService invoice
+        call: metronome-contracts.scheduleproservicesinvoicev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/setusagefilter
+      name: v1-contracts-setusagefilter
+      description: REST surface for v1-contracts-setUsageFilter.
+      operations:
+      - method: POST
+        name: setusagefilterv1
+        description: Set a contract usage filter
+        call: metronome-contracts.setusagefilterv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/updateenddate
+      name: v1-contracts-updateenddate
+      description: REST surface for v1-contracts-updateEndDate.
+      operations:
+      - method: POST
+        name: updatecontractenddatev1
+        description: Update the contract end date
+        call: metronome-contracts.updatecontractenddatev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/updateinvoiceissuedate
+      name: v1-contracts-updateinvoiceissuedate
+      description: REST surface for v1-contracts-updateInvoiceIssueDate.
+      operations:
+      - method: POST
+        name: updateinvoiceissuedatev1
+        description: Update invoice issue date
+        call: metronome-contracts.updateinvoiceissuedatev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/packages/create
+      name: v1-packages-create
+      description: REST surface for v1-packages-create.
+      operations:
+      - method: POST
+        name: createpackagev1
+        description: Create a package
+        call: metronome-contracts.createpackagev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/packages/listcontractsonpackage
+      name: v1-packages-listcontractsonpackage
+      description: REST surface for v1-packages-listContractsOnPackage.
+      operations:
+      - method: POST
+        name: listcontractsonpackagev1
+        description: List contracts associated with a package
+        call: metronome-contracts.listcontractsonpackagev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/edit
+      name: v2-contracts-edit
+      description: REST surface for v2-contracts-edit.
+      operations:
+      - method: POST
+        name: editcontractv2
+        description: Edit a contract
+        call: metronome-contracts.editcontractv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/get
+      name: v2-contracts-get
+      description: REST surface for v2-contracts-get.
+      operations:
+      - method: POST
+        name: getcontractv2
+        description: Get a contract (v2)
+        call: metronome-contracts.getcontractv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/getedithistory
+      name: v2-contracts-getedithistory
+      description: REST surface for v2-contracts-getEditHistory.
+      operations:
+      - method: POST
+        name: getcontractedithistoryv2
+        description: Get contract edit history
+        call: metronome-contracts.getcontractedithistoryv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/list
+      name: v2-contracts-list
+      description: REST surface for v2-contracts-list.
+      operations:
+      - method: POST
+        name: listcontractsv2
+        description: List customer contracts (v2)
+        call: metronome-contracts.listcontractsv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-contracts-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Contracts. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-customer-and-provision-contract
+      description: Create a customer and provision a contract.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.createcustomerwithcontractv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: amend-contract
+      description: Amend a contract
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.amendcontractv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-contract
+      description: Archive a contract
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.archivecontractv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-contract
+      description: Create a contract
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.createcontractv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-historical-invoices
+      description: Create historical invoices
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.createhistoricalcontractusageinvoicesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-contract-v1
+      description: Get a contract (v1)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.getcontractv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-rate-schedule-contract
+      description: Get the rate schedule for a contract
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.getcontractrateschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-subscription-quantity-history
+      description: Get subscription quantity history
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.getsubscriptionquantityhistoryv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-subscription-seats-history
+      description: Get subscription seats history
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.getsubscriptionseatshistoryv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-customer-contracts-v1
+      description: List customer contracts (v1)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.listcontractsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: schedule-proservice-invoice
+      description: Schedule ProService invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.scheduleproservicesinvoicev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-contract-usage-filter
+      description: Set a contract usage filter
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.setusagefilterv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-contract-end-date
+      description: Update the contract end date
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.updatecontractenddatev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-invoice-issue-date
+      description: Update invoice issue date
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.updateinvoiceissuedatev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-package
+      description: Create a package
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.createpackagev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-contracts-associated-package
+      description: List contracts associated with a package
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.listcontractsonpackagev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: edit-contract
+      description: Edit a contract
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.editcontractv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-contract-v2
+      description: Get a contract (v2)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.getcontractv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-contract-edit-history
+      description: Get contract edit history
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.getcontractedithistoryv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-customer-contracts-v2
+      description: List customer contracts (v2)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-contracts.listcontractsv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

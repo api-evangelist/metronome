@@ -1,0 +1,137 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Security
+  description: 'Metronome — Security. 2 operations. Lead operation: Get audit logs. Self-contained Naftiko capability covering
+    one Metronome business surface.'
+  tags:
+  - Metronome
+  - Security
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-security
+    baseUri: https://api.metronome.com
+    description: Metronome — Security business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-auditLogs
+      path: /v1/auditLogs
+      operations:
+      - name: getauditlogsv1
+        method: GET
+        description: Get audit logs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: starting_on
+          in: query
+          type: string
+          description: RFC 3339 timestamp of the earliest audit log to return. Cannot be used with 'next_page'.
+        - name: ending_before
+          in: query
+          type: string
+          description: RFC 3339 timestamp (exclusive). Cannot be used with 'next_page'.
+        - name: sort
+          in: query
+          type: string
+          description: Sort order by timestamp, e.g. date_asc or date_desc. Defaults to date_asc.
+        - name: resource_id
+          in: query
+          type: string
+          description: Optional parameter that can be used to filter which audit logs are returned. If you specify resource_id,
+            you must also specify resource_type.
+        - name: resource_type
+          in: query
+          type: string
+          description: Optional parameter that can be used to filter which audit logs are returned. If you specify resource_type,
+            you must also specify resource_id.
+    - name: v1-services
+      path: /v1/services
+      operations:
+      - name: getservicesv1
+        method: GET
+        description: Get services
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-security-rest
+    port: 8080
+    description: REST adapter for Metronome — Security. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/v1/auditlogs
+      name: v1-auditlogs
+      description: REST surface for v1-auditLogs.
+      operations:
+      - method: GET
+        name: getauditlogsv1
+        description: Get audit logs
+        call: metronome-security.getauditlogsv1
+        with:
+          starting_on: rest.starting_on
+          ending_before: rest.ending_before
+          sort: rest.sort
+          resource_id: rest.resource_id
+          resource_type: rest.resource_type
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/services
+      name: v1-services
+      description: REST surface for v1-services.
+      operations:
+      - method: GET
+        name: getservicesv1
+        description: Get services
+        call: metronome-security.getservicesv1
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-security-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Security. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: get-audit-logs
+      description: Get audit logs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-security.getauditlogsv1
+      with:
+        starting_on: tools.starting_on
+        ending_before: tools.ending_before
+        sort: tools.sort
+        resource_id: tools.resource_id
+        resource_type: tools.resource_type
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-services
+      description: Get services
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-security.getservicesv1
+      outputParameters:
+      - type: object
+        mapping: $.

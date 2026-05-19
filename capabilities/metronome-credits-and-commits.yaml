@@ -1,0 +1,710 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Credits and commits
+  description: 'Metronome — Credits and commits. 16 operations. Lead operation: Add a manual balance entry. Self-contained
+    Naftiko capability covering one Metronome business surface.'
+  tags:
+  - Metronome
+  - Credits and commits
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-credits-and-commits
+    baseUri: https://api.metronome.com
+    description: Metronome — Credits and commits business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-contracts-addManualBalanceLedgerEntry
+      path: /v1/contracts/addManualBalanceLedgerEntry
+      operations:
+      - name: addmanualbalanceledgerentryv1
+        method: POST
+        description: Add a manual balance entry
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-commits-disableTrueup
+      path: /v1/contracts/commits/disableTrueup
+      operations:
+      - name: disablecommittrueupv1
+        method: POST
+        description: Disable trueup for commit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-commits-threshold-billing-release
+      path: /v1/contracts/commits/threshold-billing/release
+      operations:
+      - name: releaseexternalpaymentgatethresholdcommitv1
+        method: POST
+        description: Release external payment gate threshold commit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerBalances-getNetBalance
+      path: /v1/contracts/customerBalances/getNetBalance
+      operations:
+      - name: getnetbalancev1
+        method: POST
+        description: Get the net balance of a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerBalances-list
+      path: /v1/contracts/customerBalances/list
+      operations:
+      - name: listcustomerbalancesv1
+        method: POST
+        description: List balances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerCommits-create
+      path: /v1/contracts/customerCommits/create
+      operations:
+      - name: createcustomercommitv1
+        method: POST
+        description: Create a commit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerCommits-list
+      path: /v1/contracts/customerCommits/list
+      operations:
+      - name: listcustomercommitsv1
+        method: POST
+        description: List commits
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerCommits-updateEndDate
+      path: /v1/contracts/customerCommits/updateEndDate
+      operations:
+      - name: updatecommitenddatev1
+        method: POST
+        description: Update the commit end date
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerCredits-create
+      path: /v1/contracts/customerCredits/create
+      operations:
+      - name: createcustomercreditv1
+        method: POST
+        description: Create a credit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerCredits-list
+      path: /v1/contracts/customerCredits/list
+      operations:
+      - name: listcustomercreditsv1
+        method: POST
+        description: List credits
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-customerCredits-updateEndDate
+      path: /v1/contracts/customerCredits/updateEndDate
+      operations:
+      - name: updatecreditenddatev1
+        method: POST
+        description: Update the credit end date
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-seatBalances-list
+      path: /v1/contracts/seatBalances/list
+      operations:
+      - name: listseatbalancesv1
+        method: POST
+        description: List seat balances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-commits-archive
+      path: /v2/contracts/commits/archive
+      operations:
+      - name: archivecommitv2
+        method: POST
+        description: Archive a commit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-commits-edit
+      path: /v2/contracts/commits/edit
+      operations:
+      - name: editcommitv2
+        method: POST
+        description: Edit a commit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-credits-archive
+      path: /v2/contracts/credits/archive
+      operations:
+      - name: archivecreditv2
+        method: POST
+        description: Archive a credit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-contracts-credits-edit
+      path: /v2/contracts/credits/edit
+      operations:
+      - name: editcreditv2
+        method: POST
+        description: Edit a credit
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-credits-and-commits-rest
+    port: 8080
+    description: REST adapter for Metronome — Credits and commits. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/contracts/addmanualbalanceledgerentry
+      name: v1-contracts-addmanualbalanceledgerentry
+      description: REST surface for v1-contracts-addManualBalanceLedgerEntry.
+      operations:
+      - method: POST
+        name: addmanualbalanceledgerentryv1
+        description: Add a manual balance entry
+        call: metronome-credits-and-commits.addmanualbalanceledgerentryv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/commits/disabletrueup
+      name: v1-contracts-commits-disabletrueup
+      description: REST surface for v1-contracts-commits-disableTrueup.
+      operations:
+      - method: POST
+        name: disablecommittrueupv1
+        description: Disable trueup for commit
+        call: metronome-credits-and-commits.disablecommittrueupv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/commits/threshold-billing/release
+      name: v1-contracts-commits-threshold-billing-release
+      description: REST surface for v1-contracts-commits-threshold-billing-release.
+      operations:
+      - method: POST
+        name: releaseexternalpaymentgatethresholdcommitv1
+        description: Release external payment gate threshold commit
+        call: metronome-credits-and-commits.releaseexternalpaymentgatethresholdcommitv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customerbalances/getnetbalance
+      name: v1-contracts-customerbalances-getnetbalance
+      description: REST surface for v1-contracts-customerBalances-getNetBalance.
+      operations:
+      - method: POST
+        name: getnetbalancev1
+        description: Get the net balance of a customer
+        call: metronome-credits-and-commits.getnetbalancev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customerbalances/list
+      name: v1-contracts-customerbalances-list
+      description: REST surface for v1-contracts-customerBalances-list.
+      operations:
+      - method: POST
+        name: listcustomerbalancesv1
+        description: List balances
+        call: metronome-credits-and-commits.listcustomerbalancesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customercommits/create
+      name: v1-contracts-customercommits-create
+      description: REST surface for v1-contracts-customerCommits-create.
+      operations:
+      - method: POST
+        name: createcustomercommitv1
+        description: Create a commit
+        call: metronome-credits-and-commits.createcustomercommitv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customercommits/list
+      name: v1-contracts-customercommits-list
+      description: REST surface for v1-contracts-customerCommits-list.
+      operations:
+      - method: POST
+        name: listcustomercommitsv1
+        description: List commits
+        call: metronome-credits-and-commits.listcustomercommitsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customercommits/updateenddate
+      name: v1-contracts-customercommits-updateenddate
+      description: REST surface for v1-contracts-customerCommits-updateEndDate.
+      operations:
+      - method: POST
+        name: updatecommitenddatev1
+        description: Update the commit end date
+        call: metronome-credits-and-commits.updatecommitenddatev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customercredits/create
+      name: v1-contracts-customercredits-create
+      description: REST surface for v1-contracts-customerCredits-create.
+      operations:
+      - method: POST
+        name: createcustomercreditv1
+        description: Create a credit
+        call: metronome-credits-and-commits.createcustomercreditv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customercredits/list
+      name: v1-contracts-customercredits-list
+      description: REST surface for v1-contracts-customerCredits-list.
+      operations:
+      - method: POST
+        name: listcustomercreditsv1
+        description: List credits
+        call: metronome-credits-and-commits.listcustomercreditsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/customercredits/updateenddate
+      name: v1-contracts-customercredits-updateenddate
+      description: REST surface for v1-contracts-customerCredits-updateEndDate.
+      operations:
+      - method: POST
+        name: updatecreditenddatev1
+        description: Update the credit end date
+        call: metronome-credits-and-commits.updatecreditenddatev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/seatbalances/list
+      name: v1-contracts-seatbalances-list
+      description: REST surface for v1-contracts-seatBalances-list.
+      operations:
+      - method: POST
+        name: listseatbalancesv1
+        description: List seat balances
+        call: metronome-credits-and-commits.listseatbalancesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/commits/archive
+      name: v2-contracts-commits-archive
+      description: REST surface for v2-contracts-commits-archive.
+      operations:
+      - method: POST
+        name: archivecommitv2
+        description: Archive a commit
+        call: metronome-credits-and-commits.archivecommitv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/commits/edit
+      name: v2-contracts-commits-edit
+      description: REST surface for v2-contracts-commits-edit.
+      operations:
+      - method: POST
+        name: editcommitv2
+        description: Edit a commit
+        call: metronome-credits-and-commits.editcommitv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/credits/archive
+      name: v2-contracts-credits-archive
+      description: REST surface for v2-contracts-credits-archive.
+      operations:
+      - method: POST
+        name: archivecreditv2
+        description: Archive a credit
+        call: metronome-credits-and-commits.archivecreditv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/contracts/credits/edit
+      name: v2-contracts-credits-edit
+      description: REST surface for v2-contracts-credits-edit.
+      operations:
+      - method: POST
+        name: editcreditv2
+        description: Edit a credit
+        call: metronome-credits-and-commits.editcreditv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-credits-and-commits-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Credits and commits. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: add-manual-balance-entry
+      description: Add a manual balance entry
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.addmanualbalanceledgerentryv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: disable-trueup-commit
+      description: Disable trueup for commit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.disablecommittrueupv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: release-external-payment-gate-threshold
+      description: Release external payment gate threshold commit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.releaseexternalpaymentgatethresholdcommitv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-net-balance-customer
+      description: Get the net balance of a customer
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.getnetbalancev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-balances
+      description: List balances
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.listcustomerbalancesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-commit
+      description: Create a commit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.createcustomercommitv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-commits
+      description: List commits
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.listcustomercommitsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-commit-end-date
+      description: Update the commit end date
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.updatecommitenddatev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-credit
+      description: Create a credit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.createcustomercreditv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-credits
+      description: List credits
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.listcustomercreditsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-credit-end-date
+      description: Update the credit end date
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.updatecreditenddatev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-seat-balances
+      description: List seat balances
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.listseatbalancesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-commit
+      description: Archive a commit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.archivecommitv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: edit-commit
+      description: Edit a commit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.editcommitv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-credit
+      description: Archive a credit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.archivecreditv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: edit-credit
+      description: Edit a credit
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-credits-and-commits.editcreditv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

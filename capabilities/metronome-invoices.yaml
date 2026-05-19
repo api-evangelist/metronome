@@ -1,0 +1,453 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Invoices
+  description: 'Metronome — Invoices. 9 operations. Lead operation: List invoices. Self-contained Naftiko capability covering
+    one Metronome business surface.'
+  tags:
+  - Metronome
+  - Invoices
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-invoices
+    baseUri: https://api.metronome.com
+    description: Metronome — Invoices business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-customers-customer_id-invoices
+      path: /v1/customers/{customer_id}/invoices
+      operations:
+      - name: listinvoicesv1
+        method: GET
+        description: List invoices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: sort
+          in: query
+          type: string
+          description: Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc.
+        - name: credit_type_id
+          in: query
+          type: string
+          description: Only return invoices for the specified credit type
+        - name: contract_id
+          in: query
+          type: string
+          description: Only return invoices for the specified contract
+        - name: starting_on
+          in: query
+          type: string
+          description: RFC 3339 timestamp (inclusive). Invoices will only be returned for billing periods that start at or
+            after this time.
+        - name: ending_before
+          in: query
+          type: string
+          description: RFC 3339 timestamp (exclusive). Invoices will only be returned for billing periods that end before
+            this time.
+    - name: v1-customers-customer_id-invoices-breakdowns
+      path: /v1/customers/{customer_id}/invoices/breakdowns
+      operations:
+      - name: listbreakdowninvoicesv1
+        method: GET
+        description: List invoice breakdowns
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Max number of results that should be returned. For daily breakdowns, the response can return up to
+            35 days worth of breakdowns. For hourly breakdowns, the respo
+        - name: window_size
+          in: query
+          type: string
+          description: The granularity of the breakdowns to return. Defaults to day.
+        - name: sort
+          in: query
+          type: string
+          description: Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc.
+        - name: credit_type_id
+          in: query
+          type: string
+          description: Only return invoices for the specified credit type
+        - name: starting_on
+          in: query
+          type: string
+          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that start on or after this time.
+          required: true
+        - name: ending_before
+          in: query
+          type: string
+          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that end on or before this time.
+          required: true
+    - name: v1-customers-customer_id-invoices-invoice_seats
+      path: /v1/customers/{customer_id}/invoices/invoice_seats
+      operations:
+      - name: chargeseatsv1
+        method: POST
+        description: Invoice seats
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-customer_id-invoices-spend-breakdowns
+      path: /v1/customers/{customer_id}/invoices/spend-breakdowns
+      operations:
+      - name: listspendbreakdowninvoicesv1
+        method: POST
+        description: List spend invoice breakdowns
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-customer_id-invoices-invoice_id
+      path: /v1/customers/{customer_id}/invoices/{invoice_id}
+      operations:
+      - name: getinvoicev1
+        method: GET
+        description: Get an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-customers-customer_id-invoices-invoice_id-pdf
+      path: /v1/customers/{customer_id}/invoices/{invoice_id}/pdf
+      operations:
+      - name: getinvoicepdfv1
+        method: GET
+        description: Get an invoice PDF
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-customers-customer_id-previewEvents
+      path: /v1/customers/{customer_id}/previewEvents
+      operations:
+      - name: previewcustomereventsv1
+        method: POST
+        description: Preview events
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-invoices-regenerate
+      path: /v1/invoices/regenerate
+      operations:
+      - name: regenerateinvoicev1
+        method: POST
+        description: Regenerate an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-invoices-void
+      path: /v1/invoices/void
+      operations:
+      - name: voidinvoicev1
+        method: POST
+        description: Void an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-invoices-rest
+    port: 8080
+    description: REST adapter for Metronome — Invoices. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/v1/customers/{customer-id}/invoices
+      name: v1-customers-customer-id-invoices
+      description: REST surface for v1-customers-customer_id-invoices.
+      operations:
+      - method: GET
+        name: listinvoicesv1
+        description: List invoices
+        call: metronome-invoices.listinvoicesv1
+        with:
+          sort: rest.sort
+          credit_type_id: rest.credit_type_id
+          contract_id: rest.contract_id
+          starting_on: rest.starting_on
+          ending_before: rest.ending_before
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/invoices/breakdowns
+      name: v1-customers-customer-id-invoices-breakdowns
+      description: REST surface for v1-customers-customer_id-invoices-breakdowns.
+      operations:
+      - method: GET
+        name: listbreakdowninvoicesv1
+        description: List invoice breakdowns
+        call: metronome-invoices.listbreakdowninvoicesv1
+        with:
+          limit: rest.limit
+          window_size: rest.window_size
+          sort: rest.sort
+          credit_type_id: rest.credit_type_id
+          starting_on: rest.starting_on
+          ending_before: rest.ending_before
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/invoices/invoice-seats
+      name: v1-customers-customer-id-invoices-invoice-seats
+      description: REST surface for v1-customers-customer_id-invoices-invoice_seats.
+      operations:
+      - method: POST
+        name: chargeseatsv1
+        description: Invoice seats
+        call: metronome-invoices.chargeseatsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/invoices/spend-breakdowns
+      name: v1-customers-customer-id-invoices-spend-breakdowns
+      description: REST surface for v1-customers-customer_id-invoices-spend-breakdowns.
+      operations:
+      - method: POST
+        name: listspendbreakdowninvoicesv1
+        description: List spend invoice breakdowns
+        call: metronome-invoices.listspendbreakdowninvoicesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/invoices/{invoice-id}
+      name: v1-customers-customer-id-invoices-invoice-id
+      description: REST surface for v1-customers-customer_id-invoices-invoice_id.
+      operations:
+      - method: GET
+        name: getinvoicev1
+        description: Get an invoice
+        call: metronome-invoices.getinvoicev1
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/invoices/{invoice-id}/pdf
+      name: v1-customers-customer-id-invoices-invoice-id-pdf
+      description: REST surface for v1-customers-customer_id-invoices-invoice_id-pdf.
+      operations:
+      - method: GET
+        name: getinvoicepdfv1
+        description: Get an invoice PDF
+        call: metronome-invoices.getinvoicepdfv1
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/previewevents
+      name: v1-customers-customer-id-previewevents
+      description: REST surface for v1-customers-customer_id-previewEvents.
+      operations:
+      - method: POST
+        name: previewcustomereventsv1
+        description: Preview events
+        call: metronome-invoices.previewcustomereventsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/regenerate
+      name: v1-invoices-regenerate
+      description: REST surface for v1-invoices-regenerate.
+      operations:
+      - method: POST
+        name: regenerateinvoicev1
+        description: Regenerate an invoice
+        call: metronome-invoices.regenerateinvoicev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/void
+      name: v1-invoices-void
+      description: REST surface for v1-invoices-void.
+      operations:
+      - method: POST
+        name: voidinvoicev1
+        description: Void an invoice
+        call: metronome-invoices.voidinvoicev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-invoices-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Invoices. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-invoices
+      description: List invoices
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-invoices.listinvoicesv1
+      with:
+        sort: tools.sort
+        credit_type_id: tools.credit_type_id
+        contract_id: tools.contract_id
+        starting_on: tools.starting_on
+        ending_before: tools.ending_before
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-invoice-breakdowns
+      description: List invoice breakdowns
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-invoices.listbreakdowninvoicesv1
+      with:
+        limit: tools.limit
+        window_size: tools.window_size
+        sort: tools.sort
+        credit_type_id: tools.credit_type_id
+        starting_on: tools.starting_on
+        ending_before: tools.ending_before
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: invoice-seats
+      description: Invoice seats
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-invoices.chargeseatsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-spend-invoice-breakdowns
+      description: List spend invoice breakdowns
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-invoices.listspendbreakdowninvoicesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-invoice
+      description: Get an invoice
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-invoices.getinvoicev1
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-invoice-pdf
+      description: Get an invoice PDF
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-invoices.getinvoicepdfv1
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: preview-events
+      description: Preview events
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-invoices.previewcustomereventsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: regenerate-invoice
+      description: Regenerate an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-invoices.regenerateinvoicev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: void-invoice
+      description: Void an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-invoices.voidinvoicev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

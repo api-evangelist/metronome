@@ -1,0 +1,280 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Notifications
+  description: 'Metronome — Notifications. 6 operations. Lead operation: Archive an offset lifecycle event notification configuration.
+    Self-contained Naftiko capability covering one Metronome business surface.'
+  tags:
+  - Metronome
+  - Notifications
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-notifications
+    baseUri: https://api.metronome.com
+    description: Metronome — Notifications business capability. Self-contained, no shared references.
+    resources:
+    - name: v2-notifications-archive
+      path: /v2/notifications/archive
+      operations:
+      - name: archivenotificationconfigv2
+        method: POST
+        description: Archive an offset lifecycle event notification configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-notifications-create
+      path: /v2/notifications/create
+      operations:
+      - name: createnotificationconfigv2
+        method: POST
+        description: Create an offset lifecycle event notification configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-notifications-edit
+      path: /v2/notifications/edit
+      operations:
+      - name: editnotificationconfigv2
+        method: POST
+        description: Edit an offset lifecycle event notification configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-notifications-get
+      path: /v2/notifications/get
+      operations:
+      - name: getnotificationconfigv2
+        method: POST
+        description: Get an offset lifecycle event notification configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-notifications-offset-list
+      path: /v2/notifications/offset/list
+      operations:
+      - name: listoffsetnotificationconfigsv2
+        method: POST
+        description: List offset lifecycle event notification configurations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v2-notifications-system-list
+      path: /v2/notifications/system/list
+      operations:
+      - name: listsystemnotificationconfigsv2
+        method: POST
+        description: List system notification event types
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-notifications-rest
+    port: 8080
+    description: REST adapter for Metronome — Notifications. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v2/notifications/archive
+      name: v2-notifications-archive
+      description: REST surface for v2-notifications-archive.
+      operations:
+      - method: POST
+        name: archivenotificationconfigv2
+        description: Archive an offset lifecycle event notification configuration
+        call: metronome-notifications.archivenotificationconfigv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/notifications/create
+      name: v2-notifications-create
+      description: REST surface for v2-notifications-create.
+      operations:
+      - method: POST
+        name: createnotificationconfigv2
+        description: Create an offset lifecycle event notification configuration
+        call: metronome-notifications.createnotificationconfigv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/notifications/edit
+      name: v2-notifications-edit
+      description: REST surface for v2-notifications-edit.
+      operations:
+      - method: POST
+        name: editnotificationconfigv2
+        description: Edit an offset lifecycle event notification configuration
+        call: metronome-notifications.editnotificationconfigv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/notifications/get
+      name: v2-notifications-get
+      description: REST surface for v2-notifications-get.
+      operations:
+      - method: POST
+        name: getnotificationconfigv2
+        description: Get an offset lifecycle event notification configuration
+        call: metronome-notifications.getnotificationconfigv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/notifications/offset/list
+      name: v2-notifications-offset-list
+      description: REST surface for v2-notifications-offset-list.
+      operations:
+      - method: POST
+        name: listoffsetnotificationconfigsv2
+        description: List offset lifecycle event notification configurations
+        call: metronome-notifications.listoffsetnotificationconfigsv2
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/notifications/system/list
+      name: v2-notifications-system-list
+      description: REST surface for v2-notifications-system-list.
+      operations:
+      - method: POST
+        name: listsystemnotificationconfigsv2
+        description: List system notification event types
+        call: metronome-notifications.listsystemnotificationconfigsv2
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-notifications-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Notifications. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: archive-offset-lifecycle-event-notification
+      description: Archive an offset lifecycle event notification configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-notifications.archivenotificationconfigv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-offset-lifecycle-event-notification
+      description: Create an offset lifecycle event notification configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-notifications.createnotificationconfigv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: edit-offset-lifecycle-event-notification
+      description: Edit an offset lifecycle event notification configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-notifications.editnotificationconfigv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-offset-lifecycle-event-notification
+      description: Get an offset lifecycle event notification configuration
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-notifications.getnotificationconfigv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-offset-lifecycle-event-notification
+      description: List offset lifecycle event notification configurations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-notifications.listoffsetnotificationconfigsv2
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-system-notification-event-types
+      description: List system notification event types
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-notifications.listsystemnotificationconfigsv2
+      outputParameters:
+      - type: object
+        mapping: $.

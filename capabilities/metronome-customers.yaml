@@ -1,0 +1,668 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Customers
+  description: 'Metronome — Customers. 15 operations. Lead operation: Archive billing provider configurations for a customer.
+    Self-contained Naftiko capability covering one Metronome business surface.'
+  tags:
+  - Metronome
+  - Customers
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-customers
+    baseUri: https://api.metronome.com
+    description: Metronome — Customers business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-archiveCustomerBillingProviderConfigurations
+      path: /v1/archiveCustomerBillingProviderConfigurations
+      operations:
+      - name: archivecustomerbillingproviderconfigurationsv1
+        method: POST
+        description: Archive billing provider configurations for a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-archiveCustomerRevenueSystemConfigurations
+      path: /v1/archiveCustomerRevenueSystemConfigurations
+      operations:
+      - name: archivecustomerrevenuesystemconfigurationsv1
+        method: POST
+        description: Archive revenue system configurations for a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers
+      path: /v1/customers
+      operations:
+      - name: listcustomersv1
+        method: GET
+        description: List customers
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ingest_alias
+          in: query
+          type: string
+          description: Filter the customer list by ingest_alias
+        - name: customer_ids
+          in: query
+          type: array
+          description: Filter the customer list by customer_id.  Up to 100 ids can be provided.
+        - name: only_archived
+          in: query
+          type: boolean
+          description: Filter the customer list to only return archived customers. By default, only active customers are returned.
+        - name: salesforce_account_ids
+          in: query
+          type: array
+          description: Filter the customer list by salesforce_account_id.  Up to 100 ids can be provided.
+      - name: createcustomerv1
+        method: POST
+        description: Create a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-archive
+      path: /v1/customers/archive
+      operations:
+      - name: archivecustomerv1
+        method: POST
+        description: Archive a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-setBillableStatus
+      path: /v1/customers/setBillableStatus
+      operations:
+      - name: setcustomerbillablestatusv1
+        method: POST
+        description: Set customer billable status
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-customer_id
+      path: /v1/customers/{customer_id}
+      operations:
+      - name: getcustomerv1
+        method: GET
+        description: Get a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-customers-customer_id-setIngestAliases
+      path: /v1/customers/{customer_id}/setIngestAliases
+      operations:
+      - name: setingestaliasesv1
+        method: POST
+        description: Create or update customer ingest aliases
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-customer_id-setName
+      path: /v1/customers/{customer_id}/setName
+      operations:
+      - name: setcustomernamev1
+        method: POST
+        description: Update a customer name
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-customer_id-updateConfig
+      path: /v1/customers/{customer_id}/updateConfig
+      operations:
+      - name: updatecustomerconfigv1
+        method: POST
+        description: Update a customer configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-dashboards-getEmbeddableUrl
+      path: /v1/dashboards/getEmbeddableUrl
+      operations:
+      - name: embeddabledashboardv1
+        method: POST
+        description: Get an embeddable customer dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-getCustomerBillingProviderConfigurations
+      path: /v1/getCustomerBillingProviderConfigurations
+      operations:
+      - name: getcustomerbillingproviderconfigurationsv1
+        method: POST
+        description: Fetch billing provider configurations for a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-getCustomerRevenueSystemConfigurations
+      path: /v1/getCustomerRevenueSystemConfigurations
+      operations:
+      - name: getcustomerrevenuesystemconfigurationsv1
+        method: POST
+        description: Fetch revenue system configurations for a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-setCustomerBillingProviderConfigurations
+      path: /v1/setCustomerBillingProviderConfigurations
+      operations:
+      - name: setcustomerbillingproviderconfigurationsv1
+        method: POST
+        description: Set billing provider configurations for a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-setCustomerRevenueSystemConfigurations
+      path: /v1/setCustomerRevenueSystemConfigurations
+      operations:
+      - name: setcustomerrevenuesystemconfigurationsv1
+        method: POST
+        description: Set revenue system configurations for a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-customers-rest
+    port: 8080
+    description: REST adapter for Metronome — Customers. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/archivecustomerbillingproviderconfigurations
+      name: v1-archivecustomerbillingproviderconfigurations
+      description: REST surface for v1-archiveCustomerBillingProviderConfigurations.
+      operations:
+      - method: POST
+        name: archivecustomerbillingproviderconfigurationsv1
+        description: Archive billing provider configurations for a customer
+        call: metronome-customers.archivecustomerbillingproviderconfigurationsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/archivecustomerrevenuesystemconfigurations
+      name: v1-archivecustomerrevenuesystemconfigurations
+      description: REST surface for v1-archiveCustomerRevenueSystemConfigurations.
+      operations:
+      - method: POST
+        name: archivecustomerrevenuesystemconfigurationsv1
+        description: Archive revenue system configurations for a customer
+        call: metronome-customers.archivecustomerrevenuesystemconfigurationsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers
+      name: v1-customers
+      description: REST surface for v1-customers.
+      operations:
+      - method: GET
+        name: listcustomersv1
+        description: List customers
+        call: metronome-customers.listcustomersv1
+        with:
+          ingest_alias: rest.ingest_alias
+          customer_ids: rest.customer_ids
+          only_archived: rest.only_archived
+          salesforce_account_ids: rest.salesforce_account_ids
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createcustomerv1
+        description: Create a customer
+        call: metronome-customers.createcustomerv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/archive
+      name: v1-customers-archive
+      description: REST surface for v1-customers-archive.
+      operations:
+      - method: POST
+        name: archivecustomerv1
+        description: Archive a customer
+        call: metronome-customers.archivecustomerv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/setbillablestatus
+      name: v1-customers-setbillablestatus
+      description: REST surface for v1-customers-setBillableStatus.
+      operations:
+      - method: POST
+        name: setcustomerbillablestatusv1
+        description: Set customer billable status
+        call: metronome-customers.setcustomerbillablestatusv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}
+      name: v1-customers-customer-id
+      description: REST surface for v1-customers-customer_id.
+      operations:
+      - method: GET
+        name: getcustomerv1
+        description: Get a customer
+        call: metronome-customers.getcustomerv1
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/setingestaliases
+      name: v1-customers-customer-id-setingestaliases
+      description: REST surface for v1-customers-customer_id-setIngestAliases.
+      operations:
+      - method: POST
+        name: setingestaliasesv1
+        description: Create or update customer ingest aliases
+        call: metronome-customers.setingestaliasesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/setname
+      name: v1-customers-customer-id-setname
+      description: REST surface for v1-customers-customer_id-setName.
+      operations:
+      - method: POST
+        name: setcustomernamev1
+        description: Update a customer name
+        call: metronome-customers.setcustomernamev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/{customer-id}/updateconfig
+      name: v1-customers-customer-id-updateconfig
+      description: REST surface for v1-customers-customer_id-updateConfig.
+      operations:
+      - method: POST
+        name: updatecustomerconfigv1
+        description: Update a customer configuration
+        call: metronome-customers.updatecustomerconfigv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/dashboards/getembeddableurl
+      name: v1-dashboards-getembeddableurl
+      description: REST surface for v1-dashboards-getEmbeddableUrl.
+      operations:
+      - method: POST
+        name: embeddabledashboardv1
+        description: Get an embeddable customer dashboard
+        call: metronome-customers.embeddabledashboardv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/getcustomerbillingproviderconfigurations
+      name: v1-getcustomerbillingproviderconfigurations
+      description: REST surface for v1-getCustomerBillingProviderConfigurations.
+      operations:
+      - method: POST
+        name: getcustomerbillingproviderconfigurationsv1
+        description: Fetch billing provider configurations for a customer
+        call: metronome-customers.getcustomerbillingproviderconfigurationsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/getcustomerrevenuesystemconfigurations
+      name: v1-getcustomerrevenuesystemconfigurations
+      description: REST surface for v1-getCustomerRevenueSystemConfigurations.
+      operations:
+      - method: POST
+        name: getcustomerrevenuesystemconfigurationsv1
+        description: Fetch revenue system configurations for a customer
+        call: metronome-customers.getcustomerrevenuesystemconfigurationsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/setcustomerbillingproviderconfigurations
+      name: v1-setcustomerbillingproviderconfigurations
+      description: REST surface for v1-setCustomerBillingProviderConfigurations.
+      operations:
+      - method: POST
+        name: setcustomerbillingproviderconfigurationsv1
+        description: Set billing provider configurations for a customer
+        call: metronome-customers.setcustomerbillingproviderconfigurationsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/setcustomerrevenuesystemconfigurations
+      name: v1-setcustomerrevenuesystemconfigurations
+      description: REST surface for v1-setCustomerRevenueSystemConfigurations.
+      operations:
+      - method: POST
+        name: setcustomerrevenuesystemconfigurationsv1
+        description: Set revenue system configurations for a customer
+        call: metronome-customers.setcustomerrevenuesystemconfigurationsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-customers-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Customers. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: archive-billing-provider-configurations-customer
+      description: Archive billing provider configurations for a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.archivecustomerbillingproviderconfigurationsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-revenue-system-configurations-customer
+      description: Archive revenue system configurations for a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.archivecustomerrevenuesystemconfigurationsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-customers
+      description: List customers
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-customers.listcustomersv1
+      with:
+        ingest_alias: tools.ingest_alias
+        customer_ids: tools.customer_ids
+        only_archived: tools.only_archived
+        salesforce_account_ids: tools.salesforce_account_ids
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-customer
+      description: Create a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.createcustomerv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-customer
+      description: Archive a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.archivecustomerv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-customer-billable-status
+      description: Set customer billable status
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.setcustomerbillablestatusv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-customer
+      description: Get a customer
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-customers.getcustomerv1
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-update-customer-ingest-aliases
+      description: Create or update customer ingest aliases
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.setingestaliasesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-customer-name
+      description: Update a customer name
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.setcustomernamev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-customer-configuration
+      description: Update a customer configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.updatecustomerconfigv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-embeddable-customer-dashboard
+      description: Get an embeddable customer dashboard
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-customers.embeddabledashboardv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fetch-billing-provider-configurations-customer
+      description: Fetch billing provider configurations for a customer
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-customers.getcustomerbillingproviderconfigurationsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fetch-revenue-system-configurations-customer
+      description: Fetch revenue system configurations for a customer
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-customers.getcustomerrevenuesystemconfigurationsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-billing-provider-configurations-customer
+      description: Set billing provider configurations for a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.setcustomerbillingproviderconfigurationsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-revenue-system-configurations-customer
+      description: Set revenue system configurations for a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-customers.setcustomerrevenuesystemconfigurationsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

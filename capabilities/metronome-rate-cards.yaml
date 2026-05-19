@@ -1,0 +1,500 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Rate cards
+  description: 'Metronome — Rate cards. 11 operations. Lead operation: Add a rate. Self-contained Naftiko capability covering
+    one Metronome business surface.'
+  tags:
+  - Metronome
+  - Rate cards
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-rate-cards
+    baseUri: https://api.metronome.com
+    description: Metronome — Rate cards business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-contract-pricing-rate-cards-addRate
+      path: /v1/contract-pricing/rate-cards/addRate
+      operations:
+      - name: addratev1
+        method: POST
+        description: Add a rate
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-addRates
+      path: /v1/contract-pricing/rate-cards/addRates
+      operations:
+      - name: addratesv1
+        method: POST
+        description: Add rates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-archive
+      path: /v1/contract-pricing/rate-cards/archive
+      operations:
+      - name: archiveratecardv1
+        method: POST
+        description: Archive a rate card
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-create
+      path: /v1/contract-pricing/rate-cards/create
+      operations:
+      - name: createratecardv1
+        method: POST
+        description: Create a rate card
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-get
+      path: /v1/contract-pricing/rate-cards/get
+      operations:
+      - name: getratecardv1
+        method: POST
+        description: Get a rate card
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-getRateSchedule
+      path: /v1/contract-pricing/rate-cards/getRateSchedule
+      operations:
+      - name: getrateschedulev1
+        method: POST
+        description: Get a rate schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-getRates
+      path: /v1/contract-pricing/rate-cards/getRates
+      operations:
+      - name: getratesv1
+        method: POST
+        description: Get rates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-list
+      path: /v1/contract-pricing/rate-cards/list
+      operations:
+      - name: listratecardsv1
+        method: POST
+        description: List rate cards
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-moveRateCardProducts
+      path: /v1/contract-pricing/rate-cards/moveRateCardProducts
+      operations:
+      - name: moveratecardproductsv1
+        method: POST
+        description: Update the rate card products order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-setRateCardProductsOrder
+      path: /v1/contract-pricing/rate-cards/setRateCardProductsOrder
+      operations:
+      - name: setratecardproductsorderv1
+        method: POST
+        description: Set the rate card products order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-update
+      path: /v1/contract-pricing/rate-cards/update
+      operations:
+      - name: updateratecardv1
+        method: POST
+        description: Update a rate card
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-rate-cards-rest
+    port: 8080
+    description: REST adapter for Metronome — Rate cards. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/contract-pricing/rate-cards/addrate
+      name: v1-contract-pricing-rate-cards-addrate
+      description: REST surface for v1-contract-pricing-rate-cards-addRate.
+      operations:
+      - method: POST
+        name: addratev1
+        description: Add a rate
+        call: metronome-rate-cards.addratev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/addrates
+      name: v1-contract-pricing-rate-cards-addrates
+      description: REST surface for v1-contract-pricing-rate-cards-addRates.
+      operations:
+      - method: POST
+        name: addratesv1
+        description: Add rates
+        call: metronome-rate-cards.addratesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/archive
+      name: v1-contract-pricing-rate-cards-archive
+      description: REST surface for v1-contract-pricing-rate-cards-archive.
+      operations:
+      - method: POST
+        name: archiveratecardv1
+        description: Archive a rate card
+        call: metronome-rate-cards.archiveratecardv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/create
+      name: v1-contract-pricing-rate-cards-create
+      description: REST surface for v1-contract-pricing-rate-cards-create.
+      operations:
+      - method: POST
+        name: createratecardv1
+        description: Create a rate card
+        call: metronome-rate-cards.createratecardv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/get
+      name: v1-contract-pricing-rate-cards-get
+      description: REST surface for v1-contract-pricing-rate-cards-get.
+      operations:
+      - method: POST
+        name: getratecardv1
+        description: Get a rate card
+        call: metronome-rate-cards.getratecardv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/getrateschedule
+      name: v1-contract-pricing-rate-cards-getrateschedule
+      description: REST surface for v1-contract-pricing-rate-cards-getRateSchedule.
+      operations:
+      - method: POST
+        name: getrateschedulev1
+        description: Get a rate schedule
+        call: metronome-rate-cards.getrateschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/getrates
+      name: v1-contract-pricing-rate-cards-getrates
+      description: REST surface for v1-contract-pricing-rate-cards-getRates.
+      operations:
+      - method: POST
+        name: getratesv1
+        description: Get rates
+        call: metronome-rate-cards.getratesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/list
+      name: v1-contract-pricing-rate-cards-list
+      description: REST surface for v1-contract-pricing-rate-cards-list.
+      operations:
+      - method: POST
+        name: listratecardsv1
+        description: List rate cards
+        call: metronome-rate-cards.listratecardsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/moveratecardproducts
+      name: v1-contract-pricing-rate-cards-moveratecardproducts
+      description: REST surface for v1-contract-pricing-rate-cards-moveRateCardProducts.
+      operations:
+      - method: POST
+        name: moveratecardproductsv1
+        description: Update the rate card products order
+        call: metronome-rate-cards.moveratecardproductsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/setratecardproductsorder
+      name: v1-contract-pricing-rate-cards-setratecardproductsorder
+      description: REST surface for v1-contract-pricing-rate-cards-setRateCardProductsOrder.
+      operations:
+      - method: POST
+        name: setratecardproductsorderv1
+        description: Set the rate card products order
+        call: metronome-rate-cards.setratecardproductsorderv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/update
+      name: v1-contract-pricing-rate-cards-update
+      description: REST surface for v1-contract-pricing-rate-cards-update.
+      operations:
+      - method: POST
+        name: updateratecardv1
+        description: Update a rate card
+        call: metronome-rate-cards.updateratecardv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-rate-cards-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Rate cards. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: add-rate
+      description: Add a rate
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.addratev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-rates
+      description: Add rates
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.addratesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-rate-card
+      description: Archive a rate card
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.archiveratecardv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-rate-card
+      description: Create a rate card
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.createratecardv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-rate-card
+      description: Get a rate card
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.getratecardv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-rate-schedule
+      description: Get a rate schedule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.getrateschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-rates
+      description: Get rates
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.getratesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-rate-cards
+      description: List rate cards
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.listratecardsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-rate-card-products-order
+      description: Update the rate card products order
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.moveratecardproductsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-rate-card-products-order
+      description: Set the rate card products order
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.setratecardproductsorderv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-rate-card
+      description: Update a rate card
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-rate-cards.updateratecardv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

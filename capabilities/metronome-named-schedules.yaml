@@ -1,0 +1,332 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Named schedules
+  description: 'Metronome — Named schedules. 7 operations. Lead operation: Get a rate card''s named schedule. Self-contained
+    Naftiko capability covering one Metronome business surface.'
+  tags:
+  - Metronome
+  - Named schedules
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-named-schedules
+    baseUri: https://api.metronome.com
+    description: Metronome — Named schedules business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-contract-pricing-rate-cards-getNamedSchedule
+      path: /v1/contract-pricing/rate-cards/getNamedSchedule
+      operations:
+      - name: getratecardnamedschedulev1
+        method: POST
+        description: Get a rate card's named schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contract-pricing-rate-cards-updateNamedSchedule
+      path: /v1/contract-pricing/rate-cards/updateNamedSchedule
+      operations:
+      - name: updateratecardnamedschedulev1
+        method: POST
+        description: Update a rate card's named schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-getNamedSchedule
+      path: /v1/contracts/getNamedSchedule
+      operations:
+      - name: getcontractnamedschedulev1
+        method: POST
+        description: Get a contract's named schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-listNamedSchedules
+      path: /v1/contracts/listNamedSchedules
+      operations:
+      - name: listcontractsnamedschedulesv1
+        method: POST
+        description: List contract named schedules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-contracts-updateNamedSchedule
+      path: /v1/contracts/updateNamedSchedule
+      operations:
+      - name: updatecontractnamedschedulev1
+        method: POST
+        description: Update a contract's named schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-getNamedSchedule
+      path: /v1/customers/getNamedSchedule
+      operations:
+      - name: getcustomernamedschedulev1
+        method: POST
+        description: Get a customer's named schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-customers-updateNamedSchedule
+      path: /v1/customers/updateNamedSchedule
+      operations:
+      - name: updatecustomernamedschedulev1
+        method: POST
+        description: Update a customer's named schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-named-schedules-rest
+    port: 8080
+    description: REST adapter for Metronome — Named schedules. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/contract-pricing/rate-cards/getnamedschedule
+      name: v1-contract-pricing-rate-cards-getnamedschedule
+      description: REST surface for v1-contract-pricing-rate-cards-getNamedSchedule.
+      operations:
+      - method: POST
+        name: getratecardnamedschedulev1
+        description: Get a rate card's named schedule
+        call: metronome-named-schedules.getratecardnamedschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contract-pricing/rate-cards/updatenamedschedule
+      name: v1-contract-pricing-rate-cards-updatenamedschedule
+      description: REST surface for v1-contract-pricing-rate-cards-updateNamedSchedule.
+      operations:
+      - method: POST
+        name: updateratecardnamedschedulev1
+        description: Update a rate card's named schedule
+        call: metronome-named-schedules.updateratecardnamedschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/getnamedschedule
+      name: v1-contracts-getnamedschedule
+      description: REST surface for v1-contracts-getNamedSchedule.
+      operations:
+      - method: POST
+        name: getcontractnamedschedulev1
+        description: Get a contract's named schedule
+        call: metronome-named-schedules.getcontractnamedschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/listnamedschedules
+      name: v1-contracts-listnamedschedules
+      description: REST surface for v1-contracts-listNamedSchedules.
+      operations:
+      - method: POST
+        name: listcontractsnamedschedulesv1
+        description: List contract named schedules
+        call: metronome-named-schedules.listcontractsnamedschedulesv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/contracts/updatenamedschedule
+      name: v1-contracts-updatenamedschedule
+      description: REST surface for v1-contracts-updateNamedSchedule.
+      operations:
+      - method: POST
+        name: updatecontractnamedschedulev1
+        description: Update a contract's named schedule
+        call: metronome-named-schedules.updatecontractnamedschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/getnamedschedule
+      name: v1-customers-getnamedschedule
+      description: REST surface for v1-customers-getNamedSchedule.
+      operations:
+      - method: POST
+        name: getcustomernamedschedulev1
+        description: Get a customer's named schedule
+        call: metronome-named-schedules.getcustomernamedschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/customers/updatenamedschedule
+      name: v1-customers-updatenamedschedule
+      description: REST surface for v1-customers-updateNamedSchedule.
+      operations:
+      - method: POST
+        name: updatecustomernamedschedulev1
+        description: Update a customer's named schedule
+        call: metronome-named-schedules.updatecustomernamedschedulev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-named-schedules-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Named schedules. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: get-rate-card-s-named-schedule
+      description: Get a rate card's named schedule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-named-schedules.getratecardnamedschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-rate-card-s-named-schedule
+      description: Update a rate card's named schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-named-schedules.updateratecardnamedschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-contract-s-named-schedule
+      description: Get a contract's named schedule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-named-schedules.getcontractnamedschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-contract-named-schedules
+      description: List contract named schedules
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-named-schedules.listcontractsnamedschedulesv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-contract-s-named-schedule
+      description: Update a contract's named schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-named-schedules.updatecontractnamedschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-customer-s-named-schedule
+      description: Get a customer's named schedule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-named-schedules.getcustomernamedschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-customer-s-named-schedule
+      description: Update a customer's named schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-named-schedules.updatecustomernamedschedulev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

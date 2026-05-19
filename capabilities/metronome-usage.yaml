@@ -1,0 +1,280 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Metronome — Usage
+  description: 'Metronome — Usage. 6 operations. Lead operation: Get purchased seats. Self-contained Naftiko capability covering
+    one Metronome business surface.'
+  tags:
+  - Metronome
+  - Usage
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    METRONOME_API_KEY: METRONOME_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: metronome-usage
+    baseUri: https://api.metronome.com
+    description: Metronome — Usage business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-customers-customer_id-purchasedSeats
+      path: /v1/customers/{customer_id}/purchasedSeats
+      operations:
+      - name: getpurchasedseatsv1
+        method: GET
+        description: Get purchased seats
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-events-search
+      path: /v1/events/search
+      operations:
+      - name: searcheventsv1
+        method: POST
+        description: Search events
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-ingest
+      path: /v1/ingest
+      operations:
+      - name: ingestv1
+        method: POST
+        description: Ingest events
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-usage
+      path: /v1/usage
+      operations:
+      - name: getusagebatchv1
+        method: POST
+        description: Get batched usage data
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-usage-groups
+      path: /v1/usage/groups
+      operations:
+      - name: getpagedusagev1
+        method: POST
+        description: Get usage data with paginated groupings
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-usage-seats
+      path: /v1/usage/seats
+      operations:
+      - name: getseatsusagev1
+        method: POST
+        description: Get seats usage data
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.METRONOME_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: metronome-usage-rest
+    port: 8080
+    description: REST adapter for Metronome — Usage. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/v1/customers/{customer-id}/purchasedseats
+      name: v1-customers-customer-id-purchasedseats
+      description: REST surface for v1-customers-customer_id-purchasedSeats.
+      operations:
+      - method: GET
+        name: getpurchasedseatsv1
+        description: Get purchased seats
+        call: metronome-usage.getpurchasedseatsv1
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/events/search
+      name: v1-events-search
+      description: REST surface for v1-events-search.
+      operations:
+      - method: POST
+        name: searcheventsv1
+        description: Search events
+        call: metronome-usage.searcheventsv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/ingest
+      name: v1-ingest
+      description: REST surface for v1-ingest.
+      operations:
+      - method: POST
+        name: ingestv1
+        description: Ingest events
+        call: metronome-usage.ingestv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/usage
+      name: v1-usage
+      description: REST surface for v1-usage.
+      operations:
+      - method: POST
+        name: getusagebatchv1
+        description: Get batched usage data
+        call: metronome-usage.getusagebatchv1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/usage/groups
+      name: v1-usage-groups
+      description: REST surface for v1-usage-groups.
+      operations:
+      - method: POST
+        name: getpagedusagev1
+        description: Get usage data with paginated groupings
+        call: metronome-usage.getpagedusagev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/usage/seats
+      name: v1-usage-seats
+      description: REST surface for v1-usage-seats.
+      operations:
+      - method: POST
+        name: getseatsusagev1
+        description: Get seats usage data
+        call: metronome-usage.getseatsusagev1
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: metronome-usage-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Metronome — Usage. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: get-purchased-seats
+      description: Get purchased seats
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: metronome-usage.getpurchasedseatsv1
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: search-events
+      description: Search events
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-usage.searcheventsv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: ingest-events
+      description: Ingest events
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: metronome-usage.ingestv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-batched-usage-data
+      description: Get batched usage data
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-usage.getusagebatchv1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-usage-data-paginated-groupings
+      description: Get usage data with paginated groupings
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-usage.getpagedusagev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-seats-usage-data
+      description: Get seats usage data
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: metronome-usage.getseatsusagev1
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
