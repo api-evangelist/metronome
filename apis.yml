@@ -81,6 +81,8 @@ common:
     url: https://docs.metronome.com/
   - type: StatusPage
     url: https://status.metronome.com/
+  - type: LLMsTxt
+    url: https://docs.metronome.com/llms.txt
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
