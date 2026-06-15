@@ -1,0 +1,2634 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Alerts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Archive a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/alerts/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Permanently disable a threshold notification and remove it from active monitoring across all customers. Archived threshold notifications stop evaluating immediately and can optionally release their uniqueness key for reuse in future threshold notification configurations.\n\n### Use this endpoint to:\n- Decommission threshold notifications that are no longer needed\n- Clean up test or deprecated threshold notification configurations\n- Free up uniqueness keys for reuse with new threshold notifications"
+        },
+        {
+          "info": {
+            "name": "Create a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/alerts/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new threshold notification to monitor customer spending, balances, and billing metrics in real-time. Metronome's notification system provides industry-leading speed with immediate evaluation capabilities, enabling you to proactively manage customer accounts and prevent revenue leakage.\n\nThis endpoint creates configurable threshold notifications that continuously monitor various billing thresholds including spend limits, credit balances, commitment utilization, and invoice totals. Thresh"
+        },
+        {
+          "info": {
+            "name": "Get a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customer-alerts/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve the real-time evaluation status for a specific threshold notification-customer pair. This endpoint provides instant visibility into whether a customer has triggered a threshold notification condition, enabling you to monitor account health and take proactive action based on current threshold notification states.\n\n### Use this endpoint to:\n- Check if a specific customer is currently violating an threshold notification (`in_alarm` status)\n- Verify threshold notification configuration deta"
+        },
+        {
+          "info": {
+            "name": "Get all threshold notifications",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customer-alerts/list",
+            "params": [
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve all threshold notification configurations and their current statuses for a specific customer in a single API call. This endpoint provides a comprehensive view of all threshold notification monitoring a customer account.\n\n### Use this endpoint to:\n- Display all active threshold notifications for a customer in dashboards or admin panels\n- Quickly identify which threshold notifications a customer is currently triggering\n- Audit threshold notification coverage for specific accounts\n- Filter"
+        },
+        {
+          "info": {
+            "name": "Reset a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customer-alerts/reset",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Force an immediate re-evaluation of a specific threshold notification for a customer, clearing any previous state and triggering a fresh assessment against current thresholds. This endpoint ensures threshold notification accuracy after configuration changes or data corrections.\n\n### Use this endpoint to:\n- Clear false positive threshold notifications after fixing data issues\n- Re-evaluate threshold notifications after adjusting customer balances or credits\n- Test threshold notification behavior "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Billable metrics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/billable-metrics/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create billable metrics programmatically with this endpoint—an essential step in configuring your pricing and packaging in Metronome.\n\nA billable metric is a customizable query that filters and aggregates events from your event stream. These metrics are continuously tracked as usage data enters Metronome through the ingestion pipeline. The ingestion process transforms raw usage data into actionable pricing metrics, enabling accurate metering and billing for your products.\n\n### Use this endpoint "
+        },
+        {
+          "info": {
+            "name": "Archive a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/billable-metrics/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to retire billable metrics that are no longer used. After a billable metric is archived, that billable metric can no longer be used in any new Products to define how that product should be metered. If you archive a billable metric that is already associated with a Product, the Product will continue to function as usual, metering based on the definition of the archived billable metric. \n\nArchived billable metrics will be returned on the `getBillableMetric` and `listBillableMetri"
+        },
+        {
+          "info": {
+            "name": "Get a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/billable-metrics/:billable_metric_id",
+            "params": [
+              {
+                "name": "billable_metric_id",
+                "value": "13117714-3f05-48e5-a6e9-a66093f13b4d",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves the complete configuration for a specific billable metric by its ID. Use this to review billable metric setup before associating it with products. Returns the metric's `name`, `event_type_filter`, `property_filters`, `aggregation_type`, `aggregation_key`, `group_keys`, `custom fields`, and `SQL query` (if it's a SQL billable metric). \n\nImportant: \n- Archived billable metrics will include an `archived_at` timestamp; they no longer process new usage events but remain accessible for histo"
+        },
+        {
+          "info": {
+            "name": "Update a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.metronome.com/v1/billable-metrics/:billable_metric_id",
+            "params": [
+              {
+                "name": "billable_metric_id",
+                "value": "13117714-3f05-48e5-a6e9-a66093f13b4d",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates only the display name of an existing billable metric. Use this to correct mistakes or apply standardized naming conventions across all billable metrics. Returns the billable metric ID to confirm the update. \n\nImportant: Only the name can be modified via this endpoint; configurations cannot be changed after creation. \n\n#### Example workflow:\nIf you need to make changes to a streaming billable metric, for example, Metronome supports easily rolling out these changes using a simple workflow:"
+        },
+        {
+          "info": {
+            "name": "List all billable metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/billable-metrics",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "include_archived",
+                "value": "",
+                "type": "query",
+                "description": "If true, the list of returned metrics will include archived metrics"
+              }
+            ]
+          },
+          "docs": "Retrieves all billable metrics with their complete configurations. Use this for programmatic discovery and management of billable metrics, such as associating metrics to products and auditing for orphaned or archived metrics. \nImportant: Archived metrics are excluded by default; use `include_archived`=`true` parameter to include them.\n"
+        },
+        {
+          "info": {
+            "name": "Get billable metrics for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/billable-metrics",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "on_current_plan",
+                "value": "",
+                "type": "query",
+                "description": "If true, the list of metrics will be filtered to just ones that are on the customer's current plan"
+              },
+              {
+                "name": "include_archived",
+                "value": "",
+                "type": "query",
+                "description": "If true, the list of returned metrics will include archived metrics"
+              }
+            ]
+          },
+          "docs": "Get all billable metrics available for a specific customer. Supports pagination and filtering by current plan status or archived metrics. Use this endpoint to see which metrics are being tracked for billing calculations for a given customer.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Settings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Set the billing provider API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/client/billing-config/:billing_provider_type/apiKey",
+            "params": [
+              {
+                "name": "billing_provider_type",
+                "value": "stripe",
+                "type": "path",
+                "description": "The billing provider (currently only Stripe is supported)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "(**Deprecated:** use [Create Stripe billing settings](#operation/createStripeBillingSettings) instead) Sets the api key for the billing provider. This is used for sending invoices to the billing provider. For example, if the billing provider is Stripe, this is the restricted key.\n"
+        },
+        {
+          "info": {
+            "name": "Set the client webhook secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/client/config/webhook_secret",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the webhook secret for the client.  This is used for validating webhook messages send to the external Metronome webhook endpoint.\n"
+        },
+        {
+          "info": {
+            "name": "Create Stripe billing settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/client/billing-config/stripe",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create billing settings for Stripe.\n\nIf you plan on using prepaid credit grants and recharges, your Stripe API key needs the following access:\n\n- Read & Write\n   - Invoices\n   - PaymentIntents\n- Read only:\n   - PaymentMethods\n   - Customers"
+        },
+        {
+          "info": {
+            "name": "Update Stripe billing settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.metronome.com/v1/client/billing-config/stripe",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Apply partial updates to billing settings for Stripe. Individual settings can be deleted by specifying values as `null`.\n"
+        },
+        {
+          "info": {
+            "name": "Delete Stripe billing settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.metronome.com/v1/client/billing-config/stripe"
+          },
+          "docs": "Delete all billing settings for Stripe\n"
+        },
+        {
+          "info": {
+            "name": "List pricing units",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/credit-types/list",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ]
+          },
+          "docs": "List all pricing units. All fiat currency types (for example, USD or GBP) will be included, as well as any custom pricing units that were configured. Custom pricing units can be used to charge for usage in a non-fiat pricing unit, for example AI credits.\n\nNote: The USD (cents) pricing unit is 2714e483-4ff1-48e4-9e25-ac732e8f24f2.\n"
+        },
+        {
+          "info": {
+            "name": "Set up account-level billing provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/setUpBillingProvider",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set up account-level configuration for a billing provider. Once configured, individual contracts across customers can be mapped to this configuration using the returned delivery_method_id.\n"
+        },
+        {
+          "info": {
+            "name": "Upsert Anrok API token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/upsertAnrokApiToken",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the Anrok API token for some specified delivery_method_ids, which can be found in the `/listConfiguredBillingProviders` response. This maps the Anrok key to the appropriate billing entity. These API tokens are only used for Threshold Billing workflows today.\n"
+        },
+        {
+          "info": {
+            "name": "Upsert Avalara credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/upsertAvalaraCredentials",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the Avalara credentials for some specified `delivery_method_ids`, which can be found in the `/listConfiguredBillingProviders` response. This maps the Avalara credentials to the appropriate billing entity. These credentials are only used for PLG Invoicing today.\n"
+        },
+        {
+          "info": {
+            "name": "Rotate the HMAC secret used to sign delta stream messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/rotateDeltaStreamSecret",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Rotate the HMAC secret used to sign delta stream messages. The new secret will be used for all messages after the `starting_on` time. If a `starting_on` time is not provided, the new secret will be used in 10 minutes.\nIf this endpoint is called while a rotation is already in progress, the second call will replace the existing rotation and the previous rotation will be cancelled.\n"
+        },
+        {
+          "info": {
+            "name": "List account-level billing providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/listConfiguredBillingProviders",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Lists all configured billing providers and their delivery method configurations for your account. Returns provider details, delivery method IDs, and configuration settings needed for mapping individual customer contracts to billing integrations.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Ingest events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/ingest",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The ingest endpoint is the primary method for sending usage events to Metronome, serving as the foundation for all billing calculations in your usage-based pricing model. This high-throughput endpoint is designed for real-time streaming ingestion, supports backdating 34 days, and is built to handle mission-critical usage data with enterprise-grade reliability. Metronome supports 100,000 events per second without requiring pre-aggregation or rollups and can scale up from there. See the [Send usag"
+        },
+        {
+          "info": {
+            "name": "Get seats usage data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/usage/seats",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Fetch seats usage data for the specified customer, broken into intervals of the specified length."
+        },
+        {
+          "info": {
+            "name": "Get usage data with paginated groupings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/usage/groups",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve granular usage data for a specific customer and billable metric, with the ability to break down usage by custom grouping dimensions. This endpoint enables deep usage analytics by segmenting data across attributes like region, user, model type, or any custom dimension defined in your billable metrics.\n\n### Use this endpoint to:\n- Analyze usage patterns broken down by specific attributes (region, user, department, etc.)\n- Build detailed usage dashboards with dimensional filtering\n- Identi"
+        },
+        {
+          "info": {
+            "name": "Get batched usage data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/usage",
+            "params": [
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve aggregated usage data across multiple customers and billable metrics in a single query. This batch endpoint enables you to fetch usage patterns at scale, broken down by time windows, making it ideal for building analytics dashboards, generating reports, and monitoring platform-wide usage trends.\n\n### Use this endpoint to:\n- Generate platform-wide usage reports for internal teams\n- Monitor aggregate usage trends across your entire customer base\n- Create comparative usage analyses between"
+        },
+        {
+          "info": {
+            "name": "Search events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/events/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint retrieves events by transaction ID for events that occurred within the last 34 days. It is specifically designed for sampling-based testing workflows to detect revenue leakage. The Event Search API provides a critical observability tool that validates the integrity of your usage pipeline by allowing you to sample raw events and verify their matching against active billable metrics. \n\nWhy event observability matters for revenue leakage:\nSilent revenue loss occurs when events are dro"
+        },
+        {
+          "info": {
+            "name": "Get purchased seats",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/purchasedSeats",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the number of seats purchased for the current period."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Default",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/billable-metrics",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new billable metric"
+        },
+        {
+          "info": {
+            "name": "Log events from integration services to Cloudwatch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/integrations/log",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Log events from integration services to Cloudwatch"
+        },
+        {
+          "info": {
+            "name": "List all packages",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/packages/list",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Lists all packages with details including name, aliases, duration, and terms. To view contracts on a specific package, use the `listContractsOnPackage` endpoint.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Set customer billable status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/setBillableStatus",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set a customer's billable status. This endpoint's availability is dependent on your client's configuration. Metronome 1.0 plan invoices are not supported."
+        },
+        {
+          "info": {
+            "name": "Archive a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to archive a customer while preserving auditability. Archiving a customer will automatically archive all contracts as of the current date and void all corresponding invoices. Use this endpoint if a customer is onboarded by mistake.\n\n### Usage guidelines:\n- Once a customer is archived, it cannot be unarchived.\n- Archived customers can still be viewed through the API or the UI for audit purposes. \n- Ingest aliases remain idempotent for archived customers. In order to reuse an ing"
+        },
+        {
+          "info": {
+            "name": "Get a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get detailed information for a specific customer by their Metronome ID. Returns customer profile data including name, creation date, ingest aliases, configuration settings, and custom fields. Use this endpoint to fetch complete customer details for billing operations or account management.\n\nNote: If searching for a customer billing configuration, use the `/getCustomerBillingConfigurations` endpoint.\n"
+        },
+        {
+          "info": {
+            "name": "List customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "ingest_alias",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list by ingest_alias"
+              },
+              {
+                "name": "customer_ids",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list by customer_id.  Up to 100 ids can be provided."
+              },
+              {
+                "name": "only_archived",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list to only return archived customers. By default, only active customers are returned."
+              },
+              {
+                "name": "salesforce_account_ids",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list by salesforce_account_id.  Up to 100 ids can be provided."
+              }
+            ]
+          },
+          "docs": "Gets a paginated list of all customers in your Metronome account. Use this endpoint to browse your customer base, implement customer search functionality, or sync customer data with external systems. Returns customer details including IDs, names, and configuration settings. Supports filtering and pagination parameters for efficient data retrieval.\n"
+        },
+        {
+          "info": {
+            "name": "Create a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new customer in Metronome and optionally the billing configuration (recommended) which dictates where invoices for the customer will be sent or where payment will be collected. \n\n### Use this endpoint to:\nExecute your customer provisioning workflows for either PLG motions, where customers originate in your platform, or SLG motions, where customers originate in your sales system.\n\n### Key response fields: \nThis end-point returns the `customer_id` created by the request. This id can be us"
+        },
+        {
+          "info": {
+            "name": "Create or update customer ingest aliases",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/setIngestAliases",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the ingest aliases for a customer. Use this endpoint to associate a Metronome customer with an internal ID for easier tracking between systems. Ingest aliases can be used in the `customer_id` field when sending usage events to Metronome. \n\n### Usage guidelines:\n- This call is idempotent and fully replaces the set of ingest aliases for the given customer.\n- Switching an ingest alias from one customer to another will associate all corresponding usage to the new customer.\n- Use multiple ingest"
+        },
+        {
+          "info": {
+            "name": "Update a customer name",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/setName",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the display name for a customer record. Use this to correct customer names, update business names after rebranding, or maintain accurate customer information for invoicing and reporting. Returns the updated customer object with the new name applied immediately across all billing documents and interfaces.\n"
+        },
+        {
+          "info": {
+            "name": "Update a customer configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/updateConfig",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update configuration settings for a specific customer, such as external system integrations (e.g., Salesforce account ID) and other customer-specific billing parameters. Use this endpoint to modify customer configurations without affecting core customer data like name or ingest aliases.\n"
+        },
+        {
+          "info": {
+            "name": "Fetch billing provider configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/getCustomerBillingProviderConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns all billing configurations previously set for the customer. Use during the contract provisioning process to fetch the `billing_provider_configuration_id` needed to set the contract billing configuration.\n"
+        },
+        {
+          "info": {
+            "name": "Fetch revenue system configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/getCustomerRevenueSystemConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns all revenue system configurations previously set for the customer.\n"
+        },
+        {
+          "info": {
+            "name": "Set billing provider configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/setCustomerBillingProviderConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a billing configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to collect payment in or send the invoice to. You can create multiple configurations per customer. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the billing configuration can then be associated to the customer's contrac"
+        },
+        {
+          "info": {
+            "name": "Archive billing provider configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/archiveCustomerBillingProviderConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deprecate an existing billing configuration for a customer to handle churn or billing and collection preference changes. Archiving a billing configuration takes effect immediately. If there are active contracts using the configuration, Metronome will archive the configuration on the contract and immediately stop metering to downstream systems.\n\n### Use this endpoint to:\n- Remove billing provider customer data and configurations when no longer needed\n- Clean up test or deprecated billing provider"
+        },
+        {
+          "info": {
+            "name": "Set revenue system configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/setCustomerRevenueSystemConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a revenue system configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to use for revenue workflows. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the revenue system configuration can then be associated to the customer's contract.\n- Add a new configuration to an existing customer.\n\n"
+        },
+        {
+          "info": {
+            "name": "Archive revenue system configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/archiveCustomerRevenueSystemConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive existing revenue system configurations for a customer. Archiving a revenue system configuration takes effect immediately.\n\n### Use this endpoint to:\n- Remove revenue system configurations when no longer needed\n- Clean up test or deprecated revenue system configurations\n\n### Key response fields:\nA successful response returns:\n- `customer_id`: The customer ID the configurations belong to\n- `customer_revenue_system_configuration_ids`: The archived configuration IDs\n"
+        },
+        {
+          "info": {
+            "name": "Get an embeddable customer dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/dashboards/getEmbeddableUrl",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome's billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.\n\n### Use this endpoint to:\n- Embed billing dashboards directly in your customer portal or admin interface\n- Provide self-service access to invoices, usage data, and credit balances\n- Build w"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Invoices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Invoice seats",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/invoices/invoice_seats",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an prorated invoice for a seat addition. As an alternative to this endpoint, you can elect to use automatic seat invoicing feature. Metronome will check for new seat usage every hour and automatically invoice for any new seats. For newly created active customer plans, there will be up to 4 hour delay before the first automatic seat invoice is generated.\n"
+        },
+        {
+          "info": {
+            "name": "List invoices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/invoices",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Invoice status, e.g. DRAFT, FINALIZED, or VOID"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter invoices by type. Defaults to returning all invoice types."
+              },
+              {
+                "name": "skip_zero_qty_line_items",
+                "value": "",
+                "type": "query",
+                "description": "If set, all zero quantity line items will be filtered out of the response"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc."
+              },
+              {
+                "name": "credit_type_id",
+                "value": "",
+                "type": "query",
+                "description": "Only return invoices for the specified credit type"
+              },
+              {
+                "name": "contract_id",
+                "value": "",
+                "type": "query",
+                "description": "Only return invoices for the specified contract"
+              },
+              {
+                "name": "starting_on",
+                "value": "",
+                "type": "query",
+                "description": "RFC 3339 timestamp (inclusive). Invoices will only be returned for billing periods that start at or after this time."
+              },
+              {
+                "name": "ending_before",
+                "value": "",
+                "type": "query",
+                "description": "RFC 3339 timestamp (exclusive). Invoices will only be returned for billing periods that end before this time."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of invoices for a specific customer, with flexible filtering options to narrow results by status, date range, credit type, and more. This endpoint provides a comprehensive view of a customer's billing history and current charges, supporting both real-time billing dashboards and historical reporting needs.\n\n### Use this endpoint to:\n- Display historical invoice details in customer-facing dashboards or billing portals.\n- Retrieve current month draft invoices to show cust"
+        },
+        {
+          "info": {
+            "name": "List invoice breakdowns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/invoices/breakdowns",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Invoice status, e.g. DRAFT or FINALIZED"
+              },
+              {
+                "name": "skip_zero_qty_line_items",
+                "value": "",
+                "type": "query",
+                "description": "If set, all zero quantity line items will be filtered out of the response"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned. For daily breakdowns, the response can return up to 35 days worth of breakdowns. For hourly breakdowns, the response can return up to 24 hours. If there are more results, a cursor to the next page is returned."
+              },
+              {
+                "name": "window_size",
+                "value": "",
+                "type": "query",
+                "description": "The granularity of the breakdowns to return. Defaults to day."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc."
+              },
+              {
+                "name": "credit_type_id",
+                "value": "",
+                "type": "query",
+                "description": "Only return invoices for the specified credit type"
+              },
+              {
+                "name": "starting_on",
+                "value": "2024-01-01T00:00:00Z",
+                "type": "query",
+                "description": "RFC 3339 timestamp. Breakdowns will only be returned for time windows that start on or after this time."
+              },
+              {
+                "name": "ending_before",
+                "value": "2024-02-01T00:00:00Z",
+                "type": "query",
+                "description": "RFC 3339 timestamp. Breakdowns will only be returned for time windows that end on or before this time."
+              }
+            ]
+          },
+          "docs": "Retrieve granular time-series breakdowns of invoice data at hourly or daily intervals. This endpoint transforms standard invoices into detailed timelines, enabling you to track usage patterns, identify consumption spikes, and provide customers with transparency into their billing details throughout the billing period.\n\n### Use this endpoint to:\n- Build usage analytics dashboards showing daily or hourly consumption trends\n- Identify peak usage periods for capacity planning and cost optimization\n-"
+        },
+        {
+          "info": {
+            "name": "Get an invoice PDF",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/invoices/:invoice_id/pdf",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              },
+              {
+                "name": "invoice_id",
+                "value": "6a37bb88-8538-48c5-b37b-a41c836328bd",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a PDF version of a specific invoice by its unique identifier. This endpoint generates a professionally formatted invoice document suitable for sharing with customers, accounting teams, or for record-keeping purposes.\n\n### Use this endpoint to:\n- Provide customers with downloadable or emailable copies of their invoices\n- Support accounting and finance teams with official billing documents\n- Maintain accurate records of billing transactions for audits and compliance\n\n### Key response deta"
+        },
+        {
+          "info": {
+            "name": "Get an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/invoices/:invoice_id",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              },
+              {
+                "name": "invoice_id",
+                "value": "6a37bb88-8538-48c5-b37b-a41c836328bd",
+                "type": "path"
+              },
+              {
+                "name": "skip_zero_qty_line_items",
+                "value": "",
+                "type": "query",
+                "description": "If set, all zero quantity line items will be filtered out of the response"
+              }
+            ]
+          },
+          "docs": "Retrieve detailed information for a specific invoice by its unique identifier. This endpoint returns comprehensive invoice data including line items, applied credits, totals, and billing period details for both finalized and draft invoices.\n\n### Use this endpoint to:\n- Display historical invoice details in customer-facing dashboards or billing portals.\n- Retrieve current month draft invoices to show customers their month-to-date spend.\n- Access finalized invoices for historical billing records a"
+        },
+        {
+          "info": {
+            "name": "List spend invoice breakdowns",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/invoices/spend-breakdowns",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              },
+              {
+                "name": "include_list_prices",
+                "value": "",
+                "type": "query",
+                "description": "If set, list prices will be returned for each contract usage and subscription line item."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Granularly analyze customer spend patterns by dynamically slicing and dicing costs across any dimension. This endpoint empowers you to break down spending by granular properties like user, organization, model, region, or any custom event property—even if these aren't the default groupings on your invoices. Unlike standard invoice breakdowns, this endpoint focuses purely on spend analysis, making helpful for building powerful cost analytics dashboards that show spend before credit/commit applicat"
+        },
+        {
+          "info": {
+            "name": "Void an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/invoices/void",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Permanently cancels an invoice by setting its status to voided, preventing collection and removing it from customer billing. Use this to correct billing errors, cancel incorrect charges, or handle disputed invoices that should not be collected. Returns the voided invoice ID with the status change applied immediately to stop any payment processing.\n"
+        },
+        {
+          "info": {
+            "name": "Regenerate an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/invoices/regenerate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint regenerates a voided invoice and recalculates the invoice based on up-to-date rates, available balances, and other fees regardless of the billing period.\n\n### Use this endpoint to:\nRecalculate an invoice with updated rate terms, available balance, and fees to correct billing disputes or discrepancies\n\n### Key response fields:\nThe regenerated invoice id, which is distinct from the previously voided invoice.\n\n### Usage guidelines:\nIf an invoice is attached to a contract with a billin"
+        },
+        {
+          "info": {
+            "name": "Preview events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/previewEvents",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Preview how a set of events will affect a customer's invoices. Generates draft invoices for a customer using their current contract configuration and the provided events.  This is useful for testing how new events will affect the customer's invoices before they are actually processed. Customers on contracts with SQL billable metrics are not supported.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Security",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get audit logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/auditLogs",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "starting_on",
+                "value": "",
+                "type": "query",
+                "description": "RFC 3339 timestamp of the earliest audit log to return. Cannot be used with 'next_page'."
+              },
+              {
+                "name": "ending_before",
+                "value": "",
+                "type": "query",
+                "description": "RFC 3339 timestamp (exclusive). Cannot be used with 'next_page'."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort order by timestamp, e.g. date_asc or date_desc. Defaults to date_asc."
+              },
+              {
+                "name": "resource_id",
+                "value": "",
+                "type": "query",
+                "description": "Optional parameter that can be used to filter which audit logs are returned. If you specify resource_id, you must also specify resource_type."
+              },
+              {
+                "name": "resource_type",
+                "value": "",
+                "type": "query",
+                "description": "Optional parameter that can be used to filter which audit logs are returned. If you specify resource_type, you must also specify resource_id."
+              }
+            ]
+          },
+          "docs": "Get a comprehensive audit trail of all operations performed in your Metronome account, whether initiated through the API, web interface, or automated processes. This endpoint provides detailed logs of who did what and when, enabling compliance reporting, security monitoring, and operational troubleshooting across all interaction channels.\n\n### Use this endpoint to:\n- Monitor all account activity for security and compliance purposes\n- Track configuration changes regardless of source (API, UI, or "
+        },
+        {
+          "info": {
+            "name": "Get services",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/services"
+          },
+          "docs": "Gets Metronome's service registry with associated IP addresses for security allowlisting and firewall configuration. Use this endpoint to maintain an up-to-date list of IPs that your systems should trust for Metronome communications. Returns service names and their current IP ranges, with new IPs typically appearing 30+ days before first use to ensure smooth allowlist updates.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Custom fields",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a custom field key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/addKey",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new custom field key for a given entity (e.g. billable metric, contract, alert).\n\nCustom fields are properties that you can add to Metronome objects to store metadata like foreign keys or other descriptors. This metadata can get transferred to or accessed by other systems to contextualize Metronome data and power business processes. For example, to service workflows like revenue recognition, reconciliation, and invoicing, custom fields help Metronome know the relationship between entit"
+        },
+        {
+          "info": {
+            "name": "Delete a custom field key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/removeKey",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes a custom field key from the allowlist for a specific entity type, preventing future use of that key across all instances of the entity. Existing values for this key on entity instances will no longer be accessible once the key is removed.\n"
+        },
+        {
+          "info": {
+            "name": "Set custom field values",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/setValues",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets custom field values on a specific Metronome entity instance. Overwrites existing values for matching keys while preserving other fields. All updates are transactional—either all values are set or none are. Custom field values are limited to 200 characters each.\n"
+        },
+        {
+          "info": {
+            "name": "Delete custom fields",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/deleteValues",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove specific custom field values from a Metronome entity instance by specifying the field keys to delete. Use this endpoint to clean up unwanted custom field data while preserving other fields on the same entity. Requires the entity type, entity ID, and array of keys to remove.\n"
+        },
+        {
+          "info": {
+            "name": "List custom field keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/listKeys",
+            "params": [
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve all your active custom field keys, with optional filtering by entity type (customer, contract, product, etc.). Use this endpoint to discover what custom field keys are available before setting values on entities or to audit your custom field configuration across different entity types.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/products/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve a product by its ID, including all metadata and historical changes.\n"
+        },
+        {
+          "info": {
+            "name": "List products",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/products/list",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a paginated list of all products in your organization with their complete configuration, version history, and metadata. By default excludes archived products unless explicitly requested via the `archive_filter` parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Create a product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/products/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new product object. Products in Metronome represent your company's individual product or service offerings. A Product can be thought of as the basic unit of a line item on the invoice. This is analogous to SKUs or items in an ERP system. Give the product a meaningful name as they will appear on customer invoices.\n"
+        },
+        {
+          "info": {
+            "name": "Update a product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/products/update",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a product's configuration while maintaining billing continuity for active customers. Use this endpoint to modify product names, metrics, pricing rules, and composite settings without disrupting ongoing billing cycles. Changes are scheduled using the starting_at timestamp, which must be on an hour boundary—set future dates to schedule updates ahead of time, or past dates for retroactive changes. Returns the updated product ID upon success. \n\n### Usage guidance: \n- Product type cannot be c"
+        },
+        {
+          "info": {
+            "name": "Archive a product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/products/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive a product. Any current rate cards associated with this product will continue to function as normal. However, it will no longer be available as an option for newly created rates. Once you archive a product, you can still retrieve it in the UI and API, but you cannot unarchive it.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Rate cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a rate schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/getRateSchedule",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "A rate card defines the prices that you charge for your products. Rate cards support scheduled changes over time, to allow you to easily roll out pricing changes and new product launches across your customer base. Use this endpoint to understand the rate schedule `starting_at` a given date, optionally filtering the list of rates returned based on product id or pricing group values. For example, you may want to display a schedule of upcoming price changes for a given product in your product exper"
+        },
+        {
+          "info": {
+            "name": "Get rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/getRates",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Understand the rate schedule at a given timestamp, optionally filtering the list of rates returned based on properties such as `product_id` and `pricing_group_values`. For example, you may want to display the current price for a given product in your product experience - use this endpoint to fetch that information from its source of truth in Metronome. \n\nIf you want to understand the rates for a specific customer's contract, inclusive of contract-level overrides, use the `getContractRateSchedule"
+        },
+        {
+          "info": {
+            "name": "Get a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Return details for a specific rate card including name, description, and aliases. This endpoint does not return rates - use the dedicated getRates or getRateSchedule endpoints to understand the rates on a rate card.\n"
+        },
+        {
+          "info": {
+            "name": "List rate cards",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/list",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List all rate cards. Returns rate card IDs, names, descriptions, aliases, and other details. To view the rates associated with a given rate card, use the getRates or getRateSchedule endpoints.\n"
+        },
+        {
+          "info": {
+            "name": "Create a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "In Metronome, the rate card is the central location for your pricing. Rate cards were built with new product launches and pricing changes in mind - you can update your products and pricing in one place, and that change will be automatically propagated across your customer cohorts. Most clients need only maintain one or a few rate cards within Metronome.\n\n### Use this endpoint to:\n- Create a rate card with a name and description\n- Define the rate card's single underlying fiat currency, and any nu"
+        },
+        {
+          "info": {
+            "name": "Update a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/update",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the metadata properties of an existing rate card, including its name, description, and aliases. This endpoint is designed for managing rate card identity and reference aliases rather than modifying pricing rates.\n\nModifies the descriptive properties and alias configuration of a rate card without affecting the underlying pricing rates or schedules. This allows you to update how a rate card is identified and referenced throughout your system.\n\n### Use this endpoint to:\n- Rate card renaming:"
+        },
+        {
+          "info": {
+            "name": "Archive a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Permanently disable a rate card by archiving it, preventing use in new contracts while preserving existing contract pricing. Use this when retiring old pricing models, consolidating rate cards, or removing outdated pricing structures. Returns the archived rate card ID and stops the rate card from appearing in contract creation workflows.\n"
+        },
+        {
+          "info": {
+            "name": "Add a rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/addRate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a new rate\n"
+        },
+        {
+          "info": {
+            "name": "Add rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/addRates",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add new rates\n"
+        },
+        {
+          "info": {
+            "name": "Set the rate card products order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/setRateCardProductsOrder",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of products on the rate card.\n"
+        },
+        {
+          "info": {
+            "name": "Update the rate card products order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/moveRateCardProducts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of specific products on the rate card by moving them relative to their current location.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Contracts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a contract (v1)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This is the v1 endpoint to get a contract. New clients should implement using the v2 endpoint.\n"
+        },
+        {
+          "info": {
+            "name": "List customer contracts (v1)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves all contracts for a specific customer, including pricing, terms, credits, and commitments. Use this to view a customer's contract history and current agreements for billing management. Returns contract details with optional ledgers and balance information. \n\n⚠️ Note: This is the legacy v1 endpoint - new integrations should use the v2 endpoint for enhanced features.\n"
+        },
+        {
+          "info": {
+            "name": "Create a contract",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Contracts define a customer's products, pricing, discounts, access duration, and billing configuration. Contracts serve as the central billing agreement for both PLG and Enterprise customers, you can automatically customers access to your products and services directly from your product or CRM.\n\n### Use this endpoint to:\n- PLG onboarding: Automatically provision new self-serve customers with contracts when they sign up.\n- Enterprise sales: Push negotiated contracts from Salesforce with custom pr"
+        },
+        {
+          "info": {
+            "name": "Amend a contract",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/amend",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Amendments will be replaced by Contract editing. New clients should implement using the `editContract` endpoint. Read more about the migration to contract editing [here](/guides/implement-metronome/migrate-amendments-to-edits/) and reach out to your Metronome representative for more details. Once contract editing is enabled, access to this endpoint will be removed.\n"
+        },
+        {
+          "info": {
+            "name": "Archive a contract",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Permanently end and archive a contract along with all its terms. Any draft invoices will be canceled, and all upcoming scheduled invoices will be voided–also all finalized invoices can optionally be voided. Use this in the event a contract was incorrectly created and needed to be removed from a customer.\n\n#### Impact on commits and credits:\nWhen archiving a contract, all associated commits and credits are also archived. For prepaid commits with active segments, Metronome automatically generates "
+        },
+        {
+          "info": {
+            "name": "Set a contract usage filter",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/setUsageFilter",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "If a customer has multiple contracts with overlapping rates, the usage filter routes usage to the appropriate contract based on a predefined group key. \n\nAs an example, imagine you have a customer associated with two projects. Each project is associated with its own contract. You can create a usage filter with group key `project_id`\non each contract, and route usage for `project_1` to the first contract and `project_2` to the second contract. \n\n### Use this endpoint to:\n- Support enterprise cont"
+        },
+        {
+          "info": {
+            "name": "Update invoice issue date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/updateInvoiceIssueDate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the issue date of a specific DRAFT invoice within a contract. Use this endpoint to reschedule when an invoice should be issued without affecting future billing cycles or the underlying contract terms. Only works with invoices still in DRAFT status, and the new issue date cannot be later than the contract's end date. \n\n### Usage guidelines:\nThis only changes the individual invoice's issue date - it does not modify the recurring invoice schedule of associated charges or commits. To update "
+        },
+        {
+          "info": {
+            "name": "Update the contract end date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/updateEndDate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update or add an end date to a contract. Ending a contract early will impact draft usage statements, truncate any terms, and remove upcoming scheduled invoices. Moving the date into the future will only extend the contract length. Terms and scheduled invoices are not extended. In-advance subscriptions will not be extended. Use this if a contract's end date has changed or if a perpetual contract ends.\n"
+        },
+        {
+          "info": {
+            "name": "Get the rate schedule for a contract",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/getContractRateSchedule",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "For a specific customer and contract, get the rates at a specific point in time. This endpoint takes the contract's rate card into consideration, including scheduled changes. It also takes into account overrides on the contract. \n\nFor example, if you want to show your customer a summary of the prices they are paying, inclusive of any negotiated discounts or promotions, use this endpoint. This endpoint only returns rates that are entitled.\n"
+        },
+        {
+          "info": {
+            "name": "Get subscription quantity history",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/getSubscriptionQuantityHistory",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get the history of subscription quantities and prices over time for a given `subscription_id`. This endpoint can be used to power an in-product experience where you show a customer their historical changes to seat count. Future changes are not included in this endpoint - use the `getContract` endpoint to view the future scheduled changes to a subscription's quantity. \n\nSubscriptions are used to model fixed recurring fees as well as seat-based recurring fees. To model changes to the number of sea"
+        },
+        {
+          "info": {
+            "name": "Get subscription seats history",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/getSubscriptionSeatsHistory",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get the history of subscription seats schedule over time for a given `subscription_id`. This endpoint provides information about seat assignments and total quantities for different time periods, allowing you to track how seat assignments have changed over time.\n\n### Use this endpoint to:\n- Track changes to seat assignments over time\n- Get seat schedule for a specific date using the `covering_date` parameter\n- Get seat schedule history with optional date range filtering using `starting_at` and `e"
+        },
+        {
+          "info": {
+            "name": "Schedule ProService invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/scheduleProServicesInvoice",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new scheduled invoice for Professional Services terms on a contract. This endpoint's availability is dependent on your client's configuration.\n"
+        },
+        {
+          "info": {
+            "name": "Create historical invoices",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/createHistoricalInvoices",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create historical usage invoices for past billing periods on specific contracts. Use this endpoint to generate retroactive invoices with custom usage line items, quantities, and date ranges. Supports preview mode to validate invoice data before creation. Ideal for billing migrations or correcting past billing periods.\n"
+        },
+        {
+          "info": {
+            "name": "Create a customer and provision a contract.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/composite/createCustomerWithContract",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new customer and provision a contract. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Create a package",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/packages/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a package that defines a set of reusable, time-relative contract terms that can be used across cohorts of customers. Packages provide an abstraction layer on top of rate cards to provide an easy way to provision customers with standard pricing. \n\n### **Use this endpoint to:**\n- Model standard pay-as-you-go pricing packages that can be easily reused across customers\n- Define standardized contract terms and discounting for sales-led motions\n- Set aliases for the package to facilitate easy p"
+        },
+        {
+          "info": {
+            "name": "List contracts associated with a package",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/packages/listContractsOnPackage",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "For a given package, returns all contract IDs and customer IDs associated with the package over a specific time period. \n\n### Use this endpoint to:\n- Understand which customers are provisioned on a package at any given time for internal cohort management\n- Manage customer migrations to a new package. For example, to migrate all active customers to a new package, call this endpoint, end contracts, and provision customers on a new package.\n\n### **Usage guidelines:**\nUse the **`starting_at`**, **`c"
+        },
+        {
+          "info": {
+            "name": "Get a contract (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Gets the details for a specific contract, including contract term, rate card information, credits and commits, and more. \n\n### Use this endpoint to: \n- Check the duration of a customer's current contract\n- Get details on contract terms, including access schedule amounts for commitments and credits\n- Understand the state of a contract at a past time. As you can evolve the terms of a contract over time through editing, use the `as_of_date` parameter to view the full contract configuration as of th"
+        },
+        {
+          "info": {
+            "name": "Get contract edit history",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/getEditHistory",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List all the edits made to a contract over time. In Metronome, you can edit a contract at any point after it's created to fix mistakes or reflect changes in terms. Metronome stores a full history of all edits that were ever made to a contract, whether through the UI, `editContract` endpoint, or other endpoints like `updateContractEndDate`. \n\n### Use this endpoint to: \n- Understand what changes were made to a contract, when, and by who\n\n### Key response fields: \n- An array of every edit ever made"
+        },
+        {
+          "info": {
+            "name": "List customer contracts (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "For a given customer, lists all of their contracts in chronological order. \n\n### Use this endpoint to:\n- Check if a customer is provisioned with any contract, and at which tier\n- Check the duration and terms of a customer's current contract\n- Power a page in your end customer experience that shows the customer's history of tiers (e.g. this customer started out on the Pro Plan, then downgraded to the Starter plan).\n\n### Usage guidelines:\nUse the `starting_at`, `covering_date`, and `include_archiv"
+        },
+        {
+          "info": {
+            "name": "Edit a contract",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/edit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The ability to edit a contract helps you react quickly to the needs of your customers and your business.\n\n### Use this endpoint to:\n- Encode mid-term commitment and discount changes\n- Fix configuration mistakes and easily roll back packaging changes\n\n### Key response fields:\n- The `id` of the edit\n- Complete edit details. For example, if you edited the contract to add new overrides and credits, you will receive the IDs of those overrides and credits in the response.\n\n### Usage guidelines:\n- When"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Credits and commits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add a manual balance entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/addManualBalanceLedgerEntry",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Manually adjust the available balance on a commit or credit. This entry is appended to the commit ledger as a new event. Optionally include a description that provides the reasoning for the entry.\n\n### Use this endpoint to:\n- Address incorrect usage burn-down caused by malformed usage or invalid config\n- Decrease available balance to account for outages where usage may have not been tracked or sent to Metronome\n- Issue credits to customers in the form of increased balance on existing commit or c"
+        },
+        {
+          "info": {
+            "name": "List commits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCommits/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve all commit agreements for a customer, including both prepaid and postpaid commitments. This endpoint provides comprehensive visibility into contractual spending obligations, enabling you to track commitment utilization and manage customer contracts effectively.\n\n### Use this endpoint to:\n- Display commitment balances and utilization in customer dashboards\n- Track prepaid commitment drawdown and remaining balances\n- Monitor postpaid commitment progress toward minimum thresholds\n- Build c"
+        },
+        {
+          "info": {
+            "name": "Create a commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCommits/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later). \n\nNote: In most cases, you should add commitments directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to establish customer-level spending commitments that can be applied across mult"
+        },
+        {
+          "info": {
+            "name": "Update the commit end date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCommits/updateEndDate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Shortens the end date of a prepaid commit to terminate it earlier than originally scheduled. Use this endpoint when you need to cancel or reduce the duration of an existing prepaid commit. Only works with prepaid commit types and can only move the end date forward (earlier), not extend it. \n\n### Usage guidelines:\nTo extend commit end dates or make other comprehensive edits, use the 'edit commit' endpoint instead.\n"
+        },
+        {
+          "info": {
+            "name": "Release external payment gate threshold commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/commits/threshold-billing/release",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "If using threshold billing with an external payment gateway, Metronome does not facilitate the payment gating process on behalf of the client. As a result, clients must facilitate the transaction themselves. This end-point is used to either release or cancel the commit pending on the outcome of the external payment attempt.\n\nTo release the commit, you must pass the `workflow_id` provided in the `payment_gate.external_initiate` webhook.\n\n### Use this endpoint to:\nFacilitate payment gating workflo"
+        },
+        {
+          "info": {
+            "name": "Disable trueup for commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/commits/disableTrueup",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Disable the true-up invoice for a postpaid commit. If used, the true-up invoice will not be generated.\n\nFor postpaid commits, usage during the access period is paid for in arrears. If the total amount paid during the access period is less than the committed amount, there's a final true-up invoice on the invoice_date.\n"
+        },
+        {
+          "info": {
+            "name": "List credits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCredits/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve a detailed list of all credits available to a customer, including promotional credits and contract-specific credits. This endpoint provides comprehensive visibility into credit balances, access schedules, and usage rules, enabling you to build credit management interfaces and track available funding.\n\n### Use this endpoint to:\n- Display all available credits in customer billing dashboards\n- Show credit balances and expiration dates\n- Track credit usage history with optional ledger detai"
+        },
+        {
+          "info": {
+            "name": "Create a credit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCredits/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates customer-level credits that provide spending allowances or free credit balances for customers across their Metronome usage. Note: In most cases, you should add credits directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to provision credits directly at the customer level that can be applied across multiple contracts or scoped to specific contracts. Customer-level credits are ideal for:\n- Customer onboa"
+        },
+        {
+          "info": {
+            "name": "Update the credit end date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCredits/updateEndDate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Shortens the end date of an existing customer credit to terminate it earlier than originally scheduled. Only allows moving end dates forward (earlier), not extending them. \n\nNote: To extend credit end dates or make comprehensive edits, use the 'edit credit' endpoint instead.\n"
+        },
+        {
+          "info": {
+            "name": "List balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerBalances/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve a comprehensive view of all available balances (commits and credits) for a customer. This endpoint provides real-time visibility into prepaid funds, postpaid commitments, promotional credits, and other balance types that can offset usage charges, helping you build transparent billing experiences.\n\n### Use this endpoint to:\n- Display current available balances in customer dashboards\n- Verify available funds before approving high-usage operations\n- Generate balance reports for finance tea"
+        },
+        {
+          "info": {
+            "name": "Get the net balance of a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerBalances/getNetBalance",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve the combined current balance across any grouping of credits and commits for a customer in a single API call.\n- Display real-time available balance to customers in billing dashboards\n- Build finance dashboards showing credit utilization across customer segments\n- Validate expected vs. actual balance during billing reconciliation\n\n### Key response fields:\n- `balance`: The combined net balance available to use at this moment across all matching commits and credits\n- `credit_type_id`: The c"
+        },
+        {
+          "info": {
+            "name": "List seat balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/seatBalances/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve detailed balance for seat-based credits and commits from the contract's subscriptions, broken down by individual seats.\n\n### Use this endpoint to:\n- Display per-seat balance information in customer dashboards\n- Filter balance data by subscription or specific seats\n\n### Key response fields:\nAn array of seat balance objects containing:\n- Seat id\n- Balance: current total balance across all commits and credits\n\n### Usage guidelines:\n- Date filtering: use `covering_date` OR `starting_at`/`en"
+        },
+        {
+          "info": {
+            "name": "Edit a commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/commits/edit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit specific details for a contract-level or customer-level commit. Use this endpoint to modify individual commit access schedules, invoice schedules, applicable products, invoicing contracts, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated.\n- If a commit's invoice schedule item is associated with a finalized invoice, you cannot remove or update the i"
+        },
+        {
+          "info": {
+            "name": "Edit a credit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/credits/edit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit details for a contract-level or customer-level credit. \n\n### Use this endpoint to: \n- Extend the duration or the amount of an existing free credit like a trial \n- Modify individual credit access schedules, applicable products, priority, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated. \n- You cannot remove an access schedule segment that was applie"
+        },
+        {
+          "info": {
+            "name": "Archive a commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/commits/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive a contract-level or customer-level commit. Use this endpoint to deactivate a commit while preserving historical records. You will not be able to archive a commit until all of the finalized usage invoices the commit has been applied to are voided, and all of the finalized invoices for commit payment have been voided. \n\nExample workflow: \nThe customer was provisioned a prepaid commit erroneously. It was applied to their most recent finalized usage invoice.\n- First, void the finalized invoi"
+        },
+        {
+          "info": {
+            "name": "Archive a credit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/credits/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive a contract-level or customer-level credit. Use this endpoint to deactivate a credit while preserving historical records. You will not be able to archive a credit until all of the finalized invoices the credit has been applied to are voided. \n\nExample workflow: \nThe customer was granted a free credit erroneously. It was applied to their most recent finalized invoice.\n- First, void the finalized invoice that the credit was applied to. \n- Then, use the archiveCredit endpoint to deactivate t"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Named schedules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a customer's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/getNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a named schedule for the given customer. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Update a customer's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/updateNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a named schedule for the given customer. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Get a contract's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/getNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a named schedule for the given contract. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "List contract named schedules",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/listNamedSchedules",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List contract-level named schedules for a customer, optionally scoped to a single contract."
+        },
+        {
+          "info": {
+            "name": "Update a contract's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/updateNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a named schedule for the given contract. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Get a rate card's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/getNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a named schedule for the given rate card. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Update a rate card's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/updateNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a named schedule for the given rate card. This endpoint's availability is dependent on your client's configuration."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Threshold billing",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Update a customer's active recharge or prepaid balance threshold config",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/threshold-billing/update-active-recharge-config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "A unified API for updating prepaid balance threshold configs for clients who are migrating customers from Metronome 1.0 and 2.0. Customer can only have one active config across all Plans or Contracts."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Packages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a package",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/packages/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Gets the details for a specific package, including name, aliases, duration, and terms. Use this endpoint to understand a package’s alias schedule, or display a specific package’s details to end customers.\n"
+        },
+        {
+          "info": {
+            "name": "Archive a package",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/packages/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive a package. Archived packages cannot be used to create new contracts. However, existing contracts associated with the package will continue to function as normal. Once you archive a package, you can still retrieve it in the UI and API, but you cannot unarchive it.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Attempt payment for an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/payments/attempt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Trigger a new attempt by canceling any existing attempts for this invoice and creating a new Payment. This will trigger another attempt to charge the Customer's configured Payment Gateway. \nPayment can only be attempted if all of the following are true:\n  - The Metronome Invoice is finalized\n  - PLG Invoicing is configured for the Customer\n  - You cannot attempt payments for invoices that have already been `paid` or `voided`.\n\nAttempting to payment on an ineligible Invoice or Customer will resul"
+        },
+        {
+          "info": {
+            "name": "Cancel a payment for an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/payments/cancel",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancel an existing payment attempt for an invoice.\n"
+        },
+        {
+          "info": {
+            "name": "List payments for an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/payments/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Fetch all payment attempts for the given invoice.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Notifications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an offset lifecycle event notification configuration. The lifecycle event type is inferred from the policy.type field.\n"
+        },
+        {
+          "info": {
+            "name": "Get an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve a specific offset lifecycle event notification configuration by ID."
+        },
+        {
+          "info": {
+            "name": "List offset lifecycle event notification configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/offset/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List offset lifecycle event notification configurations. These are user-created notifications that trigger at a specified time offset relative to lifecycle events. Returns a maximum of 400 results per request.\n"
+        },
+        {
+          "info": {
+            "name": "List system notification event types",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/system/list"
+          },
+          "docs": "List available system lifecycle event types for notifications. These are read-only event types that can be used when creating offset notifications."
+        },
+        {
+          "info": {
+            "name": "Edit an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/edit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit an existing offset lifecycle event notification configuration."
+        },
+        {
+          "info": {
+            "name": "Archive an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive an offset lifecycle event notification configuration. Archived notifications are not processed.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
