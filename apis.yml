@@ -47,7 +47,7 @@ common:
     url: https://docs.metronome.com/
   - type: StatusPage
     url: https://status.metronome.com/
-  - type: LLMsTxt
+  - type: LlmsText
     url: https://docs.metronome.com/llms.txt
 maintainers:
   - FN: Kin Lane
