@@ -37,6 +37,12 @@ apis:
       - type: OpenAPI
         url: https://raw.githubusercontent.com/api-evangelist/metronome/refs/heads/main/openapi/metronome-openapi.json
 common:
+  - type: TrustCenter
+    url: security/metronome-trust-center.yml
+  - type: DomainSecurity
+    url: security/metronome-domain-security.yml
+  - type: Authentication
+    url: authentication/metronome-authentication.yml
   - type: GitHubOrganization
     url: https://github.com/Metronome-Industries
   - type: LinkedIn
@@ -49,6 +55,8 @@ common:
     url: https://status.metronome.com/
   - type: LlmsText
     url: https://docs.metronome.com/llms.txt
+  - url: https://metronome.com/blog
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
