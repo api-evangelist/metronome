@@ -1,0 +1,652 @@
+openapi: 3.0.1
+info:
+  title: Metronome Alerts Settings API
+  version: 1.0.0
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+servers:
+- url: https://api.metronome.com
+  description: Production server
+security:
+- bearerAuth: []
+tags:
+- name: Settings
+  description: Use these endpoints to configure a billing API key, a webhook secret, or invoice finalization behavior.
+paths:
+  /v1/client/billing-config/{billing_provider_type}/apiKey:
+    post:
+      x-mint:
+        groups:
+        - ff:prepaid-credits
+      deprecated: true
+      description: '(**Deprecated:** use [Create Stripe billing settings](#operation/createStripeBillingSettings) instead) Sets the api key for the billing provider. This is used for sending invoices to the billing provider. For example, if the billing provider is Stripe, this is the restricted key.
+
+        '
+      operationId: setBillingProviderApiKey-v1
+      summary: Set the billing provider API key
+      parameters:
+      - $ref: '#/components/parameters/BillingProviderSettingsType'
+      tags:
+      - Settings
+      requestBody:
+        description: The billing provider API key to set.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetBillingProviderApiKeyPayload'
+            example:
+              api_key: pk_test_51J5Z2n2eZvKYlo2C0Z1Z2n2e
+      responses:
+        '200':
+          description: Success
+  /v1/client/config/webhook_secret:
+    post:
+      x-mint:
+        groups:
+        - ff:prepaid-credits
+      description: 'Sets the webhook secret for the client.  This is used for validating webhook messages send to the external Metronome webhook endpoint.
+
+        '
+      operationId: setClientWebhookSecret-v1
+      summary: Set the client webhook secret
+      tags:
+      - Settings
+      requestBody:
+        description: The client webhook secret to set.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetClientWebhookSecretPayload'
+            example:
+              webhook_secret: whsec_example4d8144d2098bdb3e5f3a95bd97a3226c4d84d97637f43a
+      responses:
+        '200':
+          description: Success
+  /v1/client/billing-config/stripe:
+    post:
+      x-mint:
+        groups:
+        - ff:prepaid-credits
+      description: "Create billing settings for Stripe.\n\nIf you plan on using prepaid credit grants and recharges, your Stripe API key needs the following access:\n\n- Read & Write\n   - Invoices\n   - PaymentIntents\n- Read only:\n   - PaymentMethods\n   - Customers"
+      operationId: createStripeBillingSettings-v1
+      summary: Create Stripe billing settings
+      tags:
+      - Settings
+      requestBody:
+        description: Stripe billing settings
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStripeBillingSettingsPayload'
+            example:
+              stripe_api_key: pk_test_51J5Z2n2eZvKYlo2C0Z1Z2n2e
+      responses:
+        '200':
+          description: Success
+    patch:
+      x-mint:
+        groups:
+        - ff:prepaid-credits
+      description: 'Apply partial updates to billing settings for Stripe. Individual settings can be deleted by specifying values as `null`.
+
+        '
+      operationId: updateStripeBillingSettings-v1
+      summary: Update Stripe billing settings
+      tags:
+      - Settings
+      requestBody:
+        description: Stripe billing settings
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStripeBillingSettingsPayload'
+            example:
+              anrok_api_key: 9fe987ce80e355acde9d1e44cf1b46ff
+      responses:
+        '200':
+          description: Success
+    delete:
+      x-mint:
+        groups:
+        - ff:prepaid-credits
+      description: 'Delete all billing settings for Stripe
+
+        '
+      operationId: deleteStripeBillingSettings-v1
+      summary: Delete Stripe billing settings
+      tags:
+      - Settings
+      responses:
+        '200':
+          description: Success
+  /v1/credit-types/list:
+    get:
+      description: 'List all pricing units. All fiat currency types (for example, USD or GBP) will be included, as well as any custom pricing units that were configured. Custom pricing units can be used to charge for usage in a non-fiat pricing unit, for example AI credits.
+
+
+        Note: The USD (cents) pricing unit is 2714e483-4ff1-48e4-9e25-ac732e8f24f2.
+
+        '
+      operationId: listCreditTypes-v1
+      summary: List pricing units
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/NextPage'
+      tags:
+      - Settings
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - next_page
+                properties:
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                        is_currency:
+                          type: boolean
+                  next_page:
+                    type: string
+                    nullable: true
+              example:
+                data:
+                - id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
+                  name: USD (cents)
+                  is_currency: true
+                - id: fa2f1b3d-9d52-4951-a099-25991fd394d6
+                  name: cloud consumption units
+                  is_currency: false
+                next_page: null
+  /v1/setUpBillingProvider:
+    post:
+      summary: Set up account-level billing provider
+      operationId: setUpBillingProvider-v1
+      description: 'Set up account-level configuration for a billing provider. Once configured, individual contracts across customers can be mapped to this configuration using the returned delivery_method_id.
+
+        '
+      tags:
+      - Settings
+      requestBody:
+        description: Billing provider, delivery method and configuration to insert
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - billing_provider
+              - delivery_method
+              - configuration
+              properties:
+                billing_provider:
+                  $ref: '#/components/schemas/GABillingProviderType'
+                  description: The billing provider set for this configuration.
+                delivery_method:
+                  $ref: '#/components/schemas/GABillingProviderDeliveryMethodType'
+                  description: The method to use for delivering invoices for this configuration.
+                configuration:
+                  type: object
+                  additionalProperties: true
+                  description: Account-level configuration for the billing provider. The structure of this object is specific to the billing provider and delivery provider combination. See examples below.
+            examples:
+              aws:
+                value:
+                  billing_provider: aws_marketplace
+                  delivery_method: direct_to_billing_provider
+                  configuration:
+                    aws_external_id: 47b4f6b7-e297-42e8-b175-331d933b402c
+                    aws_iam_role_arn: arn:aws:iam::test
+              azure:
+                value:
+                  billing_provider: azure_marketplace
+                  delivery_method: direct_to_billing_provider
+                  configuration:
+                    azure_client_id: client_id
+                    raw_azure_client_secret: secret
+                    azure_tenant_id: tenant_id
+              gcp:
+                value:
+                  billing_provider: gcp_marketplace
+                  delivery_method: direct_to_billing_provider
+                  configuration:
+                    gcp_provider_id: provider_id
+                    raw_gcp_workload_identity_federation_config: '{"wif": "config"}'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - delivery_method_id
+                    properties:
+                      delivery_method_id:
+                        type: string
+                        format: uuid
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/upsertAnrokApiToken:
+    post:
+      summary: Upsert Anrok API token
+      operationId: upsertAnrokApiToken-v1
+      description: 'Set the Anrok API token for some specified delivery_method_ids, which can be found in the `/listConfiguredBillingProviders` response. This maps the Anrok key to the appropriate billing entity. These API tokens are only used for Threshold Billing workflows today.
+
+        '
+      tags:
+      - Settings
+      requestBody:
+        description: Set the Anrok API token for some specified delivery_method_ids
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - delivery_method_ids
+              - anrok_api_token
+              properties:
+                delivery_method_ids:
+                  type: array
+                  items:
+                    type: string
+                  format: uuid
+                  description: The delivery method IDs of the billing provider configurations to update, can be found in the response of the `/listConfiguredBillingProviders` endpoint.
+                anrok_api_token:
+                  type: string
+                  description: The Anrok API token that is added to the configuration.
+            example:
+              delivery_method_ids:
+              - 9a906ebb-fbc7-42e8-8e29-53bfd2db3aca
+              anrok_api_token: s123/sak456/secret.789
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - success
+                    properties:
+                      success:
+                        type: boolean
+                        description: Whether the update was successful.
+              example:
+                data:
+                  success: true
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/upsertAvalaraCredentials:
+    post:
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Upsert Avalara credentials
+      operationId: upsertAvalaraCredentials-v1
+      description: 'Set the Avalara credentials for some specified `delivery_method_ids`, which can be found in the `/listConfiguredBillingProviders` response. This maps the Avalara credentials to the appropriate billing entity. These credentials are only used for PLG Invoicing today.
+
+        '
+      tags:
+      - Settings
+      requestBody:
+        description: Set the Avalara credentials for some specified `delivery_method_ids`
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - delivery_method_ids
+              - avalara_environment
+              - avalara_username
+              - avalara_password
+              properties:
+                delivery_method_ids:
+                  type: array
+                  items:
+                    type: string
+                  format: uuid
+                  description: The delivery method IDs of the billing provider configurations to update, can be found in the response of the `/listConfiguredBillingProviders` endpoint.
+                avalara_environment:
+                  type: string
+                  enum:
+                  - PRODUCTION
+                  - SANDBOX
+                  description: The Avalara environment to use (SANDBOX or PRODUCTION).
+                avalara_username:
+                  type: string
+                  description: The username for the Avalara account.
+                avalara_password:
+                  type: string
+                  description: The password for the Avalara account.
+                commit_transactions:
+                  type: boolean
+                  description: Commit transactions if you want Metronome tax calculations used for reporting and tax filings.
+            example:
+              delivery_method_ids:
+              - 9a906ebb-fbc7-42e8-8e29-53bfd2db3aca
+              avalara_environment: PRODUCTION
+              avalara_username: test@metronome.com
+              avalara_password: my_password_123
+              commit_transactions: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                x-stainless-empty-object: true
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/rotateDeltaStreamSecret:
+    post:
+      x-mint:
+        groups:
+        - ff:delta-stream
+      description: 'Rotate the HMAC secret used to sign delta stream messages. The new secret will be used for all messages after the `starting_on` time. If a `starting_on` time is not provided, the new secret will be used in 10 minutes.
+
+        If this endpoint is called while a rotation is already in progress, the second call will replace the existing rotation and the previous rotation will be cancelled.
+
+        '
+      operationId: rotateDeltaStreamSecret-v1
+      summary: Rotate the HMAC secret used to sign delta stream messages
+      tags:
+      - Settings
+      requestBody:
+        description: Rotation options.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                starting_on:
+                  type: string
+                  format: date-time
+                  description: When the new secret shold start being used, scheduled up to a month ahead of time. If not provided, deefaults to 10 minutes from now.
+            example:
+              starting_on: '2024-04-19T06:00:00Z'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - secret
+                - starting_on
+                properties:
+                  secret:
+                    type: string
+                    description: The new secret
+                  starting_on:
+                    type: string
+                    format: date-time
+                    description: When the new secret will start being used
+              example:
+                secret: sk_bd5c0595fad45d8fc5dcf257a998ac8d9de6ee783ebd4571624243aa3c2aed48
+                starting_on: '2024-04-19T06:00:00Z'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/listConfiguredBillingProviders:
+    post:
+      description: 'Lists all configured billing providers and their delivery method configurations for your account. Returns provider details, delivery method IDs, and configuration settings needed for mapping individual customer contracts to billing integrations.
+
+        '
+      operationId: listConfiguredBillingProviders-v1
+      summary: List account-level billing providers
+      tags:
+      - Settings
+      requestBody:
+        description: Optional cursor to the next page of results
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                next_page:
+                  type: string
+                  format: uuid
+                  nullable: true
+                  description: The cursor to the next page of results
+            example:
+              next_page: af26878a-de62-4a0d-9b77-3936f7c2b6d6
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillingProviderDeliveryMethod'
+                  next_page:
+                    type: string
+                    format: uuid
+                    nullable: true
+              example:
+                data:
+                - billing_provider: stripe
+                  delivery_method_id: 4422e46f-b374-4159-97e3-300208cdb2e2
+                  delivery_method: direct_to_billing_provider
+                  delivery_method_configuration:
+                    stripe_account_id: acct_1P6FywIkTQSg6Mm3
+                    leave_invoices_in_draft: false
+                    skip_zero_dollar_invoices: false
+                    export_invoice_sub_line_items: false
+                    include_zero_quantity_sub_line_items: true
+                    stripe_invoice_quantity_always_string: false
+                    set_effective_at_date_to_inclusive_period_end: false
+                - billing_provider: aws_marketplace
+                  delivery_method_id: 5b9e3072-415b-4842-94f0-0b6700c8b6be
+                  delivery_method: direct_to_billing_provider
+                  delivery_method_configuration:
+                    aws_external_id: 47b4f6b7-e297-42e8-b175-331d933b402c
+                    aws_iam_role_arn: arn:aws:iam::123456789012:role/MetronomeRole
+                    aws_region: us-east-1
+                next_page: null
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    BillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - tackle
+      - aws_sns
+    BillingProviderSettingsType:
+      type: string
+      enum:
+      - stripe
+    CreateStripeBillingSettingsPayload:
+      type: object
+      properties:
+        stripe_api_key:
+          type: string
+          description: API key used to call the Stripe APIs
+        anrok_api_key:
+          type: string
+          description: API key used to call the Anrok APIs
+          nullable: true
+      required:
+      - stripe_api_key
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    SetClientWebhookSecretPayload:
+      required:
+      - webhook_secret
+      type: object
+      properties:
+        webhook_secret:
+          type: string
+          description: The client webhook secret used to verify webhook results
+    GABillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - azure_marketplace
+      - gcp_marketplace
+    SetBillingProviderApiKeyPayload:
+      required:
+      - api_key
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: API key to set for the billing provider.
+    BillingProviderDeliveryMethod:
+      type: object
+      required:
+      - billing_provider
+      - delivery_method_id
+      - delivery_method
+      - delivery_method_configuration
+      properties:
+        billing_provider:
+          $ref: '#/components/schemas/BillingProviderType'
+          description: The billing provider set for this configuration.
+        delivery_method_id:
+          type: string
+          format: uuid
+          description: ID of the delivery method to use for this customer.
+        delivery_method:
+          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
+          description: The method to use for delivering invoices to this customer.
+        delivery_method_configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the delivery method. The structure of this object is specific to the delivery method. Some configuration may be omitted for security reasons.
+    GABillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - aws_sns
+    UpdateStripeBillingSettingsPayload:
+      type: object
+      properties:
+        stripe_api_key:
+          type: string
+          description: API key used to call the Stripe APIs
+        anrok_api_key:
+          type: string
+          description: API key used to call the Anrok APIs
+          nullable: true
+    BillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - stripe
+      - netsuite
+      - custom
+      - azure_marketplace
+      - quickbooks_online
+      - workday
+      - gcp_marketplace
+      - metronome
+      x-mint-enum:
+        netsuite:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        custom:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        workday:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        gcp_marketplace:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+  parameters:
+    BillingProviderSettingsType:
+      name: billing_provider_type
+      in: path
+      description: The billing provider (currently only Stripe is supported).
+      required: true
+      schema:
+        $ref: '#/components/schemas/BillingProviderSettingsType'
+      example: stripe
+    PageLimit:
+      name: limit
+      in: query
+      description: Max number of results that should be returned
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

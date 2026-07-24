@@ -1,0 +1,612 @@
+openapi: 3.0.1
+info:
+  title: Metronome Alerts API
+  version: 1.0.0
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+servers:
+- url: https://api.metronome.com
+  description: Production server
+security:
+- bearerAuth: []
+tags:
+- name: Alerts
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+paths:
+  /v1/alerts/archive:
+    post:
+      description: 'Permanently disable a threshold notification and remove it from active monitoring across all customers. Archived threshold notifications stop evaluating immediately and can optionally release their uniqueness key for reuse in future threshold notification configurations.
+
+
+        ### Use this endpoint to:
+
+        - Decommission threshold notifications that are no longer needed
+
+        - Clean up test or deprecated threshold notification configurations
+
+        - Free up uniqueness keys for reuse with new threshold notifications
+
+        - Stop threshold notification evaluations without losing historical configuration data
+
+        - Disable outdated monitoring rules during pricing model transitions
+
+
+        ### Key response fields:
+
+        - data: Object containing the archived threshold notification''s ID
+
+
+        ### Usage guidelines:
+
+        - Irreversible for evaluation: Archived threshold notifications cannot be re-enabled; create a new threshold notification to resume monitoring
+
+        - Uniqueness key handling: Set `release_uniqueness_key` : `true` to reuse the key in future threshold notifications
+
+        - Immediate effect: Threshold notification evaluation stops instantly across all customers
+
+        - Historical preservation: Archive operation maintains threshold notification history and configuration for compliance and auditing
+
+        '
+      operationId: archiveAlert-v1
+      summary: Archive a threshold notification
+      tags:
+      - Alerts
+      requestBody:
+        description: The ID of the threshold notification to archive
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArchiveAlertPayload'
+            example:
+              id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/alerts/create:
+    post:
+      description: "Create a new threshold notification to monitor customer spending, balances, and billing metrics in real-time. Metronome's notification system provides industry-leading speed with immediate evaluation capabilities, enabling you to proactively manage customer accounts and prevent revenue leakage.\n\nThis endpoint creates configurable threshold notifications that continuously monitor various billing thresholds including spend limits, credit balances, commitment utilization, and invoice totals. Threshold notifications can be configured globally for all customers or targeted to specific customer accounts.\n\n### Use this endpoint to:\n- Proactively monitor customer spending patterns to prevent unexpected overages or credit exhaustion\n- Automate notifications when customers approach commitment limits or credit thresholds\n- Enable real-time intervention for accounts at risk of churn or payment issues\n- Scale billing operations by automating threshold-based workflows and notifications\n\n### Key response fields: \nA successful response returns a CustomerAlert object containing:\n\n- The threshold notification configuration with its unique ID and current status\n- The customer's evaluation status (ok, in_alarm, or evaluating)\n- Threshold notification metadata including type, threshold values, and update timestamps\n\n### Usage guidelines:\n- Immediate evaluation: Set `evaluate_on_create` : `true` (default) for instant evaluation against existing customers\n- Uniqueness constraints: Each threshold notification must have a unique `uniqueness_key` within your organization. Use `release_uniqueness_key` : `true` when archiving to reuse keys\n- Notification type requirements: Different threshold notification types require specific fields (e.g., `billable_metric_id` for usage notifications, `credit_type_id` for credit-based threshold notifications)\n- Webhook delivery: Threshold notifications trigger webhook notifications for real-time integration with your systems. Configure webhook endpoints before creating threshold notifications\n- Performance at scale: Metronome's event-driven architecture processes threshold notification evaluations in real-time as usage events stream in, unlike competitors who rely on periodic polling or batch evaluation cycles\n"
+      operationId: createAlert-v1
+      summary: Create a threshold notification
+      tags:
+      - Alerts
+      requestBody:
+        description: The details of the threshold notification to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerAlertPayload'
+            example:
+              alert_type: spend_threshold_reached
+              credit_type_id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
+              name: $100 spend threshold reached
+              threshold: 10000
+              customer_id: 4db51251-61de-4bfe-b9ce-495e244f3491
+              credit_grant_type_filters:
+              - enterprise
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: 58fb0650-e54a-4d17-93cb-ba8e56c32c65
+  /v1/customer-alerts/get:
+    post:
+      description: "Retrieve the real-time evaluation status for a specific threshold notification-customer pair. This endpoint provides instant visibility into whether a customer has triggered a threshold notification condition, enabling you to monitor account health and take proactive action based on current threshold notification states.\n\n### Use this endpoint to:\n- Check if a specific customer is currently violating an threshold notification (`in_alarm` status)\n- Verify threshold notification configuration details and threshold values for a customer\n- Monitor the evaluation state of newly created or recently modified threshold notification\n- Build dashboards or automated workflows that respond to specific threshold notification conditions\n- Validate threshold notification behavior before deploying to production customers\n- Integrate threshold notification status checks into customer support tools or admin interfaces\n\n### Key response fields: \nA CustomerAlert object containing:\n\n- `customer_status`: The current evaluation state\n\n- `ok` - Customer is within acceptable thresholds\n- `in_alarm` - Customer has breached the threshold for the notification\n- `evaluating` - Notification is currently being evaluated (typically during initial setup)\n- `null` - Notification has been archived\n- `triggered_by`: Additional context about what caused the notification to trigger (when applicable)\n- alert: Complete threshold notification configuration including:\n  - Notification ID, name, and type\n  - Current threshold values and credit type information\n  - Notification status (enabled, disabled, or archived)\n  - Last update timestamp\n  - Any applied filters (credit grant types, custom fields, group values)\n\n### Usage guidelines:\n- Customer status: Returns the current evaluation state, not historical data. For threshold notification history, use webhook notifications or event logs\n- Required parameters: Both customer_id and alert_id must be valid UUIDs that exist in your organization\n- Archived notifications: Returns null for customer_status if the notification has been archived, but still includes the notification configuration details\n- Performance considerations: This endpoint queries live evaluation state, making it ideal for real-time monitoring but not for bulk status checks\n- Integration patterns: Best used for on-demand status checks in response to user actions or as part of targeted monitoring workflows\n- Error handling: Returns 404 if either the customer or alert_id doesn't exist or isn't accessible to your organization\n"
+      operationId: getCustomerAlert-v1
+      summary: Get a threshold notification
+      tags:
+      - Alerts
+      requestBody:
+        description: The customer ID and notification ID of the threshold notification to get
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetCustomerAlertPayload'
+            example:
+              customer_id: 9b85c1c1-5238-4f2a-a409-61412905e1e1
+              alert_id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerAlert'
+              example:
+                data:
+                  customer_status: in_alarm
+                  alert:
+                    id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+                    uniqueness_key: 823j7fqzo1
+                    name: Low credit balance alert
+                    type: low_credit_balance_reached
+                    status: enabled
+                    credit_type:
+                      id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
+                      name: USD (cents)
+                    threshold: 0
+                    updated_at: '2022-01-01T00:00:00Z'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/customer-alerts/list:
+    post:
+      description: "Retrieve all threshold notification configurations and their current statuses for a specific customer in a single API call. This endpoint provides a comprehensive view of all threshold notification monitoring a customer account.\n\n### Use this endpoint to:\n- Display all active threshold notifications for a customer in dashboards or admin panels\n- Quickly identify which threshold notifications a customer is currently triggering\n- Audit threshold notification coverage for specific accounts\n- Filter threshold notifications by status (enabled, disabled, or archived)\n\n### Key response fields:\n- data: Array of CustomerAlert objects, each containing:\n  - Current evaluation status (`ok`, `in_alarm`, `evaluating`, or `null`)\n  - Complete threshold notification configuration and threshold details\n  - Threshold notification metadata including type, name, and last update time\n- next_page: Pagination cursor for retrieving additional results\n\n### Usage guidelines:\n- Default behavior: Returns only enabled threshold notifications unless `alert_statuses` filter is specified\n- Pagination: Use the `next_page` cursor to retrieve all results for customers with many notifications\n- Performance: Efficiently retrieves multiple threshold notification statuses in a single request instead of making individual calls\n- Filtering: Pass the `alert_statuses` array to include disabled or archived threshold notifications in results\n"
+      operationId: listCustomerAlerts-v1
+      summary: Get all threshold notifications
+      parameters:
+      - $ref: '#/components/parameters/NextPage'
+      tags:
+      - Alerts
+      requestBody:
+        description: The threshold notifications query to run
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListCustomerAlertsPayload'
+            example:
+              customer_id: 9b85c1c1-5238-4f2a-a409-61412905e1e1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - next_page
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomerAlert'
+                  next_page:
+                    type: string
+                    nullable: true
+              example:
+                data:
+                - customer_status: in_alarm
+                  alert:
+                    id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+                    name: Low credit balance alert
+                    uniqueness_key: 823j7fqzo1
+                    type: low_credit_balance_reached
+                    status: enabled
+                    credit_type:
+                      id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
+                      name: USD (cents)
+                    threshold: 0
+                    updated_at: '2022-01-01T00:00:00Z'
+                - customer_status: ok
+                  alert:
+                    id: 3d45fdc3-e237-4acd-a7d9-ccfeb40e71b8
+                    name: Spend threshold alert
+                    type: spend_threshold_reached
+                    status: enabled
+                    credit_type:
+                      id: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
+                      name: USD (cents)
+                    threshold: 1000
+                    updated_at: '2022-01-01T00:00:00Z'
+                next_page: null
+  /v1/customer-alerts/reset:
+    post:
+      description: "Force an immediate re-evaluation of a specific threshold notification for a customer, clearing any previous state and triggering a fresh assessment against current thresholds. This endpoint ensures threshold notification accuracy after configuration changes or data corrections.\n\n### Use this endpoint to:\n- Clear false positive threshold notifications after fixing data issues\n- Re-evaluate threshold notifications after adjusting customer balances or credits\n- Test threshold notification behavior during development and debugging\n- Resolve stuck threshold notification that may be in an incorrect state\n- Trigger immediate evaluation after threshold modifications\n\n### Key response fields: \n- 200 Success: Confirmation that the threshold notification has been reset and re-evaluation initiated\n- No response body is returned - the operation completes asynchronously\n\n### Usage guidelines:\n- Immediate effect: Triggers re-evaluation instantly, which may result in new webhook notifications if thresholds are breached\n- State clearing: Removes any cached evaluation state, ensuring a fresh assessment\n- Use sparingly: Intended for exceptional cases, not routine operations\n- Asynchronous processing: The reset completes immediately, but re-evaluation happens in the background\n"
+      operationId: resetCustomerAlerts-v1
+      summary: Reset a threshold notification
+      tags:
+      - Alerts
+      requestBody:
+        description: The customer ID and notification ID of the threshold notification to reset
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetCustomerAlertsPayload'
+            example:
+              alert_id: 5e8691bf-b22a-4672-922d-f80eee940f01
+              customer_id: 4c83caf3-8af4-44e2-9aeb-e290531726d9
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    UniquenessKey:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    GetCustomerAlertPayload:
+      required:
+      - customer_id
+      - alert_id
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the customer
+        alert_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the threshold notification
+        plans_or_contracts:
+          x-mint:
+            groups:
+            - ff:plans-contracts-parallel-alerts
+          type: string
+          enum:
+          - PLANS
+          - CONTRACTS
+          description: When parallel threshold notifications are enabled during migration, this flag denotes whether to fetch notifications for plans or contracts.
+        group_values:
+          type: array
+          description: Only present for `spend_threshold_reached` notifications. Retrieve the notification for a specific group key-value pair.
+          items:
+            $ref: '#/components/schemas/GroupKeyFilterType'
+        seat_filter:
+          type: object
+          description: Only allowed for `low_remaining_seat_balance_reached` notifications. This filters alerts by the seat group key-value pair.
+          required:
+          - seat_group_key
+          - seat_group_value
+          properties:
+            seat_group_key:
+              type: string
+              description: The seat group key (e.g., "seat_id", "user_id")
+            seat_group_value:
+              type: string
+              description: The specific seat identifier to filter by
+    GroupValueFilterType:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    GroupKeyFilterType:
+      type: object
+      description: Scopes threshold notification evaluation to a specific presentation group key on individual line items. Only present for spend notifications.
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    InvoiceTypesFilterType:
+      type: array
+      description: Only supported for invoice_total_reached threshold notifications. A list of invoice types to evaluate.
+      items:
+        $ref: '#/components/schemas/InvoiceType'
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    ArchiveAlertPayload:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the threshold notification
+        release_uniqueness_key:
+          type: boolean
+          description: If true, resets the uniqueness key on this threshold notification so it can be re-used
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    CreateCustomerAlertPayload:
+      required:
+      - alert_type
+      - name
+      - threshold
+      type: object
+      properties:
+        alert_type:
+          type: string
+          enum:
+          - spend_threshold_reached
+          - monthly_invoice_total_spend_threshold_reached
+          - usage_threshold_reached
+          - low_remaining_days_for_commit_segment_reached
+          - low_remaining_commit_balance_reached
+          - low_remaining_commit_percentage_reached
+          - low_remaining_days_for_contract_credit_segment_reached
+          - low_remaining_contract_credit_balance_reached
+          - low_remaining_contract_credit_percentage_reached
+          - low_remaining_contract_credit_and_commit_balance_reached
+          - invoice_total_reached
+          - low_remaining_seat_balance_reached
+          description: Type of the threshold notification
+        name:
+          type: string
+          description: Name of the threshold notification
+        uniqueness_key:
+          $ref: '#/components/schemas/UniquenessKey'
+        threshold:
+          type: number
+          description: Threshold value of the notification policy.  Depending upon the notification type, this number may represent a financial amount, the days remaining, or a percentage reached.
+        credit_type_id:
+          type: string
+          format: uuid
+          description: ID of the credit's currency, defaults to USD. If the specific notification type requires a pricing unit/currency, find the ID in the [Metronome app](https://app.metronome.com/offering/pricing-units).
+        customer_id:
+          type: string
+          format: uuid
+          description: If provided, will create this threshold notification for this specific customer. To create a notification for all customers, do not specify a `customer_id`.
+        billable_metric_id:
+          type: string
+          format: uuid
+          description: For threshold notifications of type `usage_threshold_reached`, specifies which billable metric to track the usage for.
+        credit_grant_type_filters:
+          type: array
+          items:
+            type: string
+          description: An array of strings, representing a way to filter the credit grant this threshold notification applies to, by looking at the credit_grant_type field on the credit grant. This field is only defined for CreditPercentage and CreditBalance notifications
+        evaluate_on_create:
+          type: boolean
+          description: If true, the threshold notification will evaluate immediately on customers that already meet the notification threshold. If false, it will only evaluate on future customers that trigger the threshold. Defaults to true.
+        custom_field_filters:
+          type: array
+          description: A list of custom field filters for threshold notification types that support advanced filtering. Only present for contract invoices.
+          items:
+            $ref: '#/components/schemas/CustomFieldFilterType'
+        invoice_types_filter:
+          $ref: '#/components/schemas/InvoiceTypesFilterType'
+        group_values:
+          type: array
+          description: Only present for `spend_threshold_reached` notifications. Scope notification to a specific group key on individual line items.
+          items:
+            $ref: '#/components/schemas/GroupValueFilterType'
+        seat_filter:
+          type: object
+          description: Required for `low_remaining_seat_balance_reached` notifications. The alert is scoped to this seat group key-value pair.
+          required:
+          - seat_group_key
+          properties:
+            seat_group_key:
+              type: string
+              description: The seat group key (e.g., "seat_id", "user_id")
+            seat_group_value:
+              type: string
+              description: Optional seat identifier the alert is scoped to.
+    InvoiceType:
+      type: string
+      example: SCHEDULED or USAGE
+    ListCustomerAlertsPayload:
+      required:
+      - customer_id
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the customer
+        alert_statuses:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum:
+            - enabled
+            - disabled
+            - archived
+            - ENABLED
+            - DISABLED
+            - ARCHIVED
+            - Enabled
+            - Disabled
+            - Archived
+          description: Optionally filter by threshold notification status. If absent, only enabled notifications will be returned.
+    Alert:
+      required:
+      - id
+      - name
+      - type
+      - status
+      - threshold
+      - updated_at
+      type: object
+      properties:
+        id:
+          type: string
+          description: the Metronome ID of the threshold notification
+        name:
+          type: string
+          description: Name of the threshold notification
+        uniqueness_key:
+          $ref: '#/components/schemas/UniquenessKey'
+        type:
+          type: string
+          enum:
+          - spend_threshold_reached
+          - monthly_invoice_total_spend_threshold_reached
+          - low_remaining_days_for_commit_segment_reached
+          - low_remaining_commit_balance_reached
+          - low_remaining_commit_percentage_reached
+          - low_remaining_days_for_contract_credit_segment_reached
+          - low_remaining_contract_credit_balance_reached
+          - low_remaining_contract_credit_percentage_reached
+          - low_remaining_contract_credit_and_commit_balance_reached
+          - low_remaining_seat_balance_reached
+          - invoice_total_reached
+          description: Type of the threshold notification
+        status:
+          type: string
+          enum:
+          - enabled
+          - archived
+          - disabled
+          description: Status of the threshold notification
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+          nullable: true
+        threshold:
+          type: number
+          description: Threshold value of the notification policy
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp for when the threshold notification was last updated
+        credit_grant_type_filters:
+          type: array
+          items:
+            type: string
+          description: An array of strings, representing a way to filter the credit grant this threshold notification applies to, by looking at the credit_grant_type field on the credit grant. This field is only defined for CreditPercentage and CreditBalance notifications
+        custom_field_filters:
+          type: array
+          description: A list of custom field filters for notification types that support advanced filtering
+          items:
+            $ref: '#/components/schemas/CustomFieldFilterType'
+        group_key_filter:
+          x-mint:
+            groups:
+            - client_id:462b838b-1582-4100-816e-f6c07bb604fe
+            - client_id:c187f54f-e807-4cf6-8fa1-a01f09d05412
+            - client_id:aa2899ec-16ad-413b-b20b-ec9ba4692d4e
+            - client_id:2f0c6751-0b61-46f2-8664-2eb1be6136cf
+            - client_id:b2c5d30a-6078-4cd4-9e98-340ca0883789
+            - client_id:67c6fe5e-5715-4b05-aa2a-b3885cd68b81
+            - client_id:f9b1ebc0-19f5-43cd-ba0b-7cf7da34fe7c
+            - client_id:98ac66cc-88b4-447f-a2e6-a84ebc81e36a
+          $ref: '#/components/schemas/GroupKeyFilterType'
+        invoice_types_filter:
+          $ref: '#/components/schemas/InvoiceTypesFilterType'
+        group_values:
+          type: array
+          description: Only present for `spend_threshold_reached` notifications. Scope notification to a specific group key on individual line items.
+          items:
+            $ref: '#/components/schemas/GroupValueFilterType'
+        seat_filter:
+          type: object
+          description: Only present for low_remaining_seat_balance_reached notifications. The seat group key or seat group key-value pair the alert is scoped to.
+          required:
+          - seat_group_key
+          properties:
+            seat_group_key:
+              type: string
+              description: The seat group key (e.g., "seat_id", "user_id") that the alert is scoped to.
+            seat_group_value:
+              type: string
+              description: The seat group value that the alert is scoped to.
+    CustomFieldFilterType:
+      type: object
+      required:
+      - entity
+      - key
+      - value
+      properties:
+        entity:
+          type: string
+          enum:
+          - Contract
+          - Commit
+          - ContractCredit
+        key:
+          type: string
+        value:
+          type: string
+    ResetCustomerAlertsPayload:
+      required:
+      - customer_id
+      - alert_id
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the customer
+        alert_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the threshold notification
+    CustomerAlert:
+      required:
+      - customer_status
+      - alert
+      type: object
+      properties:
+        customer_status:
+          type: string
+          enum:
+          - ok
+          - in_alarm
+          - evaluating
+          nullable: true
+          description: The status of the threshold notification. If the notification is archived, null will be returned.
+        triggered_by:
+          type: string
+          nullable: true
+          description: If present, indicates the reason the threshold notification was triggered.
+        alert:
+          $ref: '#/components/schemas/Alert'
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

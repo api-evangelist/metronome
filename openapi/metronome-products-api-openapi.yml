@@ -1,0 +1,701 @@
+openapi: 3.0.1
+info:
+  title: Metronome Alerts Products API
+  version: 1.0.0
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+servers:
+- url: https://api.metronome.com
+  description: Production server
+security:
+- bearerAuth: []
+tags:
+- name: Products
+  description: Products are the items that customers purchase.
+paths:
+  /v1/contract-pricing/products/get:
+    post:
+      description: 'Retrieve a product by its ID, including all metadata and historical changes.
+
+        '
+      operationId: getProduct-v1
+      summary: Get a product
+      tags:
+      - Products
+      requestBody:
+        description: The ID of the product to get
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Id'
+            example:
+              id: d84e7f4e-7a70-4fe4-be02-7a5027beffcc
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProductListItem'
+              example:
+                data:
+                  id: 9c9a4a71-171e-41f9-b8da-d982baf1a388
+                  type: COMPOSITE
+                  initial:
+                    name: My Composite Product
+                    starting_at: '2020-01-01T00:00:00.000Z'
+                    composite_product_ids:
+                    - e5e40bc7-ef69-42ec-a77e-cd696f6bfa3d
+                    created_at: '2019-12-30T04:24:55.123Z'
+                    created_by: Bob
+                  current:
+                    name: My Updated Composite Product Name
+                    starting_at: '2020-01-01T00:00:00.000Z'
+                    composite_product_ids:
+                    - e5e40bc7-ef69-42ec-a77e-cd696f6bfa3d
+                    created_at: '2019-12-30T04:24:55.123Z'
+                    created_by: Bob
+                  updates:
+                  - name: My Updated Composite Product Name
+                    starting_at: '2020-02-01T00:00:00.000Z'
+                    created_at: '2019-12-30T09:24:55.123Z'
+                    created_by: Alice
+                  custom_fields:
+                    x_account_id: KyVnHhSBWl7eY2bl
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/contract-pricing/products/list:
+    post:
+      description: 'Get a paginated list of all products in your organization with their complete configuration, version history, and metadata. By default excludes archived products unless explicitly requested via the `archive_filter` parameter.
+
+        '
+      operationId: listProducts-v1
+      summary: List products
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/NextPage'
+      tags:
+      - Products
+      requestBody:
+        description: Get list of products
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListProductsPayload'
+            example:
+              archive_filter: NOT_ARCHIVED
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - next_page
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductListItem'
+                  next_page:
+                    type: string
+                    nullable: true
+              example:
+                data:
+                - id: 9c9a4a71-171e-41f9-b8da-d982baf1a388
+                  type: COMPOSITE
+                  archived_at: null
+                  initial:
+                    name: My Composite Product
+                    starting_at: '2020-01-01T00:00:00.000Z'
+                    composite_product_ids:
+                    - e5e40bc7-ef69-42ec-a77e-cd696f6bfa3d
+                    created_at: '2019-12-30T04:24:55.123Z'
+                    created_by: Bob
+                  current:
+                    name: My Updated Composite Product Name
+                    starting_at: '2020-01-01T00:00:00.000Z'
+                    composite_product_ids:
+                    - e5e40bc7-ef69-42ec-a77e-cd696f6bfa3d
+                    created_at: '2019-12-30T04:24:55.123Z'
+                    created_by: Bob
+                  updates:
+                  - name: My Updated Composite Product Name
+                    starting_at: '2020-02-01T00:00:00.000Z'
+                    created_at: '2019-12-30T09:24:55.123Z'
+                    created_by: Alice
+                  custom_fields:
+                    x_account_id: KyVnHhSBWl7eY2bl
+                next_page: null
+  /v1/contract-pricing/products/create:
+    post:
+      description: 'Create a new product object. Products in Metronome represent your company''s individual product or service offerings. A Product can be thought of as the basic unit of a line item on the invoice. This is analogous to SKUs or items in an ERP system. Give the product a meaningful name as they will appear on customer invoices.
+
+        '
+      operationId: createProduct-v1
+      summary: Create a product
+      tags:
+      - Products
+      requestBody:
+        description: Create a new product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductListItemPayload'
+            example:
+              name: My Product
+              type: USAGE
+              billable_metric_id: 13117714-3f05-48e5-a6e9-a66093f13b4d
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/contract-pricing/products/update:
+    post:
+      description: "Updates a product's configuration while maintaining billing continuity for active customers. Use this endpoint to modify product names, metrics, pricing rules, and composite settings without disrupting ongoing billing cycles. Changes are scheduled using the starting_at timestamp, which must be on an hour boundary—set future dates to schedule updates ahead of time, or past dates for retroactive changes. Returns the updated product ID upon success. \n\n### Usage guidance: \n- Product type cannot be changed after creation. For incorrect product types, create a new product and archive the original instead.\n"
+      operationId: updateProduct-v1
+      summary: Update a product
+      tags:
+      - Products
+      requestBody:
+        description: "Updates a product's configuration while maintaining billing continuity for active customers. Use this endpoint to modify product names, metrics, pricing rules, and composite settings without disrupting ongoing billing cycles. Changes are scheduled using the starting_at timestamp, which must be on an hour boundary–set future dates to schedule updates ahead of time, or past dates for retroactive changes. Returns the updated product ID upon success. \n\nUsage guidance: \nProduct type cannot be changed after creation. For incorrect product types, create a new product and archive the original instead.\n"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductListItemPayload'
+            example:
+              product_id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+              name: My Updated Product
+              starting_at: '2020-01-01T00:00:00.000Z'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/contract-pricing/products/archive:
+    post:
+      description: 'Archive a product. Any current rate cards associated with this product will continue to function as normal. However, it will no longer be available as an option for newly created rates. Once you archive a product, you can still retrieve it in the UI and API, but you cannot unarchive it.
+
+        '
+      operationId: archiveProductListItem-v1
+      summary: Archive a product
+      tags:
+      - Products
+      requestBody:
+        description: Archive a product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArchiveProductListItemPayload'
+            example:
+              product_id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    CreateProductListItemPayload:
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: displayed on invoices
+        type:
+          type: string
+          enum:
+          - FIXED
+          - fixed
+          - USAGE
+          - usage
+          - COMPOSITE
+          - composite
+          - SUBSCRIPTION
+          - subscription
+          - PROFESSIONAL_SERVICE
+          - professional_service
+          - PRO_SERVICE
+          - pro_service
+          x-mint-enum:
+            PROFESSIONAL_SERVICE:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+            professional_service:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+            PRO_SERVICE:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+            pro_service:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+        netsuite_internal_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        netsuite_overage_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        billable_metric_id:
+          type: string
+          format: uuid
+          description: Required for USAGE products
+        composite_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Required for COMPOSITE products
+        composite_tags:
+          type: array
+          items:
+            type: string
+          description: Required for COMPOSITE products
+        is_refundable:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: boolean
+          description: This field's availability is dependent on your client's configuration. Defaults to true.
+        composite_scope:
+          type: string
+          enum:
+          - customer
+          - CUSTOMER
+          - contract
+          - CONTRACT
+          description: Determines what spend contributes to calculating this charge. When composite scope is contract, calculates composite charge based on applicable spend per contract. When composite scope is customer, calculates composite charge based on applicable spend across all customer contracts. Defaults to contract.
+          x-mint:
+            groups:
+            - ff:composite-support-charge-m1-enabled
+          x-stainless-skip: true
+        exclude_free_usage:
+          type: boolean
+          description: Beta feature only available for composite products. If true, products with $0 will not be included when computing composite usage. Defaults to false
+        tags:
+          type: array
+          items:
+            type: string
+        pricing_group_key:
+          $ref: '#/components/schemas/PricingGroupKey'
+        presentation_group_key:
+          $ref: '#/components/schemas/PresentationGroupKey'
+        quantity_conversion:
+          $ref: '#/components/schemas/QuantityConversion'
+        quantity_rounding:
+          $ref: '#/components/schemas/QuantityRounding'
+        custom_fields:
+          $ref: '#/components/schemas/CustomField'
+    ArchiveProductListItemPayload:
+      type: object
+      required:
+      - product_id
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: ID of the product to be archived
+    UpdateProductListItemPayload:
+      type: object
+      required:
+      - product_id
+      - starting_at
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: ID of the product to update
+        name:
+          type: string
+          description: displayed on invoices. If not provided, defaults to product's current name.
+        starting_at:
+          type: string
+          format: date-time
+          description: Timestamp representing when the update should go into effect. It must be on an hour boundary (e.g. 1:00, not 1:30).
+        is_refundable:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: boolean
+          description: Defaults to product's current refundability status. This field's availability is dependent on your client's configuration.
+        exclude_free_usage:
+          type: boolean
+          description: Beta feature only available for composite products. If true, products with $0 will not be included when computing composite usage. Defaults to false
+        billable_metric_id:
+          type: string
+          format: uuid
+          description: Available for USAGE products only. If not provided, defaults to product's current billable metric.
+        netsuite_internal_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: If not provided, defaults to product's current netsuite_internal_item_id. This field's availability is dependent on your client's configuration.
+        netsuite_overage_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: Available for USAGE and COMPOSITE products only. If not provided, defaults to product's current netsuite_overage_item_id. This field's availability is dependent on your client's configuration.
+        composite_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Available for COMPOSITE products only. If not provided, defaults to product's current composite_product_ids.
+        quantity_conversion:
+          $ref: '#/components/schemas/QuantityConversion'
+        quantity_rounding:
+          $ref: '#/components/schemas/QuantityRounding'
+        tags:
+          type: array
+          items:
+            type: string
+          description: If not provided, defaults to product's current tags
+        composite_tags:
+          type: array
+          items:
+            type: string
+          description: Available for COMPOSITE products only. If not provided, defaults to product's current composite_tags.
+        pricing_group_key:
+          $ref: '#/components/schemas/PricingGroupKey'
+        presentation_group_key:
+          $ref: '#/components/schemas/PresentationGroupKey'
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    ProductListItem:
+      type: object
+      required:
+      - id
+      - type
+      - initial
+      - current
+      - updates
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - USAGE
+          - SUBSCRIPTION
+          - COMPOSITE
+          - FIXED
+          - PRO_SERVICE
+        archived_at:
+          type: string
+          format: date-time
+          nullable: true
+        initial:
+          $ref: '#/components/schemas/ProductListItemState'
+        current:
+          $ref: '#/components/schemas/ProductListItemState'
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductListItemUpdate'
+        custom_fields:
+          x-cf-entity: contract_product
+          $ref: '#/components/schemas/CustomField'
+    PricingGroupKey:
+      type: array
+      items:
+        type: string
+      description: For USAGE products only. If set, pricing for this product will be determined for each pricing_group_key value, as opposed to the product as a whole. The superset of values in the pricing group key and presentation group key must be set as one compound group key on the billable metric.
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    PresentationGroupKey:
+      type: array
+      items:
+        type: string
+      description: For USAGE products only. Groups usage line items on invoices. The superset of values in the pricing group key and presentation group key must be set as one compound group key on the billable metric.
+    QuantityConversion:
+      type: object
+      nullable: true
+      description: Optional. Only valid for USAGE products. If provided, the quantity will be converted using the provided conversion factor and operation. For example, if the operation is "multiply" and the conversion factor is 100, then the quantity will be multiplied by 100. This can be used in cases where data is sent in one unit and priced in another.  For example, data could be sent in MB and priced in GB. In this case, the conversion factor would be 1024 and the operation would be "divide".
+      required:
+      - conversion_factor
+      - operation
+      properties:
+        name:
+          type: string
+          description: Optional name for this conversion.
+        conversion_factor:
+          type: number
+          description: The factor to multiply or divide the quantity by.
+        operation:
+          type: string
+          enum:
+          - multiply
+          - divide
+          - MULTIPLY
+          - DIVIDE
+          description: The operation to perform on the quantity
+    ProductListItemUpdate:
+      type: object
+      required:
+      - created_at
+      - created_by
+      properties:
+        name:
+          type: string
+        starting_at:
+          type: string
+          format: date-time
+        is_refundable:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+        billable_metric_id:
+          type: string
+          format: uuid
+        quantity_conversion:
+          $ref: '#/components/schemas/QuantityConversion'
+        quantity_rounding:
+          $ref: '#/components/schemas/QuantityRounding'
+        netsuite_internal_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        netsuite_overage_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        composite_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        composite_tags:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        exclude_free_usage:
+          type: boolean
+        pricing_group_key:
+          $ref: '#/components/schemas/PricingGroupKey'
+        presentation_group_key:
+          $ref: '#/components/schemas/PresentationGroupKey'
+    ProductListItemState:
+      type: object
+      required:
+      - name
+      - created_at
+      - created_by
+      properties:
+        name:
+          type: string
+        starting_at:
+          type: string
+          format: date-time
+        netsuite_internal_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+        netsuite_overage_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        billable_metric_id:
+          type: string
+        composite_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        quantity_conversion:
+          $ref: '#/components/schemas/QuantityConversion'
+        quantity_rounding:
+          $ref: '#/components/schemas/QuantityRounding'
+        composite_tags:
+          type: array
+          items:
+            type: string
+        is_refundable:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: boolean
+          description: This field's availability is dependent on your client's configuration.
+        tags:
+          type: array
+          items:
+            type: string
+        composite_scope:
+          type: string
+          enum:
+          - CUSTOMER
+          - CONTRACT
+          x-mint:
+            groups:
+            - ff:composite-support-charge-m1-enabled
+          x-stainless-skip: true
+          description: Determines what spend contributes to calculating this charge.
+        exclude_free_usage:
+          type: boolean
+        pricing_group_key:
+          $ref: '#/components/schemas/PricingGroupKey'
+        presentation_group_key:
+          $ref: '#/components/schemas/PresentationGroupKey'
+    ListProductsPayload:
+      type: object
+      properties:
+        archive_filter:
+          type: string
+          enum:
+          - ARCHIVED
+          - NOT_ARCHIVED
+          - ALL
+          description: Filter options for the product list. If not provided, defaults to not archived.
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    QuantityRounding:
+      type: object
+      nullable: true
+      description: Optional. Only valid for USAGE products. If provided, the quantity will be rounded using the provided rounding method and decimal places. For example, if the method is "round up" and the decimal places is 0, then the quantity will be rounded up to the nearest integer.
+      required:
+      - rounding_method
+      - decimal_places
+      properties:
+        rounding_method:
+          type: string
+          enum:
+          - round_up
+          - round_down
+          - round_half_up
+          - ROUND_UP
+          - ROUND_DOWN
+          - ROUND_HALF_UP
+        decimal_places:
+          type: number
+          minimum: 0
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      description: Max number of results that should be returned
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

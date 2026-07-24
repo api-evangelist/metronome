@@ -1,0 +1,61 @@
+openapi: 3.0.1
+info:
+  title: Metronome Alerts Integrations API
+  version: 1.0.0
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+servers:
+- url: https://api.metronome.com
+  description: Production server
+security:
+- bearerAuth: []
+tags:
+- name: Integrations
+paths:
+  /v1/integrations/log:
+    post:
+      x-mint:
+        groups:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+      description: Log events from integration services to Cloudwatch
+      operationId: integrationCloudwatchLogger-v1
+      summary: Log events from integration services to Cloudwatch
+      requestBody:
+        description: A request that resembles a Cloudwatch putMetricData request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationCloudwatchLogPayload'
+      responses:
+        '200':
+          description: Success
+      tags:
+      - Integrations
+components:
+  schemas:
+    IntegrationCloudwatchLogPayload:
+      required:
+      - service_name
+      - metric_name
+      - dimensions
+      type: object
+      properties:
+        service_name:
+          type: string
+        metric_name:
+          type: string
+        dimensions:
+          type: array
+          items:
+            type: object
+            required:
+            - name
+            - value
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

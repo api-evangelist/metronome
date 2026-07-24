@@ -1,0 +1,314 @@
+openapi: 3.0.1
+info:
+  title: Metronome Alerts Payments API
+  version: 1.0.0
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+servers:
+- url: https://api.metronome.com
+  description: Production server
+security:
+- bearerAuth: []
+tags:
+- name: Payments
+paths:
+  /v1/payments/attempt:
+    post:
+      x-mint:
+        metadata:
+          tag: Beta
+      description: "Trigger a new attempt by canceling any existing attempts for this invoice and creating a new Payment. This will trigger another attempt to charge the Customer's configured Payment Gateway. \nPayment can only be attempted if all of the following are true:\n  - The Metronome Invoice is finalized\n  - PLG Invoicing is configured for the Customer\n  - You cannot attempt payments for invoices that have already been `paid` or `voided`.\n\nAttempting to payment on an ineligible Invoice or Customer will result in a `400` response.\n"
+      operationId: attemptPayment-v1
+      summary: Attempt payment for an invoice
+      tags:
+      - Payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - customer_id
+              - invoice_id
+              properties:
+                customer_id:
+                  type: string
+                  format: uuid
+                invoice_id:
+                  type: string
+                  format: uuid
+            example:
+              customer_id: 13117714-3f05-48e5-a6e9-a66093f13b4d
+              invoice_id: 6162d87b-e5db-4a33-b7f2-76ce6ead4e85
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Payment'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/payments/cancel:
+    post:
+      x-mint:
+        metadata:
+          tag: Beta
+      description: 'Cancel an existing payment attempt for an invoice.
+
+        '
+      operationId: cancelPayment-v1
+      summary: Cancel a payment for an invoice
+      tags:
+      - Payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - customer_id
+              - invoice_id
+              properties:
+                customer_id:
+                  type: string
+                  format: uuid
+                invoice_id:
+                  type: string
+                  format: uuid
+            example:
+              customer_id: 13117714-3f05-48e5-a6e9-a66093f13b4d
+              invoice_id: 6162d87b-e5db-4a33-b7f2-76ce6ead4e85
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Payment'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Payment could not be canceled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/payments/list:
+    post:
+      x-mint:
+        metadata:
+          tag: Beta
+      description: 'Fetch all payment attempts for the given invoice.
+
+        '
+      operationId: listPayments-v1
+      summary: List payments for an invoice
+      tags:
+      - Payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - customer_id
+              - invoice_id
+              properties:
+                customer_id:
+                  type: string
+                  format: uuid
+                invoice_id:
+                  type: string
+                  format: uuid
+                statuses:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    $ref: '#/components/schemas/PaymentStatus'
+                next_page:
+                  type: string
+                  description: The next page token from a previous response.
+                limit:
+                  type: integer
+                  minimum: 1
+                  maximum: 25
+                  default: 25
+                  description: The maximum number of payments to return. Defaults to 25.
+            example:
+              customer_id: 13117714-3f05-48e5-a6e9-a66093f13b4d
+              invoice_id: 6162d87b-e5db-4a33-b7f2-76ce6ead4e85
+              statuses:
+              - pending
+              - requires_intervention
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Payment'
+                  next_page:
+                    type: string
+                    nullable: true
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    PaymentStatus:
+      type: string
+      enum:
+      - pending
+      - requires_intervention
+      - paid
+      - canceled
+    RevenueSystemPayment:
+      type: object
+      required:
+      - revenue_system_provider
+      - sync_status
+      properties:
+        revenue_system_provider:
+          type: string
+        revenue_system_external_payment_id:
+          type: string
+        sync_status:
+          type: string
+        error_message:
+          type: string
+          description: The error message from the revenue system, if available.
+    StripePaymentGateway:
+      type: object
+      required:
+      - type
+      - stripe
+      properties:
+        type:
+          type: string
+          enum:
+          - stripe
+        stripe:
+          type: object
+          required:
+          - payment_intent_id
+          properties:
+            payment_intent_id:
+              type: string
+            payment_method_id:
+              type: string
+            error:
+              type: object
+              properties:
+                type:
+                  type: string
+                code:
+                  type: string
+                decline_code:
+                  type: string
+    Payment:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        contract_id:
+          type: string
+          format: uuid
+        payment_gateway:
+          oneOf:
+          - $ref: '#/components/schemas/StripePaymentGateway'
+        fiat_credit_type:
+          $ref: '#/components/schemas/CreditType'
+        revenue_system_payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RevenueSystemPayment'
+        amount:
+          type: number
+        amount_paid:
+          type: number
+        status:
+          type: string
+          $ref: '#/components/schemas/PaymentStatus'
+        error_message:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+          example: '2022-02-01T00:00:00Z'
+        created_at:
+          type: string
+          format: date-time
+          example: '2022-02-01T00:00:00Z'
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

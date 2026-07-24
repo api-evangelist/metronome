@@ -1,0 +1,57 @@
+openapi: 3.0.1
+info:
+  title: Metronome Alerts Threshold billing API
+  version: 1.0.0
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+servers:
+- url: https://api.metronome.com
+  description: Production server
+security:
+- bearerAuth: []
+tags:
+- name: Threshold billing
+paths:
+  /v1/threshold-billing/update-active-recharge-config:
+    post:
+      tags:
+      - Threshold billing
+      description: A unified API for updating prepaid balance threshold configs for clients who are migrating customers from Metronome 1.0 and 2.0. Customer can only have one active config across all Plans or Contracts.
+      operationId: updateActiveRechargeConfig-v1
+      summary: Update a customer's active recharge or prepaid balance threshold config
+      x-handler-funciton: src/handlers/updateActiveRechargeConfig/index.handler
+      x-mint:
+        groups:
+        - ff:prepaid-credits
+      x-stainless-skip: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateActiveRechargeConfig'
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    UpdateActiveRechargeConfig:
+      type: object
+      required:
+      - customer_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        recharge_to_amount:
+          type: number
+          description: the amount to recharge to
+          minimum: 0
+        recharge_threshold:
+          type: number
+          description: the threshold at which to recharge
+          minimum: 0
+        enabled:
+          type: boolean
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

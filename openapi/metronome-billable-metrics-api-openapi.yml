@@ -1,0 +1,664 @@
+openapi: 3.0.1
+info:
+  title: Metronome Alerts Billable Metrics API
+  version: 1.0.0
+  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+servers:
+- url: https://api.metronome.com
+  description: Production server
+security:
+- bearerAuth: []
+tags:
+- name: Billable Metrics
+paths:
+  /v1/billable-metrics:
+    post:
+      description: Create a new billable metric
+      operationId: createBillableMetric-v1
+      summary: Create a billable metric
+      requestBody:
+        description: The billable metric to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBillableMetricPayload'
+            example:
+              name: CPU hours
+              aggregate: Count
+              filter:
+                type: object
+                $schema: http://json-schema.org/draft-07/schema
+                required:
+                - event_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+      tags:
+      - Billable Metrics
+    get:
+      description: "Retrieves all billable metrics with their complete configurations. Use this for programmatic discovery and management of billable metrics, such as associating metrics to products and auditing for orphaned or archived metrics. \nImportant: Archived metrics are excluded by default; use `include_archived`=`true` parameter to include them.\n"
+      operationId: listAllBillableMetrics-v1
+      summary: List all billable metrics
+      tags:
+      - Billable Metrics
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/NextPage'
+      - name: include_archived
+        in: query
+        description: If true, the list of returned metrics will include archived metrics
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - next_page
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillableMetricV1'
+                  next_page:
+                    type: string
+                    nullable: true
+              example:
+                data:
+                - name: data transfer (GB)
+                  id: 9570e4f3-d1da-4b95-ba81-bd40ee002727
+                  aggregation_type: SUM
+                  aggregation_key: bytes
+                  event_type_filter:
+                    in_values:
+                    - cpu_usage
+                  property_filters:
+                  - name: cpu_hours
+                    exists: true
+                  - name: region
+                    exists: true
+                    in_values:
+                    - EU
+                    - NA
+                  - name: machine_type
+                    exists: true
+                    in_values:
+                    - slow
+                    - fast
+                  group_keys:
+                  - - region
+                  - - machine_type
+                  custom_fields:
+                    envionment: production
+                next_page: null
+  /v1/billable-metrics/create:
+    post:
+      description: "Create billable metrics programmatically with this endpoint—an essential step in configuring your pricing and packaging in Metronome.\n\nA billable metric is a customizable query that filters and aggregates events from your event stream. These metrics are continuously tracked as usage data enters Metronome through the ingestion pipeline. The ingestion process transforms raw usage data into actionable pricing metrics, enabling accurate metering and billing for your products.\n\n### Use this endpoint to: \n- Create individual or multiple billable metrics as part of a setup workflow.\n- Automate the entire pricing configuration process, from metric creation to customer contract setup.\n- Define metrics using either standard filtering/aggregation or a custom SQL query.\n\n### Key response fields: \n- The ID of the billable metric that was created\n- The created billable metric will be available to be used in Products, usage endpoints, and alerts. \n\n### Usage guidelines: \n- Metrics defined using standard filtering and aggregation are Streaming billable metrics, which have been optimized for ultra low latency and high throughput workflows. \n- Use SQL billable metrics if you require more flexible aggregation options.\n"
+      operationId: createBillableMetricV1-v1
+      summary: Create a billable metric
+      tags:
+      - Billable Metrics
+      requestBody:
+        description: The details of the billable metric to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBillableMetricV1Payload'
+            example:
+              name: CPU Hours
+              event_type_filter:
+                in_values:
+                - cpu_usage
+              property_filters:
+              - name: cpu_hours
+                exists: true
+              - name: region
+                exists: true
+                in_values:
+                - EU
+                - NA
+              - name: machine_type
+                exists: true
+                in_values:
+                - slow
+                - fast
+              aggregation_type: SUM
+              aggregation_key: cpu_hours
+              group_keys:
+              - - region
+              - - machine_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: 58fb0650-e54a-4d17-93cb-ba8e56c32c65
+  /v1/billable-metrics/archive:
+    post:
+      description: "Use this endpoint to retire billable metrics that are no longer used. After a billable metric is archived, that billable metric can no longer be used in any new Products to define how that product should be metered. If you archive a billable metric that is already associated with a Product, the Product will continue to function as usual, metering based on the definition of the archived billable metric. \n\nArchived billable metrics will be returned on the `getBillableMetric` and `listBillableMetrics` endpoints with a populated `archived_at` field.\n"
+      operationId: archiveBillableMetric-v1
+      summary: Archive a billable metric
+      tags:
+      - Billable Metrics
+      requestBody:
+        description: The ID of the billable metric to archive
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Id'
+            example:
+              id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/billable-metrics/{billable_metric_id}:
+    get:
+      description: "Retrieves the complete configuration for a specific billable metric by its ID. Use this to review billable metric setup before associating it with products. Returns the metric's `name`, `event_type_filter`, `property_filters`, `aggregation_type`, `aggregation_key`, `group_keys`, `custom fields`, and `SQL query` (if it's a SQL billable metric). \n\nImportant: \n- Archived billable metrics will include an `archived_at` timestamp; they no longer process new usage events but remain accessible for historical reference.\n"
+      operationId: getBillableMetric-v1
+      summary: Get a billable metric
+      tags:
+      - Billable Metrics
+      parameters:
+      - $ref: '#/components/parameters/BillableMetricId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BillableMetricV1'
+              example:
+                data:
+                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+                  name: CPU Hours
+                  event_type_filter:
+                    in_values:
+                    - cpu_usage
+                  property_filters:
+                  - name: cpu_hours
+                    exists: true
+                  - name: region
+                    exists: true
+                    in_values:
+                    - EU
+                    - NA
+                  - name: machine_type
+                    exists: true
+                    in_values:
+                    - slow
+                    - fast
+                  aggregation_type: SUM
+                  aggregation_key: cpu_hours
+                  group_keys:
+                  - - region
+                  - - machine_type
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      description: "Updates only the display name of an existing billable metric. Use this to correct mistakes or apply standardized naming conventions across all billable metrics. Returns the billable metric ID to confirm the update. \n\nImportant: Only the name can be modified via this endpoint; configurations cannot be changed after creation. \n\n#### Example workflow:\nIf you need to make changes to a streaming billable metric, for example, Metronome supports easily rolling out these changes using a simple workflow:\n1. Duplicate the billable metric\n2. Make required changes\n3. Save the metric\n4. Navigate to the product you have associated with the incorrect metric\n5. Schedule the product to reference the newly created metric on the appropriate date\n"
+      operationId: updateBillableMetric-v1
+      summary: Update a billable metric
+      tags:
+      - Billable Metrics
+      parameters:
+      - $ref: '#/components/parameters/BillableMetricId'
+      requestBody:
+        description: The billable metric to update
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  description: The new name of the metric
+            example:
+              name: CPU hours
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Id'
+              example:
+                data:
+                  id: 8deed800-1b7a-495d-a207-6c52bac54dc9
+  /v1/customers/{customer_id}/billable-metrics:
+    get:
+      description: 'Get all billable metrics available for a specific customer. Supports pagination and filtering by current plan status or archived metrics. Use this endpoint to see which metrics are being tracked for billing calculations for a given customer.
+
+        '
+      operationId: listBillableMetrics-v1
+      summary: Get billable metrics for a customer
+      parameters:
+      - $ref: '#/components/parameters/CustomerId'
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/NextPage'
+      - name: on_current_plan
+        in: query
+        description: If true, the list of metrics will be filtered to just ones that are on the customer's current plan
+        required: false
+        schema:
+          type: boolean
+      - name: include_archived
+        in: query
+        description: If true, the list of returned metrics will include archived metrics
+        required: false
+        schema:
+          type: boolean
+      tags:
+      - Billable Metrics
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - next_page
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillableMetricWithDeprecatedFields'
+                  next_page:
+                    type: string
+                    nullable: true
+              example:
+                data:
+                - name: data transfer (GB)
+                  id: 9570e4f3-d1da-4b95-ba81-bd40ee002727
+                  group_by:
+                  - cluster
+                  - region
+                  aggregate: sum
+                  aggregate_keys:
+                  - bytes
+                  aggregation_type: SUM
+                  aggregation_key: bytes
+                  event_type_filter:
+                    in_values:
+                    - cpu_usage
+                  property_filters:
+                  - name: cpu_hours
+                    exists: true
+                  - name: region
+                    exists: true
+                    in_values:
+                    - EU
+                    - NA
+                  - name: machine_type
+                    exists: true
+                    in_values:
+                    - slow
+                    - fast
+                  group_keys:
+                  - - region
+                  - - machine_type
+                - name: CPU hours
+                  id: 13117714-3f05-48e5-a6e9-a66093f13b4d
+                  aggregation_type: SUM
+                  aggregation_key: bytes
+                  event_type_filter:
+                    in_values:
+                    - cpu_usage
+                  property_filters:
+                  - name: cpu_hours
+                    exists: true
+                  - name: region
+                    exists: true
+                    in_values:
+                    - EU
+                    - NA
+                  - name: machine_type
+                    exists: true
+                    in_values:
+                    - slow
+                    - fast
+                  group_keys:
+                  - - region
+                  - - machine_type
+                  archived_at: '2024-10-01T11:23:44Z'
+                next_page: null
+components:
+  schemas:
+    PropertyFilter:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the event property.
+        exists:
+          type: boolean
+          description: Determines whether the property must exist in the event. If true, only events with this property will pass the filter. If false, only events without this property will pass the filter. If null or omitted, the existence of the property is optional.
+        in_values:
+          type: array
+          items:
+            type: string
+          description: Specifies the allowed values for the property to match an event. An event will pass the filter only if its property value is included in this list. If undefined, all property values will pass the filter. Must be non-empty if present.
+        not_in_values:
+          type: array
+          items:
+            type: string
+          description: Specifies the values that prevent an event from matching the filter. An event will not pass the filter if its property value is included in this list. If null or empty, all property values will pass the filter. Must be non-empty if present.
+    GroupKeysArray:
+      type: array
+      items:
+        type: array
+        items:
+          type: string
+      description: Property names that are used to group usage costs on an invoice. Each entry represents a set of properties used to slice events into distinct buckets.
+    EventTypeFilter:
+      type: object
+      properties:
+        in_values:
+          type: array
+          items:
+            type: string
+          description: A list of event types that are explicitly included in the billable metric. If specified, only events of these types will match the billable metric. Must be non-empty if present.
+        not_in_values:
+          type: array
+          items:
+            type: string
+          description: A list of event types that are explicitly excluded from the billable metric. If specified, events of these types will not match the billable metric. Must be non-empty if present.
+      description: An optional filtering rule to match the 'event_type' property of an event.
+    CreateBillableMetricPayload:
+      type: object
+      required:
+      - name
+      - aggregate
+      - filter
+      properties:
+        name:
+          type: string
+        aggregate:
+          type: string
+          enum:
+          - count
+          - Count
+          - COUNT
+          - latest
+          - Latest
+          - LATEST
+          - max
+          - Max
+          - MAX
+          - sum
+          - Sum
+          - SUM
+          - unique
+          - Unique
+          - UNIQUE
+        aggregate_key:
+          type: string
+        filter:
+          type: object
+          description: JSON Schema filter to apply to the metric
+          additionalProperties: true
+        group_keys:
+          type: array
+          items:
+            type: string
+        group_values:
+          type: array
+          items:
+            type: string
+    BillableMetricWithDeprecatedFields:
+      allOf:
+      - $ref: '#/components/schemas/BillableMetricBase'
+      - type: object
+        properties:
+          aggregation_type:
+            $ref: '#/components/schemas/AggregationType'
+    AggregationKey:
+      type: string
+      description: A key that specifies which property of the event is used to aggregate data. This key must be one of the property filter names and is not applicable when the aggregation type is 'count'.
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    BillableMetricBase:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        group_by:
+          type: array
+          description: (DEPRECATED) use group_keys instead
+          items:
+            type: string
+            description: A list of keys that can be used to additionally segment the values of the billable metric when making usage queries
+        group_keys:
+          $ref: '#/components/schemas/GroupKeysArray'
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+        aggregate:
+          type: string
+          description: (DEPRECATED) use aggregation_type instead
+        aggregate_keys:
+          type: array
+          description: (DEPRECATED) use aggregation_key instead
+          items:
+            type: string
+        filter:
+          type: object
+          description: (DEPRECATED) use property_filters & event_type_filter instead
+          additionalProperties: true
+        aggregation_key:
+          $ref: '#/components/schemas/AggregationKey'
+        event_type_filter:
+          $ref: '#/components/schemas/EventTypeFilter'
+        property_filters:
+          $ref: '#/components/schemas/PropertyFiltersArray'
+        custom_fields:
+          x-cf-entity: billable_metric
+          $ref: '#/components/schemas/CustomField'
+        sql:
+          type: string
+          description: The SQL query associated with the billable metric
+        archived_at:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the billable metric was archived. If not provided, the billable metric is not archived.
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    PropertyFiltersArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/PropertyFilter'
+      description: A list of filters to match events to this billable metric. Each filter defines a rule on an event property. All rules must pass for the event to match the billable metric.
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    AggregationType:
+      type: string
+      enum:
+      - count
+      - Count
+      - COUNT
+      - latest
+      - Latest
+      - LATEST
+      - max
+      - Max
+      - MAX
+      - sum
+      - Sum
+      - SUM
+      - unique
+      - Unique
+      - UNIQUE
+      description: Specifies the type of aggregation performed on matching events.
+    BillableMetricV1:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the billable metric
+        name:
+          type: string
+          description: The display name of the billable metric.
+        event_type_filter:
+          $ref: '#/components/schemas/EventTypeFilter'
+        property_filters:
+          $ref: '#/components/schemas/PropertyFiltersArray'
+        aggregation_type:
+          $ref: '#/components/schemas/AggregationType'
+        aggregation_key:
+          $ref: '#/components/schemas/AggregationKey'
+        group_keys:
+          $ref: '#/components/schemas/GroupKeysArray'
+        custom_fields:
+          $ref: '#/components/schemas/CustomField'
+        sql:
+          type: string
+          description: The SQL query associated with the billable metric
+        archived_at:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the billable metric was archived. If not provided, the billable metric is not archived.
+    CreateBillableMetricV1Payload:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The display name of the billable metric.
+        sql:
+          type: string
+          description: The SQL query associated with the billable metric. This field is mutually exclusive with aggregation_type, event_type_filter, property_filters, aggregation_key, and group_keys. If provided, these other fields must be omitted.
+        event_type_filter:
+          $ref: '#/components/schemas/EventTypeFilter'
+        property_filters:
+          $ref: '#/components/schemas/PropertyFiltersArray'
+        aggregation_type:
+          $ref: '#/components/schemas/AggregationType'
+        aggregation_key:
+          $ref: '#/components/schemas/AggregationKey'
+          description: Specifies the type of aggregation performed on matching events. Required if `sql` is not provided.
+        group_keys:
+          $ref: '#/components/schemas/GroupKeysArray'
+        custom_fields:
+          description: Custom fields to attach to the billable metric.
+          $ref: '#/components/schemas/CustomField'
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
+    CustomerId:
+      name: customer_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+    BillableMetricId:
+      name: billable_metric_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 13117714-3f05-48e5-a6e9-a66093f13b4d
+    PageLimit:
+      name: limit
+      in: query
+      description: Max number of results that should be returned
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
