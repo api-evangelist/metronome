@@ -4,7 +4,20 @@ description: >-
   Metronome is a usage-based billing platform providing real-time metering, pricing, invoicing, and revenue recognition
   for API and cloud services.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/metronome.png
 tags:
   - Billing
   - FinOps
@@ -16,26 +29,279 @@ created: '2026-03-27'
 modified: '2026-05-19'
 specificationVersion: '0.19'
 apis:
-  - aid: metronome:metronome-api
-    name: Metronome API
-    description: >-
-      The Metronome API provides usage-based billing capabilities including customers, contracts, invoices, products,
-      rate cards, billable metrics, usage event ingestion, alerts, credits, commits, and webhook notifications for
-      real-time pricing and revenue recognition.
-    humanURL: https://docs.metronome.com/
-    baseURL: https://api.metronome.com
-    tags:
-      - Billing
-      - FinOps
-      - Metering
-      - Usage-Based Billing
-    properties:
-      - type: Documentation
-        url: https://docs.metronome.com/
-      - type: GettingStarted
-        url: https://docs.metronome.com/
-      - type: OpenAPI
-        url: https://raw.githubusercontent.com/api-evangelist/metronome/refs/heads/main/openapi/metronome-openapi.json
+- aid: metronome:metronome-alerts-api
+  name: Metronome Alerts API
+  description: >-
+    [Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances,
+    and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To
+    view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Alerts
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-alerts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-billable-metrics-api
+  name: Metronome Billable Metrics API
+  description: The Billable Metrics API from Metronome — 5 operation(s) for billable metrics.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Billable Metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-billable-metrics-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-contracts-api
+  name: Metronome Contracts API
+  description: >-
+    A contract defines a customer’s products, pricing, discounts, commitments, and more. Use these endpoints
+    to create and update contracts data.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-contracts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-credits-and-commits-api
+  name: Metronome Credits and commits API
+  description: Credits and commits are used to manage customer balances.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Credits and commits
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-credits-and-commits-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-custom-fields-api
+  name: Metronome Custom fields API
+  description: >-
+    [Custom fields](https://docs.metronome.com/integrations/custom-fields/) enable adding additional data
+    to Metronome entities. Use these endpoints to create, retrieve, update, and delete custom fields.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Custom fields
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-custom-fields-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-customers-api
+  name: Metronome Customers API
+  description: >-
+    [Customers](https://docs.metronome.com/provisioning/create-customers/) in Metronome represent your
+    users for all billing and reporting. Use these endpoints to create, retrieve, update, and archive
+    customers and their billing configuration.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-customers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-integrations-api
+  name: Metronome Integrations API
+  description: The Integrations API from Metronome — 1 operation(s) for integrations.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Integrations
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-integrations-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-invoices-api
+  name: Metronome Invoices API
+  description: >-
+    [Invoices](https://docs.metronome.com/invoicing/) reflect how much a customer spent during a period,
+    which is the basis for billing. Metronome automatically generates invoices based upon your pricing,
+    packaging, and usage events. Use these endpoints to retrieve invoices.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Invoices
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-invoices-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-named-schedules-api
+  name: Metronome Named schedules API
+  description: >-
+    Named schedules are used for storing custom data that can change over time. Named schedules are often
+    used in custom pricing logic.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Named schedules
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-named-schedules-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-notifications-api
+  name: Metronome Notifications API
+  description: The Notifications API from Metronome — 6 operation(s) for notifications.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Notifications
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-notifications-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-packages-api
+  name: Metronome Packages API
+  description: The Packages API from Metronome — 3 operation(s) for packages.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Packages
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-packages-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-payments-api
+  name: Metronome Payments API
+  description: The Payments API from Metronome — 3 operation(s) for payments.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-payments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-products-api
+  name: Metronome Products API
+  description: Products are the items that customers purchase.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-products-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-rate-cards-api
+  name: Metronome Rate cards API
+  description: Rate cards are used to define default pricing for products.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Rate cards
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-rate-cards-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-security-api
+  name: Metronome Security API
+  description: >-
+    [Security](https://docs.metronome.com/developer-resources/security/) endpoints allow you to retrieve
+    security-related data.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Security
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-security-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-settings-api
+  name: Metronome Settings API
+  description: >-
+    Use these endpoints to configure a billing API key, a webhook secret, or invoice finalization behavior.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Settings
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-settings-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-threshold-billing-api
+  name: Metronome Threshold billing API
+  description: The Threshold billing API from Metronome — 1 operation(s) for threshold billing.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Threshold billing
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-threshold-billing-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
+- aid: metronome:metronome-usage-api
+  name: Metronome Usage API
+  description: >-
+    [Usage events](https://docs.metronome.com/connecting-metronome/send-usage-data/) are the basis for
+    billable metrics. Use these endpoints to send usage events to Metronome and retrieve aggregated event
+    data.
+  humanURL: https://docs.metronome.com/
+  baseURL: https://api.metronome.com
+  tags:
+  - Usage
+  properties:
+  - type: OpenAPI
+    url: openapi/metronome-usage-api-openapi.yml
+  - type: Documentation
+    url: https://docs.metronome.com/
+  - type: GettingStarted
+    url: https://docs.metronome.com/
 common:
   - type: AgenticAccess
     url: agentic-access/metronome-agentic-access.yml
