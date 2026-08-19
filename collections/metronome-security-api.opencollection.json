@@ -1,0 +1,90 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Security API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Security",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get audit logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/auditLogs",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "starting_on",
+                "value": "",
+                "type": "query",
+                "description": "RFC 3339 timestamp of the earliest audit log to return. Cannot be used with 'next_page'."
+              },
+              {
+                "name": "ending_before",
+                "value": "",
+                "type": "query",
+                "description": "RFC 3339 timestamp (exclusive). Cannot be used with 'next_page'."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort order by timestamp, e.g. date_asc or date_desc. Defaults to date_asc."
+              },
+              {
+                "name": "resource_id",
+                "value": "",
+                "type": "query",
+                "description": "Optional parameter that can be used to filter which audit logs are returned. If you specify resource_id, you must also specify resource_type."
+              },
+              {
+                "name": "resource_type",
+                "value": "",
+                "type": "query",
+                "description": "Optional parameter that can be used to filter which audit logs are returned. If you specify resource_type, you must also specify resource_id."
+              }
+            ]
+          },
+          "docs": "Get a comprehensive audit trail of all operations performed in your Metronome account, whether initiated through the API, web interface, or automated processes. This endpoint provides detailed logs of who did what and when, enabling compliance reporting, security monitoring, and operational troubleshooting across all interaction channels.\n\n### Use this endpoint to:\n- Monitor all account activity for security and compliance purposes\n- Track configuration changes regardless of source (API, UI, or "
+        },
+        {
+          "info": {
+            "name": "Get services",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/services"
+          },
+          "docs": "Gets Metronome's service registry with associated IP addresses for security allowlisting and firewall configuration. Use this endpoint to maintain an up-to-date list of IPs that your systems should trust for Metronome communications. Returns service names and their current IP ranges, with new IPs typically appearing 30+ days before first use to ensure smooth allowlist updates.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,231 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Rate cards API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Rate cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a rate schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/getRateSchedule",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "A rate card defines the prices that you charge for your products. Rate cards support scheduled changes over time, to allow you to easily roll out pricing changes and new product launches across your customer base. Use this endpoint to understand the rate schedule `starting_at` a given date, optionally filtering the list of rates returned based on product id or pricing group values. For example, you may want to display a schedule of upcoming price changes for a given product in your product exper"
+        },
+        {
+          "info": {
+            "name": "Get rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/getRates",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Understand the rate schedule at a given timestamp, optionally filtering the list of rates returned based on properties such as `product_id` and `pricing_group_values`. For example, you may want to display the current price for a given product in your product experience - use this endpoint to fetch that information from its source of truth in Metronome. \n\nIf you want to understand the rates for a specific customer's contract, inclusive of contract-level overrides, use the `getContractRateSchedule"
+        },
+        {
+          "info": {
+            "name": "Get a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Return details for a specific rate card including name, description, and aliases. This endpoint does not return rates - use the dedicated getRates or getRateSchedule endpoints to understand the rates on a rate card.\n"
+        },
+        {
+          "info": {
+            "name": "List rate cards",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/list",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List all rate cards. Returns rate card IDs, names, descriptions, aliases, and other details. To view the rates associated with a given rate card, use the getRates or getRateSchedule endpoints.\n"
+        },
+        {
+          "info": {
+            "name": "Create a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "In Metronome, the rate card is the central location for your pricing. Rate cards were built with new product launches and pricing changes in mind - you can update your products and pricing in one place, and that change will be automatically propagated across your customer cohorts. Most clients need only maintain one or a few rate cards within Metronome.\n\n### Use this endpoint to:\n- Create a rate card with a name and description\n- Define the rate card's single underlying fiat currency, and any nu"
+        },
+        {
+          "info": {
+            "name": "Update a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/update",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the metadata properties of an existing rate card, including its name, description, and aliases. This endpoint is designed for managing rate card identity and reference aliases rather than modifying pricing rates.\n\nModifies the descriptive properties and alias configuration of a rate card without affecting the underlying pricing rates or schedules. This allows you to update how a rate card is identified and referenced throughout your system.\n\n### Use this endpoint to:\n- Rate card renaming:"
+        },
+        {
+          "info": {
+            "name": "Archive a rate card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Permanently disable a rate card by archiving it, preventing use in new contracts while preserving existing contract pricing. Use this when retiring old pricing models, consolidating rate cards, or removing outdated pricing structures. Returns the archived rate card ID and stops the rate card from appearing in contract creation workflows.\n"
+        },
+        {
+          "info": {
+            "name": "Add a rate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/addRate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a new rate\n"
+        },
+        {
+          "info": {
+            "name": "Add rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/addRates",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add new rates\n"
+        },
+        {
+          "info": {
+            "name": "Set the rate card products order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/setRateCardProductsOrder",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of products on the rate card.\n"
+        },
+        {
+          "info": {
+            "name": "Update the rate card products order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/moveRateCardProducts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of specific products on the rate card by moving them relative to their current location.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

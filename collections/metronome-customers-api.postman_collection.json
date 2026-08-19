@@ -1,0 +1,2629 @@
+{
+  "item": [
+    {
+      "id": "4e5f8c8f-bfa9-4649-8878-a36c677cf369",
+      "name": "Customers",
+      "description": {
+        "content": "[Customers](https://docs.metronome.com/provisioning/create-customers/) in Metronome represent your users for all billing and reporting. Use these endpoints to create, retrieve, update, and archive customers and their billing configuration.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "83f8c865-ffc5-472f-86b8-3304384a06ec",
+          "name": "Set customer billable status",
+          "request": {
+            "name": "Set customer billable status",
+            "description": {
+              "content": "Set a customer's billable status. This endpoint's availability is dependent on your client's configuration. Metronome 1.0 plan invoices are not supported.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                "setBillableStatus"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"billable_status\": \"<string>\",\n  \"effective_at\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f6e599d8-0d32-4705-bdf8-e4483ef85de6",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "setBillableStatus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"04ca7e72-4229-4a6e-ab11-9f7376fccbcb\",\n  \"billable_status\": \"billable\",\n  \"effective_at\": \"2021-01-01T00:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"8deed800-1b7a-495d-a207-6c52bac54dc9\",\n    \"current_billable_status\": \"billable\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c393e880-d7ae-4c1d-a078-b8a25d6db490",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "setBillableStatus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"04ca7e72-4229-4a6e-ab11-9f7376fccbcb\",\n  \"billable_status\": \"billable\",\n  \"effective_at\": \"2021-01-01T00:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8c9e337e-d97c-4579-ade9-5ba9c57403fc",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "setBillableStatus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"04ca7e72-4229-4a6e-ab11-9f7376fccbcb\",\n  \"billable_status\": \"billable\",\n  \"effective_at\": \"2021-01-01T00:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b0b1c8f1-40be-413e-9887-942a9ed1690a",
+          "name": "Archive a customer",
+          "request": {
+            "name": "Archive a customer",
+            "description": {
+              "content": "Use this endpoint to archive a customer while preserving auditability. Archiving a customer will automatically archive all contracts as of the current date and void all corresponding invoices. Use this endpoint if a customer is onboarded by mistake.\n\n### Usage guidelines:\n- Once a customer is archived, it cannot be unarchived.\n- Archived customers can still be viewed through the API or the UI for audit purposes. \n- Ingest aliases remain idempotent for archived customers. In order to reuse an ingest alias, first remove the ingest alias from the customer prior to archiving.\n- Any notifications associated with the customer will no longer be triggered.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                "archive"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1f64a19d-4c3c-4c60-9ac2-c0602a44112d",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"8deed800-1b7a-495d-a207-6c52bac54dc9\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"8deed800-1b7a-495d-a207-6c52bac54dc9\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ac4c6de0-9d75-4878-a18d-63881af9e2d6",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"8deed800-1b7a-495d-a207-6c52bac54dc9\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "193f9c62-fb7e-48c1-8138-80c90d98f965",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"8deed800-1b7a-495d-a207-6c52bac54dc9\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8443c906-a55d-421a-95be-054a8c5ff84b",
+          "name": "Get a customer",
+          "request": {
+            "name": "Get a customer",
+            "description": {
+              "content": "Get detailed information for a specific customer by their Metronome ID. Returns customer profile data including name, creation date, ingest aliases, configuration settings, and custom fields. Use this endpoint to fetch complete customer details for billing operations or account management.\n\nNote: If searching for a customer billing configuration, use the `/getCustomerBillingConfigurations` endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                ":customer_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ba4dd6aa-2802-4b14-8f71-d582ce541d17",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n    \"created_at\": \"2024-01-01T00:00:00.000Z\",\n    \"updated_at\": \"2024-01-01T00:00:00.000Z\",\n    \"external_id\": \"team@example.com\",\n    \"ingest_aliases\": [\n      \"team@example.com\"\n    ],\n    \"name\": \"Example, Inc.\",\n    \"customer_config\": {\n      \"salesforce_account_id\": \"0015500001WO1ZiABL\"\n    },\n    \"custom_fields\": {\n      \"x_account_id\": \"KyVnHhSBWl7eY2bl\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "58c19210-f188-4334-b7ad-92f8a3588060",
+          "name": "List customers",
+          "request": {
+            "name": "List customers",
+            "description": {
+              "content": "Gets a paginated list of all customers in your Metronome account. Use this endpoint to browse your customer base, implement customer search functionality, or sync customer data with external systems. Returns customer details including IDs, names, and configuration settings. Supports filtering and pagination parameters for efficient data retrieval.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                },
+                {
+                  "disabled": false,
+                  "key": "ingest_alias",
+                  "value": "<string>",
+                  "description": "Filter the customer list by ingest_alias"
+                },
+                {
+                  "disabled": false,
+                  "key": "customer_ids",
+                  "value": "<string>",
+                  "description": "Filter the customer list by customer_id.  Up to 100 ids can be provided."
+                },
+                {
+                  "disabled": false,
+                  "key": "customer_ids",
+                  "value": "<string>",
+                  "description": "Filter the customer list by customer_id.  Up to 100 ids can be provided."
+                },
+                {
+                  "disabled": false,
+                  "key": "only_archived",
+                  "value": "<boolean>",
+                  "description": "Filter the customer list to only return archived customers. By default, only active customers are returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "salesforce_account_ids",
+                  "value": "<string>",
+                  "description": "Filter the customer list by salesforce_account_id.  Up to 100 ids can be provided."
+                },
+                {
+                  "disabled": false,
+                  "key": "salesforce_account_ids",
+                  "value": "<string>",
+                  "description": "Filter the customer list by salesforce_account_id.  Up to 100 ids can be provided."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cbdca2f2-c95d-4f2b-adfb-223c6dd4916a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ingest_alias",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "customer_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "customer_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "only_archived",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "salesforce_account_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "salesforce_account_ids",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n      \"external_id\": \"team@example.com\",\n      \"created_at\": \"2024-01-01T00:00:00.000Z\",\n      \"updated_at\": \"2024-01-01T00:00:00.000Z\",\n      \"ingest_aliases\": [\n        \"team@example.com\"\n      ],\n      \"name\": \"Example, Inc.\",\n      \"customer_config\": {\n        \"salesforce_account_id\": \"0015500001WO1ZiABL\"\n      },\n      \"custom_fields\": {\n        \"x_account_id\": \"KyVnHhSBWl7eY2bl\"\n      }\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4e84bfe0-0056-4610-9fd7-b962c09b5df8",
+          "name": "Create a customer",
+          "request": {
+            "name": "Create a customer",
+            "description": {
+              "content": "Create a new customer in Metronome and optionally the billing configuration (recommended) which dictates where invoices for the customer will be sent or where payment will be collected. \n\n### Use this endpoint to:\nExecute your customer provisioning workflows for either PLG motions, where customers originate in your platform, or SLG motions, where customers originate in your sales system.\n\n### Key response fields: \nThis end-point returns the `customer_id` created by the request. This id can be used to fetch relevant billing configurations and create contracts.\n\n### Example workflow:\n- Generally, Metronome recommends first creating the customer in the downstream payment / ERP system when payment method is collected and then creating the customer in Metronome using the response (i.e. `customer_id`) from the downstream system. If you do not create a billing configuration on customer creation, you can add it later.        \n- Once a customer is created, you can then create a contract for the customer. In the contract creation process, you will need to add the customer billing configuration to the contract to ensure Metronome invoices the customer correctly. This is because a customer can have multiple configurations.\n- As part of the customer creation process, set the ingest alias for the customer which will ensure usage is accurately mapped to the customer. Ingest aliases can be added or changed after the creation process as well.\n\n### Usage guidelines:\nFor details on different billing configurations for different systems, review the `/setCustomerBillingConfiguration` end-point.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"ingest_aliases\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"external_id\": \"<string>\",\n  \"customer_billing_provider_configurations\": [\n    {\n      \"billing_provider\": \"<string>\",\n      \"tax_provider\": \"<string>\",\n      \"configuration\": {\n        \"key_0\": true,\n        \"key_1\": 305.373338501701\n      },\n      \"delivery_method_id\": \"<uuid>\",\n      \"delivery_method\": \"<string>\"\n    },\n    {\n      \"billing_provider\": \"<string>\",\n      \"tax_provider\": \"<string>\",\n      \"configuration\": {\n        \"key_0\": \"string\",\n        \"key_1\": 1321\n      },\n      \"delivery_method_id\": \"<uuid>\",\n      \"delivery_method\": \"<string>\"\n    }\n  ],\n  \"customer_revenue_system_configurations\": [\n    {\n      \"provider\": \"<string>\",\n      \"configuration\": {\n        \"key_0\": 4095\n      },\n      \"delivery_method_id\": \"<uuid>\",\n      \"delivery_method\": \"<string>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"configuration\": {\n        \"key_0\": \"string\"\n      },\n      \"delivery_method_id\": \"<uuid>\",\n      \"delivery_method\": \"<string>\"\n    }\n  ],\n  \"custom_fields\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0ec4145f-1e09-450e-822b-3451c6f20dda",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ingest_aliases\": [\n    \"team@example.com\"\n  ],\n  \"name\": \"Example, Inc.\",\n  \"customer_billing_provider_configurations\": [\n    {\n      \"billing_provider\": \"stripe\",\n      \"delivery_method\": \"direct_to_billing_provider\",\n      \"configuration\": {\n        \"stripe_customer_id\": \"cus_123\",\n        \"stripe_collection_method\": \"charge_automatically\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n    \"external_id\": \"team@example.com\",\n    \"ingest_aliases\": [\n      \"team@example.com\"\n    ],\n    \"name\": \"Aperture, Inc.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eba616bc-a4b3-4ae3-8060-2b3d1b1841a9",
+              "name": "A customer with this ID already exists",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ingest_aliases\": [\n    \"team@example.com\"\n  ],\n  \"name\": \"Example, Inc.\",\n  \"customer_billing_provider_configurations\": [\n    {\n      \"billing_provider\": \"stripe\",\n      \"delivery_method\": \"direct_to_billing_provider\",\n      \"configuration\": {\n        \"stripe_customer_id\": \"cus_123\",\n        \"stripe_collection_method\": \"charge_automatically\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6352e16e-73e3-4ff8-9a5e-8f5ccc258da2",
+          "name": "Create or update customer ingest aliases",
+          "request": {
+            "name": "Create or update customer ingest aliases",
+            "description": {
+              "content": "Sets the ingest aliases for a customer. Use this endpoint to associate a Metronome customer with an internal ID for easier tracking between systems. Ingest aliases can be used in the `customer_id` field when sending usage events to Metronome. \n\n### Usage guidelines:\n- This call is idempotent and fully replaces the set of ingest aliases for the given customer.\n- Switching an ingest alias from one customer to another will associate all corresponding usage to the new customer.\n- Use multiple ingest aliases to model child organizations within a single Metronome customer.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                ":customer_id",
+                "setIngestAliases"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ingest_aliases\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "62778c95-d86e-4071-8eec-fdb77be9f0eb",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id",
+                    "setIngestAliases"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ingest_aliases\": [\n    \"team@example.com\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7ef8e6bf-0db3-4180-9e05-487a00cb3227",
+          "name": "Update a customer name",
+          "request": {
+            "name": "Update a customer name",
+            "description": {
+              "content": "Updates the display name for a customer record. Use this to correct customer names, update business names after rebranding, or maintain accurate customer information for invoicing and reporting. Returns the updated customer object with the new name applied immediately across all billing documents and interfaces.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                ":customer_id",
+                "setName"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7da96279-7b13-4709-af1f-2721191e59e6",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id",
+                    "setName"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Example, Inc.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n    \"external_id\": \"team@example.com\",\n    \"ingest_aliases\": [\n      \"team@example.com\"\n    ],\n    \"name\": \"Example, Inc.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "32bd65a7-8985-42c9-8470-e079f11b14aa",
+          "name": "Update a customer configuration",
+          "request": {
+            "name": "Update a customer configuration",
+            "description": {
+              "content": "Update configuration settings for a specific customer, such as external system integrations (e.g., Salesforce account ID) and other customer-specific billing parameters. Use this endpoint to modify customer configurations without affecting core customer data like name or ingest aliases.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                ":customer_id",
+                "updateConfig"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salesforce_account_id\": \"<string>\",\n  \"leave_stripe_invoices_in_draft\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5c634b6b-1e23-469c-8fff-cd3e92547470",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id",
+                    "updateConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"salesforce_account_id\": \"0015500001WO1ZiABL\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bb7439b5-93b5-45cb-be59-b76622a078a0",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id",
+                    "updateConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"salesforce_account_id\": \"0015500001WO1ZiABL\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4ccb8975-e065-4f0e-ad1f-33b1a700f0bd",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id",
+                    "updateConfig"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"salesforce_account_id\": \"0015500001WO1ZiABL\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c09e1efc-bf8f-415b-bc99-38373ef192cd",
+          "name": "Fetch billing provider configurations for a customer",
+          "request": {
+            "name": "Fetch billing provider configurations for a customer",
+            "description": {
+              "content": "Returns all billing configurations previously set for the customer. Use during the contract provisioning process to fetch the `billing_provider_configuration_id` needed to set the contract billing configuration.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "getCustomerBillingProviderConfigurations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"include_archived\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "81ccbd22-d711-4f7f-923f-f4e4c62616e4",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "getCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"6a37bb88-8538-48c5-b37b-a41c836328bd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"e045c62b-65e7-4e84-a924-3f06f8b621d0\",\n      \"billing_provider\": \"stripe\",\n      \"customer_id\": \"6a37bb88-8538-48c5-b37b-a41c836328bd\",\n      \"configuration\": {\n        \"stripe_customer_id\": \"cus_SB7Rq5UAkSmrR3\",\n        \"stripe_collection_method\": \"charge_automatically\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\",\n      \"delivery_method_configuration\": {\n        \"stripe_account_id\": \"acct_1P6FywIkTQSg6Mm3\",\n        \"leave_invoices_in_draft\": false,\n        \"skip_zero_dollar_invoices\": false,\n        \"export_invoice_sub_line_items\": false,\n        \"include_zero_quantity_sub_line_items\": true,\n        \"stripe_invoice_quantity_always_string\": false,\n        \"set_effective_at_date_to_inclusive_period_end\": false\n      },\n      \"archived_at\": null,\n      \"delivery_method_id\": \"4422e46f-b374-4159-97e3-300208cdb2e2\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "72f59300-9e01-4516-98c5-79d1b48ea491",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "getCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"6a37bb88-8538-48c5-b37b-a41c836328bd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5aeb97ab-e9b3-4032-b008-1de4f9be1316",
+          "name": "Fetch revenue system configurations for a customer",
+          "request": {
+            "name": "Fetch revenue system configurations for a customer",
+            "description": {
+              "content": "Returns all revenue system configurations previously set for the customer.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "getCustomerRevenueSystemConfigurations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"provider\": \"<string>\",\n  \"include_archived\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c8e80f8c-1aca-4f9e-925a-82762fa0dea8",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "getCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"6a37bb88-8538-48c5-b37b-a41c836328bd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"e045c62b-65e7-4e84-a924-3f06f8b621d0\",\n      \"provider\": \"netsuite\",\n      \"customer_id\": \"6a37bb88-8538-48c5-b37b-a41c836328bd\",\n      \"configuration\": {\n        \"netsuite_customer_id\": \"12345\"\n      },\n      \"delivery_method_id\": \"4422e46f-b374-4159-97e3-300208cdb2e2\",\n      \"delivery_method\": \"direct_to_billing_provider\",\n      \"delivery_method_configuration\": {\n        \"netsuite_account_id\": \"acct_123\"\n      },\n      \"archived_at\": null\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "239d55f0-477b-4fd6-b651-45336a9be1ed",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "getCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"6a37bb88-8538-48c5-b37b-a41c836328bd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "38e6df82-3437-4b13-92b2-c8d059e9e395",
+          "name": "Set billing provider configurations for a customer",
+          "request": {
+            "name": "Set billing provider configurations for a customer",
+            "description": {
+              "content": "Create a billing configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to collect payment in or send the invoice to. You can create multiple configurations per customer. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the billing configuration can then be associated to the customer's contract.\n- Add a new configuration to an existing customer. This might be used as part of an upgrade or downgrade workflow where the customer was previously billed through system A (e.g. Stripe) but will now be billed through system B (e.g. AWS). Once created, the new configuration can then be associated to the customer's contract.\n- Multiple configurations can be added per destination. For example, you can create two Stripe billing configurations for a Metronome customer that each have a distinct `collection_method`.\n\n### Delivery method options:\n- `direct_to_billing_provider`: Use when Metronome should send invoices directly to the billing provider's API (e.g., Stripe, NetSuite). This is the most common method for automated billing workflows.\n- `tackle`: Use specifically for AWS Marketplace transactions that require Tackle's co-selling platform for partner attribution and commission tracking.\n- `aws_sqs`: Use when you want invoice data delivered to an AWS SQS queue for custom processing before sending to your billing system.\n- `aws_sns`: Use when you want invoice notifications published to an AWS SNS topic for event-driven billing workflows.\n\n### Key response fields: \nThe id for the customer billing configuration. This id can be used to associate the billing configuration to a contract.\n\n### Usage guidelines:\nMust use the `delivery_method_id` if you have multiple Stripe accounts connected to Metronome.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "setCustomerBillingProviderConfigurations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": [\n    {\n      \"billing_provider\": \"<string>\",\n      \"customer_id\": \"<uuid>\",\n      \"tax_provider\": \"<string>\",\n      \"configuration\": {\n        \"key_0\": 2936.9657884306043\n      },\n      \"delivery_method_id\": \"<uuid>\",\n      \"delivery_method\": \"<string>\"\n    },\n    {\n      \"billing_provider\": \"<string>\",\n      \"customer_id\": \"<uuid>\",\n      \"tax_provider\": \"<string>\",\n      \"configuration\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\"\n      },\n      \"delivery_method_id\": \"<uuid>\",\n      \"delivery_method\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "aab2efba-ca10-4567-acd1-80b0d7e5cb96",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "setCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": [\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"stripe\",\n      \"configuration\": {\n        \"stripe_customer_id\": \"cus_1234\",\n        \"stripe_collection_method\": \"charge_automatically\",\n        \"leave_stripe_invoices_in_draft\": true\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"aws_marketplace\",\n      \"configuration\": {\n        \"aws_customer_id\": \"ABC123ABC12\",\n        \"aws_product_code\": \"my_product\",\n        \"aws_region\": \"us-west-1\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"azure_marketplace\",\n      \"configuration\": {\n        \"azure_subscription_id\": \"my_subscription\"\n      },\n      \"delivery_method_id\": \"5b9e3072-415b-4842-94f0-0b6700c8b6be\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"aws_marketplace\",\n      \"configuration\": {\n        \"aws_customer_id\": \"ABC123ABC12\",\n        \"aws_product_code\": \"my_product\",\n        \"aws_region\": \"us-west-1\",\n        \"aws_is_subscription_product\": true\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"gcp_marketplace\",\n      \"configuration\": {\n        \"gcp_entitlement_id\": \"my_entitlement\",\n        \"gcp_service_name\": \"my.service.endpoint.goog\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"netsuite\",\n      \"configuration\": {\n        \"netsuite_customer_id\": \"12345\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"4f8811f8-4e49-c100-32ae-077673c54ade\",\n      \"billing_provider\": \"<string>\",\n      \"customer_id\": \"a4711eb9-59a8-ce79-8eed-11381e1d2719\",\n      \"configuration\": {\n        \"key_0\": 7018.0466807423945\n      },\n      \"delivery_method_id\": \"cb263333-fb90-3186-2f36-d6af6bc85d55\",\n      \"tax_provider\": \"<string>\"\n    },\n    {\n      \"id\": \"0a734d5b-5877-2a36-3485-3e84ef1c2ad4\",\n      \"billing_provider\": \"<string>\",\n      \"customer_id\": \"5e83e0c9-0d70-4aca-89c2-0843de4d271c\",\n      \"configuration\": {\n        \"key_0\": 7303\n      },\n      \"delivery_method_id\": \"49ffded5-eea0-1b17-42ab-723d014a56a1\",\n      \"tax_provider\": \"<string>\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c60a27ed-24fb-455f-8e60-e5305e9fc402",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "setCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": [\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"stripe\",\n      \"configuration\": {\n        \"stripe_customer_id\": \"cus_1234\",\n        \"stripe_collection_method\": \"charge_automatically\",\n        \"leave_stripe_invoices_in_draft\": true\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"aws_marketplace\",\n      \"configuration\": {\n        \"aws_customer_id\": \"ABC123ABC12\",\n        \"aws_product_code\": \"my_product\",\n        \"aws_region\": \"us-west-1\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"azure_marketplace\",\n      \"configuration\": {\n        \"azure_subscription_id\": \"my_subscription\"\n      },\n      \"delivery_method_id\": \"5b9e3072-415b-4842-94f0-0b6700c8b6be\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"aws_marketplace\",\n      \"configuration\": {\n        \"aws_customer_id\": \"ABC123ABC12\",\n        \"aws_product_code\": \"my_product\",\n        \"aws_region\": \"us-west-1\",\n        \"aws_is_subscription_product\": true\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"gcp_marketplace\",\n      \"configuration\": {\n        \"gcp_entitlement_id\": \"my_entitlement\",\n        \"gcp_service_name\": \"my.service.endpoint.goog\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"netsuite\",\n      \"configuration\": {\n        \"netsuite_customer_id\": \"12345\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "533811b1-9900-4789-ac70-13dc80b6bb76",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "setCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": [\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"stripe\",\n      \"configuration\": {\n        \"stripe_customer_id\": \"cus_1234\",\n        \"stripe_collection_method\": \"charge_automatically\",\n        \"leave_stripe_invoices_in_draft\": true\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"aws_marketplace\",\n      \"configuration\": {\n        \"aws_customer_id\": \"ABC123ABC12\",\n        \"aws_product_code\": \"my_product\",\n        \"aws_region\": \"us-west-1\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"azure_marketplace\",\n      \"configuration\": {\n        \"azure_subscription_id\": \"my_subscription\"\n      },\n      \"delivery_method_id\": \"5b9e3072-415b-4842-94f0-0b6700c8b6be\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"aws_marketplace\",\n      \"configuration\": {\n        \"aws_customer_id\": \"ABC123ABC12\",\n        \"aws_product_code\": \"my_product\",\n        \"aws_region\": \"us-west-1\",\n        \"aws_is_subscription_product\": true\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"gcp_marketplace\",\n      \"configuration\": {\n        \"gcp_entitlement_id\": \"my_entitlement\",\n        \"gcp_service_name\": \"my.service.endpoint.goog\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    },\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"billing_provider\": \"netsuite\",\n      \"configuration\": {\n        \"netsuite_customer_id\": \"12345\"\n      },\n      \"delivery_method\": \"direct_to_billing_provider\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0b385fe0-b61e-4dfc-9ba2-74f6b0396ea5",
+          "name": "Archive billing provider configurations for a customer",
+          "request": {
+            "name": "Archive billing provider configurations for a customer",
+            "description": {
+              "content": "Deprecate an existing billing configuration for a customer to handle churn or billing and collection preference changes. Archiving a billing configuration takes effect immediately. If there are active contracts using the configuration, Metronome will archive the configuration on the contract and immediately stop metering to downstream systems.\n\n### Use this endpoint to:\n- Remove billing provider customer data and configurations when no longer needed\n- Clean up test or deprecated billing provider configurations\n- Free up uniqueness keys for reuse with new billing provider configurations\n- Disable threshold recharge configurations associated with archived billing providers\n\n### Key response fields:\nA successful response returns:\n- `success`: Boolean indicating the operation completed successfully\n- `error`: Null on success, error message on failure\n\n### Usage guidelines:\n- Archiving a contract configuration during a grace period will result in the invoice not being sent to the customer\n- Automatically disables both spend-based and credit-based threshold recharge configurations for contracts using the archived billing provider        \n- You can archive multiple configurations for a single customer in a single request, but any validation failures for an individual configuration will prevent the entire operation from succeeding\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "archiveCustomerBillingProviderConfigurations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_billing_provider_configuration_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"customer_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "831e477a-f5b7-4078-a166-62e0de5b854d",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archiveCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_billing_provider_configuration_ids\": [\n    \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n    \"4db51251-61de-4bfe-b9ce-495e244f3491\"\n  ],\n  \"customer_id\": \"20a060d1-aa80-41d4-8bb2-4f3091b93903\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"customer_billing_provider_configuration_ids\": [\n      \"<uuid>\",\n      \"<uuid>\"\n    ],\n    \"customer_id\": \"<uuid>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ecc160ce-8e76-43be-8e10-d2dd802d2a29",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archiveCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_billing_provider_configuration_ids\": [\n    \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n    \"4db51251-61de-4bfe-b9ce-495e244f3491\"\n  ],\n  \"customer_id\": \"20a060d1-aa80-41d4-8bb2-4f3091b93903\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b34114fb-d7a9-4061-9b4b-027aaf97378c",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archiveCustomerBillingProviderConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_billing_provider_configuration_ids\": [\n    \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n    \"4db51251-61de-4bfe-b9ce-495e244f3491\"\n  ],\n  \"customer_id\": \"20a060d1-aa80-41d4-8bb2-4f3091b93903\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d3429fcc-154d-4d89-ad2e-dcd4a3470ac4",
+          "name": "Set revenue system configurations for a customer",
+          "request": {
+            "name": "Set revenue system configurations for a customer",
+            "description": {
+              "content": "Create a revenue system configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to use for revenue workflows. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the revenue system configuration can then be associated to the customer's contract.\n- Add a new configuration to an existing customer.\n\n### Key response fields: \nReturns the inserted configuration objects, including the id of the revenue system configuration(s). These ids can be used to associate a revenue system to a contract.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "setCustomerRevenueSystemConfigurations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": [\n    {\n      \"provider\": \"<string>\",\n      \"customer_id\": \"<uuid>\",\n      \"configuration\": {\n        \"key_0\": 1847,\n        \"key_1\": true\n      },\n      \"delivery_method_id\": \"<uuid>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"customer_id\": \"<uuid>\",\n      \"configuration\": {\n        \"key_0\": 4722\n      },\n      \"delivery_method_id\": \"<uuid>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fcb74552-3838-46f7-a2f9-ac58ed67ad66",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "setCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": [\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"provider\": \"netsuite\",\n      \"configuration\": {\n        \"netsuite_customer_id\": 12345\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"e045c62b-65e7-4e84-a924-3f06f8b621d0\",\n      \"customer_id\": \"6a37bb88-8538-48c5-b37b-a41c836328bd\",\n      \"delivery_method_id\": \"ebacc0cc-56ac-4cfa-971b-4fc3f58ee960\",\n      \"provider\": \"netsuite\",\n      \"configuration\": {\n        \"netsuite_customer_id\": \"12345\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9cdc258c-e650-4bf7-bdd2-c4840c542018",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "setCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": [\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"provider\": \"netsuite\",\n      \"configuration\": {\n        \"netsuite_customer_id\": 12345\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7d8d1c81-2f2f-4641-87f1-22c7430e2eea",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "setCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": [\n    {\n      \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n      \"provider\": \"netsuite\",\n      \"configuration\": {\n        \"netsuite_customer_id\": 12345\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b0cf7147-e144-48b3-8094-f4942d931fc3",
+          "name": "Archive revenue system configurations for a customer",
+          "request": {
+            "name": "Archive revenue system configurations for a customer",
+            "description": {
+              "content": "Archive existing revenue system configurations for a customer. Archiving a revenue system configuration takes effect immediately.\n\n### Use this endpoint to:\n- Remove revenue system configurations when no longer needed\n- Clean up test or deprecated revenue system configurations\n\n### Key response fields:\nA successful response returns:\n- `customer_id`: The customer ID the configurations belong to\n- `customer_revenue_system_configuration_ids`: The archived configuration IDs\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "archiveCustomerRevenueSystemConfigurations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_revenue_system_configuration_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"customer_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "009caa2c-fe34-4bcb-8dce-ebe1034d7ec7",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archiveCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_revenue_system_configuration_ids\": [\n    \"4db51251-61de-4bfe-b9ce-495e244f3493\",\n    \"4db51251-61de-4bfe-b9ce-495e244f3494\"\n  ],\n  \"customer_id\": \"20a060d1-aa80-41d4-8bb2-4f3091b93903\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"customer_revenue_system_configuration_ids\": [\n      \"<uuid>\",\n      \"<uuid>\"\n    ],\n    \"customer_id\": \"<uuid>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f5235bf2-fadb-4a5c-b077-e4bc30860d35",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archiveCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_revenue_system_configuration_ids\": [\n    \"4db51251-61de-4bfe-b9ce-495e244f3493\",\n    \"4db51251-61de-4bfe-b9ce-495e244f3494\"\n  ],\n  \"customer_id\": \"20a060d1-aa80-41d4-8bb2-4f3091b93903\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "103f6a7c-4c15-4bed-a078-36a1110d3d42",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archiveCustomerRevenueSystemConfigurations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_revenue_system_configuration_ids\": [\n    \"4db51251-61de-4bfe-b9ce-495e244f3493\",\n    \"4db51251-61de-4bfe-b9ce-495e244f3494\"\n  ],\n  \"customer_id\": \"20a060d1-aa80-41d4-8bb2-4f3091b93903\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dd1da74a-c3ac-4afe-941a-def457e70148",
+          "name": "Get an embeddable customer dashboard",
+          "request": {
+            "name": "Get an embeddable customer dashboard",
+            "description": {
+              "content": "Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome's billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.\n\n### Use this endpoint to:\n- Embed billing dashboards directly in your customer portal or admin interface\n- Provide self-service access to invoices, usage data, and credit balances\n- Build white-labeled billing experiences with minimal development effort\n\n### Key response fields:\n- A secure, time-limited URL that can be embedded in an iframe\n- The URL includes authentication tokens and configuration parameters\n- URLs are customer-specific and respect your security settings\n\n### Usage guidelines:\n- Dashboard types: Choose from `invoices`, `usage`, or `commits_and_credits`\n- Customization options:\n    - `dashboard_options`: Configure whether you want invoices to show zero usage line items\n    - `color_overrides`: Match your brand's color palette\n    - `bm_group_key_overrides`: Customize how dimensions are displayed (for the usage embeddable dashboard)\n- Iframe implementation: Embed the returned URL directly in an iframe element\n- Responsive design: Dashboards automatically adapt to container dimensions\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "dashboards",
+                "getEmbeddableUrl"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"dashboard\": \"<string>\",\n  \"dashboard_options\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ],\n  \"color_overrides\": [\n    {\n      \"name\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"value\": \"<string>\"\n    }\n  ],\n  \"bm_group_key_overrides\": [\n    {\n      \"group_key_name\": \"<string>\",\n      \"display_name\": \"<string>\",\n      \"value_display_names\": {\n        \"key_0\": \"string\"\n      }\n    },\n    {\n      \"group_key_name\": \"<string>\",\n      \"display_name\": \"<string>\",\n      \"value_display_names\": {\n        \"key_0\": \"string\"\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "54424fba-cb7c-46a5-9e1e-446f10941c0c",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "dashboards",
+                    "getEmbeddableUrl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n  \"dashboard\": \"invoices\",\n  \"dashboard_options\": [\n    {\n      \"key\": \"show_zero_usage_line_items\",\n      \"value\": \"false\"\n    },\n    {\n      \"key\": \"hide_voided_invoices\",\n      \"value\": \"true\"\n    }\n  ],\n  \"color_overrides\": [\n    {\n      \"name\": \"Gray_dark\",\n      \"value\": \"#ff0000\"\n    }\n  ],\n  \"bm_group_key_overrides\": [\n    {\n      \"group_key_name\": \"tenant_id\",\n      \"display_name\": \"Org ID\",\n      \"value_display_names\": {\n        \"48ecb18f358f\": \"Cluster EU\",\n        \"e358f3ce242d\": \"Cluster APAC\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"url\": \"https://embeddable-dashboards.metronome.com/customers/invoices/v1?...\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1c8a8b59-d44d-40ae-a111-ea2e2703370b",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "dashboards",
+                    "getEmbeddableUrl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4db51251-61de-4bfe-b9ce-495e244f3491\",\n  \"dashboard\": \"invoices\",\n  \"dashboard_options\": [\n    {\n      \"key\": \"show_zero_usage_line_items\",\n      \"value\": \"false\"\n    },\n    {\n      \"key\": \"hide_voided_invoices\",\n      \"value\": \"true\"\n    }\n  ],\n  \"color_overrides\": [\n    {\n      \"name\": \"Gray_dark\",\n      \"value\": \"#ff0000\"\n    }\n  ],\n  \"bm_group_key_overrides\": [\n    {\n      \"group_key_name\": \"tenant_id\",\n      \"display_name\": \"Org ID\",\n      \"value_display_names\": {\n        \"48ecb18f358f\": \"Cluster EU\",\n        \"e358f3ce242d\": \"Cluster APAC\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.metronome.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d9e24395-e726-4572-87fd-7a120c9310f6",
+    "name": "Metronome Alerts Customers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)",
+      "type": "text/plain"
+    }
+  }
+}

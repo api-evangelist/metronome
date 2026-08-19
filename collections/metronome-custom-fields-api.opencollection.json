@@ -1,0 +1,107 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Custom fields API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom fields",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a custom field key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/addKey",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new custom field key for a given entity (e.g. billable metric, contract, alert).\n\nCustom fields are properties that you can add to Metronome objects to store metadata like foreign keys or other descriptors. This metadata can get transferred to or accessed by other systems to contextualize Metronome data and power business processes. For example, to service workflows like revenue recognition, reconciliation, and invoicing, custom fields help Metronome know the relationship between entit"
+        },
+        {
+          "info": {
+            "name": "Delete a custom field key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/removeKey",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes a custom field key from the allowlist for a specific entity type, preventing future use of that key across all instances of the entity. Existing values for this key on entity instances will no longer be accessible once the key is removed.\n"
+        },
+        {
+          "info": {
+            "name": "Set custom field values",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/setValues",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets custom field values on a specific Metronome entity instance. Overwrites existing values for matching keys while preserving other fields. All updates are transactional—either all values are set or none are. Custom field values are limited to 200 characters each.\n"
+        },
+        {
+          "info": {
+            "name": "Delete custom fields",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/deleteValues",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove specific custom field values from a Metronome entity instance by specifying the field keys to delete. Use this endpoint to clean up unwanted custom field data while preserving other fields on the same entity. Requires the entity type, entity ID, and array of keys to remove.\n"
+        },
+        {
+          "info": {
+            "name": "List custom field keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customFields/listKeys",
+            "params": [
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve all your active custom field keys, with optional filtering by entity type (customer, contract, product, etc.). Use this endpoint to discover what custom field keys are available before setting values on entities or to audit your custom field configuration across different entity types.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

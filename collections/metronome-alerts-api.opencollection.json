@@ -1,0 +1,107 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Alerts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Archive a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/alerts/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Permanently disable a threshold notification and remove it from active monitoring across all customers. Archived threshold notifications stop evaluating immediately and can optionally release their uniqueness key for reuse in future threshold notification configurations.\n\n### Use this endpoint to:\n- Decommission threshold notifications that are no longer needed\n- Clean up test or deprecated threshold notification configurations\n- Free up uniqueness keys for reuse with new threshold notifications"
+        },
+        {
+          "info": {
+            "name": "Create a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/alerts/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new threshold notification to monitor customer spending, balances, and billing metrics in real-time. Metronome's notification system provides industry-leading speed with immediate evaluation capabilities, enabling you to proactively manage customer accounts and prevent revenue leakage.\n\nThis endpoint creates configurable threshold notifications that continuously monitor various billing thresholds including spend limits, credit balances, commitment utilization, and invoice totals. Thresh"
+        },
+        {
+          "info": {
+            "name": "Get a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customer-alerts/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve the real-time evaluation status for a specific threshold notification-customer pair. This endpoint provides instant visibility into whether a customer has triggered a threshold notification condition, enabling you to monitor account health and take proactive action based on current threshold notification states.\n\n### Use this endpoint to:\n- Check if a specific customer is currently violating an threshold notification (`in_alarm` status)\n- Verify threshold notification configuration deta"
+        },
+        {
+          "info": {
+            "name": "Get all threshold notifications",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customer-alerts/list",
+            "params": [
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve all threshold notification configurations and their current statuses for a specific customer in a single API call. This endpoint provides a comprehensive view of all threshold notification monitoring a customer account.\n\n### Use this endpoint to:\n- Display all active threshold notifications for a customer in dashboards or admin panels\n- Quickly identify which threshold notifications a customer is currently triggering\n- Audit threshold notification coverage for specific accounts\n- Filter"
+        },
+        {
+          "info": {
+            "name": "Reset a threshold notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customer-alerts/reset",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Force an immediate re-evaluation of a specific threshold notification for a customer, clearing any previous state and triggering a fresh assessment against current thresholds. This endpoint ensures threshold notification accuracy after configuration changes or data corrections.\n\n### Use this endpoint to:\n- Clear false positive threshold notifications after fixing data issues\n- Re-evaluate threshold notifications after adjusting customer balances or credits\n- Test threshold notification behavior "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

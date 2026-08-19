@@ -1,0 +1,153 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Usage API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Ingest events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/ingest",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The ingest endpoint is the primary method for sending usage events to Metronome, serving as the foundation for all billing calculations in your usage-based pricing model. This high-throughput endpoint is designed for real-time streaming ingestion, supports backdating 34 days, and is built to handle mission-critical usage data with enterprise-grade reliability. Metronome supports 100,000 events per second without requiring pre-aggregation or rollups and can scale up from there. See the [Send usag"
+        },
+        {
+          "info": {
+            "name": "Get seats usage data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/usage/seats",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Fetch seats usage data for the specified customer, broken into intervals of the specified length."
+        },
+        {
+          "info": {
+            "name": "Get usage data with paginated groupings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/usage/groups",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve granular usage data for a specific customer and billable metric, with the ability to break down usage by custom grouping dimensions. This endpoint enables deep usage analytics by segmenting data across attributes like region, user, model type, or any custom dimension defined in your billable metrics.\n\n### Use this endpoint to:\n- Analyze usage patterns broken down by specific attributes (region, user, department, etc.)\n- Build detailed usage dashboards with dimensional filtering\n- Identi"
+        },
+        {
+          "info": {
+            "name": "Get batched usage data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/usage",
+            "params": [
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve aggregated usage data across multiple customers and billable metrics in a single query. This batch endpoint enables you to fetch usage patterns at scale, broken down by time windows, making it ideal for building analytics dashboards, generating reports, and monitoring platform-wide usage trends.\n\n### Use this endpoint to:\n- Generate platform-wide usage reports for internal teams\n- Monitor aggregate usage trends across your entire customer base\n- Create comparative usage analyses between"
+        },
+        {
+          "info": {
+            "name": "Search events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/events/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint retrieves events by transaction ID for events that occurred within the last 34 days. It is specifically designed for sampling-based testing workflows to detect revenue leakage. The Event Search API provides a critical observability tool that validates the integrity of your usage pipeline by allowing you to sample raw events and verify their matching against active billable metrics. \n\nWhy event observability matters for revenue leakage:\nSilent revenue loss occurs when events are dro"
+        },
+        {
+          "info": {
+            "name": "Get purchased seats",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/purchasedSeats",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the number of seats purchased for the current period."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,69 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Payments API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Attempt payment for an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/payments/attempt",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Trigger a new attempt by canceling any existing attempts for this invoice and creating a new Payment. This will trigger another attempt to charge the Customer's configured Payment Gateway. \nPayment can only be attempted if all of the following are true:\n  - The Metronome Invoice is finalized\n  - PLG Invoicing is configured for the Customer\n  - You cannot attempt payments for invoices that have already been `paid` or `voided`.\n\nAttempting to payment on an ineligible Invoice or Customer will resul"
+        },
+        {
+          "info": {
+            "name": "Cancel a payment for an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/payments/cancel",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancel an existing payment attempt for an invoice.\n"
+        },
+        {
+          "info": {
+            "name": "List payments for an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/payments/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Fetch all payment attempts for the given invoice.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,754 @@
+{
+  "item": [
+    {
+      "id": "6be975cd-ef55-4086-892c-9f0693c41036",
+      "name": "Usage",
+      "description": {
+        "content": "[Usage events](https://docs.metronome.com/connecting-metronome/send-usage-data/) are the basis for billable metrics. Use these endpoints to send usage events to Metronome and retrieve aggregated event data.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5817d13d-46ab-42da-bf1c-ebef77123625",
+          "name": "Ingest events",
+          "request": {
+            "name": "Ingest events",
+            "description": {
+              "content": "The ingest endpoint is the primary method for sending usage events to Metronome, serving as the foundation for all billing calculations in your usage-based pricing model. This high-throughput endpoint is designed for real-time streaming ingestion, supports backdating 34 days, and is built to handle mission-critical usage data with enterprise-grade reliability. Metronome supports 100,000 events per second without requiring pre-aggregation or rollups and can scale up from there. See the [Send usage events](/guides/events/send-usage-events) guide to learn more about usage events.\n\n### Use this endpoint to:\nCreate a customer usage pipeline into Metronome that drives billable metrics, credit drawdown, and invoicing. Track customer behavior, resource consumption, and feature usage\n\n### What happens when you send events:\n- Events are validated and processed in real-time\n- Events are matched to customers using customer IDs or customer ingest aliases\n- Events are matched to billable metrics and are immediately available for usage and spend calculations\n\n### Usage guidelines:\n- Historical events can be backdated up to 34 days and will immediately impact live customer spend\n- Duplicate events are automatically detected and ignored (34-day deduplication window)\n\n#### Event structure:\nUsage events are simple JSON objects designed for flexibility and ease of integration:\n```json\n{\n  \"transaction_id\": \"2021-01-01T00:00:00Z_cluster42\",\n  \"customer_id\": \"team@example.com\",\n  \"event_type\": \"api_request\",\n  \"timestamp\": \"2021-01-01T00:00:00Z\",\n  \"properties\": {\n    \"endpoint\": \"/v1/users\",\n    \"method\": \"POST\",\n    \"response_time_ms\": 45,\n    \"region\": \"us-west-2\"\n  }\n}\n```\n\nLearn more about [usage event structure definitions](/guides/events/design-usage-events).\n\n#### Transaction ID\n  The transaction_id serves as your idempotency key, ensuring events are processed exactly once. Metronome maintains a 34-day deduplication window - significantly longer than typical 12-hour windows - enabling robust backfill scenarios without duplicate billing.\n  - Best Practices:\n    - Use UUIDs for one-time events: uuid4()\n    - For heartbeat events, use deterministic IDs\n    - Include enough context to avoid collisions across different event sources\n\n#### Customer ID\nIdentifies which customer should be billed for this usage. Supports two identification methods:\n  - Metronome Customer ID: The UUID returned when creating a customer\n  - Ingest Alias: Your system's identifier (email, account number, etc.) \n\nIngest aliases enable seamless integration without requiring ID mapping, and customers can have multiple aliases for flexibility.\n\n#### Event Type:\nCategorizes the event type for billable metric matching. Choose descriptive names that aligns with the product surface area.\n\n#### Properties:\nFlexible metadata also used to match billable metrics or to be used to serve as group keys to create multiple pricing dimensions or breakdown costs by novel properties for end customers or internal finance teams measuring underlying COGs.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "ingest"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"customer_id\": \"<string>\",\n    \"event_type\": \"<string>\",\n    \"timestamp\": \"<string>\",\n    \"transaction_id\": \"<string>\",\n    \"properties\": {\n      \"key_0\": true\n    }\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "10b05fa4-4bd2-4569-87be-4688c7f4d0b9",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "ingest"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"transaction_id\": \"2021-01-01T00:00:00Z_cluster42\",\n    \"customer_id\": \"team@example.com\",\n    \"event_type\": \"heartbeat\",\n    \"timestamp\": \"2021-01-01T00:00:00Z\",\n    \"properties\": {\n      \"cluster_id\": \"42\",\n      \"cpu_seconds\": 60,\n      \"region\": \"Europe\"\n    }\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dc6d9de9-79c4-453e-9460-8a83398f5aaf",
+          "name": "Get seats usage data",
+          "request": {
+            "name": "Get seats usage data",
+            "description": {
+              "content": "Fetch seats usage data for the specified customer, broken into intervals of the specified length.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "usage",
+                "seats"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seat_metric_id\": \"<uuid>\",\n  \"customer_id\": \"<uuid>\",\n  \"window_size\": \"<string>\",\n  \"usage_type\": \"<string>\",\n  \"starting_on\": \"<dateTime>\",\n  \"ending_before\": \"<dateTime>\",\n  \"current_period\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a9983a18-a95e-4819-bae3-70e8b9e36e30",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "usage",
+                    "seats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"04ca7e72-4229-4a6e-ab11-9f7376fccbcb\",\n  \"seat_metric_id\": \"222796fd-d29c-429e-89b2-549fabda4ed6\",\n  \"starting_on\": \"2023-01-01T00:00:00Z\",\n  \"ending_before\": \"2023-01-03T00:00:00Z\",\n  \"window_size\": \"day\",\n  \"usage_type\": \"max\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"starting_on\": \"2023-01-01T00:00:00Z\",\n      \"ending_before\": \"2023-01-02T00:00:00Z\",\n      \"value\": 1234\n    },\n    {\n      \"starting_on\": \"2023-01-02T00:00:00Z\",\n      \"ending_before\": \"2023-01-03T00:00:00Z\",\n      \"value\": 567\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9fe8fdad-9fac-41d3-a546-3a016594e52a",
+          "name": "Get usage data with paginated groupings",
+          "request": {
+            "name": "Get usage data with paginated groupings",
+            "description": {
+              "content": "Retrieve granular usage data for a specific customer and billable metric, with the ability to break down usage by custom grouping dimensions. This endpoint enables deep usage analytics by segmenting data across attributes like region, user, model type, or any custom dimension defined in your billable metrics.\n\n### Use this endpoint to:\n- Analyze usage patterns broken down by specific attributes (region, user, department, etc.)\n- Build detailed usage dashboards with dimensional filtering\n- Identify high-usage segments for optimization opportunities\n\n### Request parameters\nUse [`group_key`](#body-group-key) and [`group_filters`](#body-group-filters) to group by one or more dimensions. This is required for compound group keys and recommended for all new integrations:\n```json\n{\n  \"group_key\": [\"region\", \"team\"],\n  \"group_filters\": {\n    \"region\": [\"US-East\", \"US-West\"]\n  }\n}\n```\nImportant: For compound group keys, you must pass the complete set of keys that make up the compound key. Partial key combinations are not supported. For example, if your billable metric has a compound group key [region, team, environment], you must pass all three keys in group_key—you cannot pass just `[region]` or `[region, team]`.\n\n### Key response fields:\nAn array of `PagedUsageAggregate` objects containing:\n- `starting_on` and `ending_before`: Time window boundaries\n- `group`: Object mapping group keys to their values\n  - For simple groups, this will be a map with a single key-value pair (e.g., `{\"region\": \"US-East\"}`)\n  - For compound groups, this will be a map with multiple key-value pairs (e.g., `{\"region\": \"US-East\", \"team\": \"engineering\"}`)\n- `value`: Aggregated usage for this group and time window\n- `next_page`: Pagination cursor for large datasets\n\n### Usage guidelines:\n- Required parameters: Must specify `customer_id`, `billable_metric_id`, and `window_size`\n- Time windows: Set `window_size` to hour, day, or none for different granularities\n- Group filtering: Use `group_key` and `group_filters` to specify groups and group filters\n- Limits: When using compound group keys (2+ keys in `group_key`), the default and max limit is 100\n- Pagination: Use limit and `next_page` for large result sets\n- Null handling: Group values may be null for events missing the group key property\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "usage",
+                "groups"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"billable_metric_id\": \"<uuid>\",\n  \"customer_id\": \"<uuid>\",\n  \"window_size\": \"<string>\",\n  \"starting_on\": \"<dateTime>\",\n  \"ending_before\": \"<dateTime>\",\n  \"group_by\": {\n    \"key\": \"<string>\",\n    \"values\": [\n      \"<string>\"\n    ]\n  },\n  \"group_key\": [\n    \"<string>\"\n  ],\n  \"group_filters\": {\n    \"key_0\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"current_period\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1f1c67d1-c35b-49f6-ac3e-c0374227bb92",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "usage",
+                    "groups"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"04ca7e72-4229-4a6e-ab11-9f7376fccbcb\",\n  \"billable_metric_id\": \"222796fd-d29c-429e-89b2-549fabda4ed6\",\n  \"starting_on\": \"2021-01-01T00:00:00Z\",\n  \"ending_before\": \"2021-01-03T00:00:00Z\",\n  \"window_size\": \"day\",\n  \"group_key\": [\n    \"region\"\n  ],\n  \"group_filters\": {\n    \"region\": [\n      \"us-east1\",\n      \"us-west1\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"starting_on\": \"2021-01-01T00:00:00Z\",\n      \"ending_before\": \"2021-01-02T00:00:00Z\",\n      \"group_key\": \"region\",\n      \"group_value\": \"us-east1\",\n      \"group\": {\n        \"region\": \"us-east1\"\n      },\n      \"value\": 1234\n    },\n    {\n      \"starting_on\": \"2021-01-01T00:00:00Z\",\n      \"ending_before\": \"2021-01-02T00:00:00Z\",\n      \"group_key\": \"region\",\n      \"group_value\": \"us-west1\",\n      \"group\": {\n        \"region\": \"us-west1\"\n      },\n      \"value\": 567\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a42fef-8384-43d9-829c-55093450894f",
+          "name": "Get batched usage data",
+          "request": {
+            "name": "Get batched usage data",
+            "description": {
+              "content": "Retrieve aggregated usage data across multiple customers and billable metrics in a single query. This batch endpoint enables you to fetch usage patterns at scale, broken down by time windows, making it ideal for building analytics dashboards, generating reports, and monitoring platform-wide usage trends.\n\n### Use this endpoint to:\n- Generate platform-wide usage reports for internal teams\n- Monitor aggregate usage trends across your entire customer base\n- Create comparative usage analyses between customers or time periods\n- Support capacity planning with historical usage patterns\n\n### Key response fields:\nAn array of `UsageBatchAggregate` objects containing:\n\n- `customer_id`: The customer this usage belongs to\n- `billable_metric_id` and `billable_metric_name`: What was measured\n- `start_timestamp` and `end_timestamp`: Time window for this data point\n- `value`: Aggregated usage amount for the period\n- `groups` (optional): Usage broken down by group keys with values\n- `next_page`: Pagination cursor for large result sets\n\n### Usage guidelines:\n- Time windows: Set `window_size` to `hour`, `day`, or `none` (entire period)\n- Required parameters: Must specify `starting_on`, `ending_before`, and `window_size`\n- Filtering options:\n  - `customer_ids`: Limit to specific customers (omit for all customers)\n  - `billable_metrics`: Limit to specific metrics (omit for all metrics)\n- Pagination: Use `next_page` cursor to retrieve large datasets\n- Null values: Group values may be null when no usage matches that group\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "usage"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"window_size\": \"<string>\",\n  \"starting_on\": \"<dateTime>\",\n  \"ending_before\": \"<dateTime>\",\n  \"customer_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"billable_metrics\": [\n    {\n      \"id\": \"<uuid>\",\n      \"group_by\": {\n        \"key\": \"<string>\",\n        \"values\": [\n          \"<string>\"\n        ]\n      }\n    },\n    {\n      \"id\": \"<uuid>\",\n      \"group_by\": {\n        \"key\": \"<string>\",\n        \"values\": [\n          \"<string>\"\n        ]\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d46b8d94-0833-4606-a8d9-13514567b21d",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "usage"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"window_size\": \"day\",\n  \"starting_on\": \"2021-01-01T00:00:00Z\",\n  \"ending_before\": \"2021-01-03T00:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"customer_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n      \"billable_metric_id\": \"9570e4f3-d1da-4b95-ba81-bd40ee002727\",\n      \"billable_metric_name\": \"CPU hours\",\n      \"start_timestamp\": \"2021-01-01T00:00:00Z\",\n      \"end_timestamp\": \"2021-01-02T00:00:00Z\",\n      \"value\": 1234\n    },\n    {\n      \"customer_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n      \"billable_metric_id\": \"9570e4f3-d1da-4b95-ba81-bd40ee002727\",\n      \"billable_metric_name\": \"CPU hours\",\n      \"start_timestamp\": \"2021-01-02T00:00:00Z\",\n      \"end_timestamp\": \"2021-01-03T00:00:00Z\",\n      \"value\": 1234\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ed14cd55-f4ff-4ca4-ad9b-cf73b58a681d",
+          "name": "Search events",
+          "request": {
+            "name": "Search events",
+            "description": {
+              "content": "This endpoint retrieves events by transaction ID for events that occurred within the last 34 days. It is specifically designed for sampling-based testing workflows to detect revenue leakage. The Event Search API provides a critical observability tool that validates the integrity of your usage pipeline by allowing you to sample raw events and verify their matching against active billable metrics. \n\nWhy event observability matters for revenue leakage:\nSilent revenue loss occurs when events are dropped, delayed, or fail to match billable metrics due to:\n- Upstream system failures\n- Event format changes\n- Misconfigured billable metrics\n\n### Use this endpoint to:\n- Sample raw events and validate they match the expected billable metrics\n- Build custom leakage detection alerts to prevent silent revenue loss\n- Verify event processing accuracy during system changes or metric updates\n- Debug event matching issues in real-time\n\n### Key response fields:\n- Complete event details including transaction ID, customer ID, and properties\n- Matched Metronome customer (if any)\n- Matched billable metric information (if any)\n- Processing status and duplicate detection flags\n\n### Usage guidelines:\n⚠️ Important: This endpoint is heavily rate limited and designed for sampling workflows only. Do not use this endpoint to check every event in your system. Instead, implement a sampling strategy to randomly validate a subset of events for observability purposes.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "events",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e5c90060-cb93-4739-b494-0a663ae5fdbd",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "events",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"transactionIds\": [\n    \"2021-01-01T00:00:00Z_cluster42\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"transaction_id\": \"2021-01-01T00:00:00Z_cluster42\",\n    \"customer_id\": \"team@example.com\",\n    \"event_type\": \"heartbeat\",\n    \"timestamp\": \"2021-01-01T00:00:00Z\",\n    \"properties\": {\n      \"cluster_id\": \"42\",\n      \"cpu_seconds\": 60,\n      \"region\": \"Europe\"\n    },\n    \"processed_at\": \"2021-01-01T00:00:05Z\",\n    \"is_duplicate\": false,\n    \"matched_customer\": {\n      \"id\": \"98765432-10fe-cba9-8765-432109876543\",\n      \"name\": \"Acme Corp\"\n    },\n    \"matched_billable_metrics\": [\n      {\n        \"id\": \"8deed800-1b7a-495d-a207-6c52bac54dc9\",\n        \"name\": \"CPU Hours\"\n      }\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6ab9b7b9-d070-4735-abe1-cfa013dbea11",
+          "name": "Get purchased seats",
+          "request": {
+            "name": "Get purchased seats",
+            "description": {
+              "content": "Returns the number of seats purchased for the current period.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                ":customer_id",
+                "purchasedSeats"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "customer_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3f8e7119-996a-47c9-970d-887e918f7976",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id",
+                    "purchasedSeats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"charge_id\": \"f18e85ba-2d10-6d37-ff0c-ceda52f37d25\",\n      \"seat_count\": 7059\n    },\n    {\n      \"charge_id\": \"a6ffeac3-c96d-f3ee-41c5-0e7ab643fdd1\",\n      \"seat_count\": 3701\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7026cfe3-d639-4c5c-a36f-1769f77cc739",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    ":customer_id",
+                    "purchasedSeats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "customer_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.metronome.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "59e29e32-5a89-43ac-9a4d-5cebf0c61a69",
+    "name": "Metronome Alerts Usage API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)",
+      "type": "text/plain"
+    }
+  }
+}

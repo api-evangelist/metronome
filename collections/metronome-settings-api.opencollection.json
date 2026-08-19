@@ -1,0 +1,203 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Settings API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Settings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Set the billing provider API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/client/billing-config/:billing_provider_type/apiKey",
+            "params": [
+              {
+                "name": "billing_provider_type",
+                "value": "stripe",
+                "type": "path",
+                "description": "The billing provider (currently only Stripe is supported)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "(**Deprecated:** use [Create Stripe billing settings](#operation/createStripeBillingSettings) instead) Sets the api key for the billing provider. This is used for sending invoices to the billing provider. For example, if the billing provider is Stripe, this is the restricted key.\n"
+        },
+        {
+          "info": {
+            "name": "Set the client webhook secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/client/config/webhook_secret",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the webhook secret for the client.  This is used for validating webhook messages send to the external Metronome webhook endpoint.\n"
+        },
+        {
+          "info": {
+            "name": "Create Stripe billing settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/client/billing-config/stripe",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create billing settings for Stripe.\n\nIf you plan on using prepaid credit grants and recharges, your Stripe API key needs the following access:\n\n- Read & Write\n   - Invoices\n   - PaymentIntents\n- Read only:\n   - PaymentMethods\n   - Customers"
+        },
+        {
+          "info": {
+            "name": "Update Stripe billing settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.metronome.com/v1/client/billing-config/stripe",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Apply partial updates to billing settings for Stripe. Individual settings can be deleted by specifying values as `null`.\n"
+        },
+        {
+          "info": {
+            "name": "Delete Stripe billing settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.metronome.com/v1/client/billing-config/stripe"
+          },
+          "docs": "Delete all billing settings for Stripe\n"
+        },
+        {
+          "info": {
+            "name": "List pricing units",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/credit-types/list",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              }
+            ]
+          },
+          "docs": "List all pricing units. All fiat currency types (for example, USD or GBP) will be included, as well as any custom pricing units that were configured. Custom pricing units can be used to charge for usage in a non-fiat pricing unit, for example AI credits.\n\nNote: The USD (cents) pricing unit is 2714e483-4ff1-48e4-9e25-ac732e8f24f2.\n"
+        },
+        {
+          "info": {
+            "name": "Set up account-level billing provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/setUpBillingProvider",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set up account-level configuration for a billing provider. Once configured, individual contracts across customers can be mapped to this configuration using the returned delivery_method_id.\n"
+        },
+        {
+          "info": {
+            "name": "Upsert Anrok API token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/upsertAnrokApiToken",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the Anrok API token for some specified delivery_method_ids, which can be found in the `/listConfiguredBillingProviders` response. This maps the Anrok key to the appropriate billing entity. These API tokens are only used for Threshold Billing workflows today.\n"
+        },
+        {
+          "info": {
+            "name": "Upsert Avalara credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/upsertAvalaraCredentials",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the Avalara credentials for some specified `delivery_method_ids`, which can be found in the `/listConfiguredBillingProviders` response. This maps the Avalara credentials to the appropriate billing entity. These credentials are only used for PLG Invoicing today.\n"
+        },
+        {
+          "info": {
+            "name": "Rotate the HMAC secret used to sign delta stream messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/rotateDeltaStreamSecret",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Rotate the HMAC secret used to sign delta stream messages. The new secret will be used for all messages after the `starting_on` time. If a `starting_on` time is not provided, the new secret will be used in 10 minutes.\nIf this endpoint is called while a rotation is already in progress, the second call will replace the existing rotation and the previous rotation will be cancelled.\n"
+        },
+        {
+          "info": {
+            "name": "List account-level billing providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/listConfiguredBillingProviders",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Lists all configured billing providers and their delivery method configurations for your account. Returns provider details, delivery method IDs, and configuration settings needed for mapping individual customer contracts to billing integrations.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

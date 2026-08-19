@@ -1,0 +1,110 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Notifications API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Notifications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an offset lifecycle event notification configuration. The lifecycle event type is inferred from the policy.type field.\n"
+        },
+        {
+          "info": {
+            "name": "Get an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve a specific offset lifecycle event notification configuration by ID."
+        },
+        {
+          "info": {
+            "name": "List offset lifecycle event notification configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/offset/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List offset lifecycle event notification configurations. These are user-created notifications that trigger at a specified time offset relative to lifecycle events. Returns a maximum of 400 results per request.\n"
+        },
+        {
+          "info": {
+            "name": "List system notification event types",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/system/list"
+          },
+          "docs": "List available system lifecycle event types for notifications. These are read-only event types that can be used when creating offset notifications."
+        },
+        {
+          "info": {
+            "name": "Edit an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/edit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit an existing offset lifecycle event notification configuration."
+        },
+        {
+          "info": {
+            "name": "Archive an offset lifecycle event notification configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/notifications/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive an offset lifecycle event notification configuration. Archived notifications are not processed.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

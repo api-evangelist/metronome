@@ -1,0 +1,307 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Customers API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Set customer billable status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/setBillableStatus",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set a customer's billable status. This endpoint's availability is dependent on your client's configuration. Metronome 1.0 plan invoices are not supported."
+        },
+        {
+          "info": {
+            "name": "Archive a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to archive a customer while preserving auditability. Archiving a customer will automatically archive all contracts as of the current date and void all corresponding invoices. Use this endpoint if a customer is onboarded by mistake.\n\n### Usage guidelines:\n- Once a customer is archived, it cannot be unarchived.\n- Archived customers can still be viewed through the API or the UI for audit purposes. \n- Ingest aliases remain idempotent for archived customers. In order to reuse an ing"
+        },
+        {
+          "info": {
+            "name": "Get a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get detailed information for a specific customer by their Metronome ID. Returns customer profile data including name, creation date, ingest aliases, configuration settings, and custom fields. Use this endpoint to fetch complete customer details for billing operations or account management.\n\nNote: If searching for a customer billing configuration, use the `/getCustomerBillingConfigurations` endpoint.\n"
+        },
+        {
+          "info": {
+            "name": "List customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "ingest_alias",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list by ingest_alias"
+              },
+              {
+                "name": "customer_ids",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list by customer_id.  Up to 100 ids can be provided."
+              },
+              {
+                "name": "only_archived",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list to only return archived customers. By default, only active customers are returned."
+              },
+              {
+                "name": "salesforce_account_ids",
+                "value": "",
+                "type": "query",
+                "description": "Filter the customer list by salesforce_account_id.  Up to 100 ids can be provided."
+              }
+            ]
+          },
+          "docs": "Gets a paginated list of all customers in your Metronome account. Use this endpoint to browse your customer base, implement customer search functionality, or sync customer data with external systems. Returns customer details including IDs, names, and configuration settings. Supports filtering and pagination parameters for efficient data retrieval.\n"
+        },
+        {
+          "info": {
+            "name": "Create a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new customer in Metronome and optionally the billing configuration (recommended) which dictates where invoices for the customer will be sent or where payment will be collected. \n\n### Use this endpoint to:\nExecute your customer provisioning workflows for either PLG motions, where customers originate in your platform, or SLG motions, where customers originate in your sales system.\n\n### Key response fields: \nThis end-point returns the `customer_id` created by the request. This id can be us"
+        },
+        {
+          "info": {
+            "name": "Create or update customer ingest aliases",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/setIngestAliases",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the ingest aliases for a customer. Use this endpoint to associate a Metronome customer with an internal ID for easier tracking between systems. Ingest aliases can be used in the `customer_id` field when sending usage events to Metronome. \n\n### Usage guidelines:\n- This call is idempotent and fully replaces the set of ingest aliases for the given customer.\n- Switching an ingest alias from one customer to another will associate all corresponding usage to the new customer.\n- Use multiple ingest"
+        },
+        {
+          "info": {
+            "name": "Update a customer name",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/setName",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the display name for a customer record. Use this to correct customer names, update business names after rebranding, or maintain accurate customer information for invoicing and reporting. Returns the updated customer object with the new name applied immediately across all billing documents and interfaces.\n"
+        },
+        {
+          "info": {
+            "name": "Update a customer configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/updateConfig",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update configuration settings for a specific customer, such as external system integrations (e.g., Salesforce account ID) and other customer-specific billing parameters. Use this endpoint to modify customer configurations without affecting core customer data like name or ingest aliases.\n"
+        },
+        {
+          "info": {
+            "name": "Fetch billing provider configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/getCustomerBillingProviderConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns all billing configurations previously set for the customer. Use during the contract provisioning process to fetch the `billing_provider_configuration_id` needed to set the contract billing configuration.\n"
+        },
+        {
+          "info": {
+            "name": "Fetch revenue system configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/getCustomerRevenueSystemConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns all revenue system configurations previously set for the customer.\n"
+        },
+        {
+          "info": {
+            "name": "Set billing provider configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/setCustomerBillingProviderConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a billing configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to collect payment in or send the invoice to. You can create multiple configurations per customer. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the billing configuration can then be associated to the customer's contrac"
+        },
+        {
+          "info": {
+            "name": "Archive billing provider configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/archiveCustomerBillingProviderConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deprecate an existing billing configuration for a customer to handle churn or billing and collection preference changes. Archiving a billing configuration takes effect immediately. If there are active contracts using the configuration, Metronome will archive the configuration on the contract and immediately stop metering to downstream systems.\n\n### Use this endpoint to:\n- Remove billing provider customer data and configurations when no longer needed\n- Clean up test or deprecated billing provider"
+        },
+        {
+          "info": {
+            "name": "Set revenue system configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/setCustomerRevenueSystemConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a revenue system configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to use for revenue workflows. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the revenue system configuration can then be associated to the customer's contract.\n- Add a new configuration to an existing customer.\n\n"
+        },
+        {
+          "info": {
+            "name": "Archive revenue system configurations for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/archiveCustomerRevenueSystemConfigurations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive existing revenue system configurations for a customer. Archiving a revenue system configuration takes effect immediately.\n\n### Use this endpoint to:\n- Remove revenue system configurations when no longer needed\n- Clean up test or deprecated revenue system configurations\n\n### Key response fields:\nA successful response returns:\n- `customer_id`: The customer ID the configurations belong to\n- `customer_revenue_system_configuration_ids`: The archived configuration IDs\n"
+        },
+        {
+          "info": {
+            "name": "Get an embeddable customer dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/dashboards/getEmbeddableUrl",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome's billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.\n\n### Use this endpoint to:\n- Embed billing dashboards directly in your customer portal or admin interface\n- Provide self-service access to invoices, usage data, and credit balances\n- Build w"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

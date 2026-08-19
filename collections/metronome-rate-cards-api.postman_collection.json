@@ -1,0 +1,1964 @@
+{
+  "item": [
+    {
+      "id": "bfef9598-6935-49fa-bab7-85fd20013e26",
+      "name": "Rate cards",
+      "description": {
+        "content": "Rate cards are used to define default pricing for products.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e8735804-64ce-4215-83a2-4c64d3ae5027",
+          "name": "Get a rate schedule",
+          "request": {
+            "name": "Get a rate schedule",
+            "description": {
+              "content": "A rate card defines the prices that you charge for your products. Rate cards support scheduled changes over time, to allow you to easily roll out pricing changes and new product launches across your customer base. Use this endpoint to understand the rate schedule `starting_at` a given date, optionally filtering the list of rates returned based on product id or pricing group values. For example, you may want to display a schedule of upcoming price changes for a given product in your product experience - use this endpoint to fetch that information from its source of truth in Metronome. \n\nIf you want to understand the rates for a specific customer's contract, inclusive of contract-level overrides, use the `getContractRateSchedule` endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "getRateSchedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"starting_at\": \"<dateTime>\",\n  \"ending_before\": \"<dateTime>\",\n  \"selectors\": [\n    {\n      \"billing_frequency\": \"<string>\",\n      \"product_id\": \"<uuid>\",\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"partial_pricing_group_values\": {\n        \"key_0\": \"<string>\"\n      }\n    },\n    {\n      \"billing_frequency\": \"<string>\",\n      \"product_id\": \"<uuid>\",\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"partial_pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a29b71fa-505b-44eb-9ff9-5ed024c08c27",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "getRateSchedule"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe\",\n  \"starting_at\": \"2024-01-01T00:00:00.000Z\",\n  \"selectors\": [\n    {\n      \"product_id\": \"d6300dbb-882e-4d2d-8dec-5125d16b65d0\",\n      \"partial_pricing_group_values\": {\n        \"region\": \"us-west-2\",\n        \"cloud\": \"aws\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"product_id\": \"97d9b25b-9a60-409e-9aad-37a8f6f598a6\",\n      \"product_name\": \"string\",\n      \"product_tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"product_custom_fields\": {\n        \"key_0\": \"string\"\n      },\n      \"starting_at\": \"1948-07-20T21:33:48.858Z\",\n      \"entitled\": false,\n      \"rate\": {\n        \"rate_type\": \"SUBSCRIPTION\",\n        \"price\": 19.18751626076243,\n        \"custom_rate\": {\n          \"key_0\": 1720.3519301953663,\n          \"key_1\": 115.41507296701337\n        },\n        \"quantity\": 7152.192222657041,\n        \"is_prorated\": false,\n        \"tiers\": [\n          {\n            \"price\": 5393.225911816777,\n            \"size\": 9676.253530130372\n          },\n          {\n            \"price\": 7140.680008173708,\n            \"size\": 8857.466336204467\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 1650.1959072380855\n        },\n        \"pricing_group_values\": {\n          \"key_0\": \"string\"\n        },\n        \"credit_type\": {\n          \"name\": \"string\",\n          \"id\": \"0d73e372-0a5e-e5e7-2888-0b9f876f82ae\"\n        }\n      },\n      \"pricing_group_values\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"ending_before\": \"2019-05-28T05:03:25.261Z\",\n      \"commit_rate\": {\n        \"rate_type\": \"tiered\",\n        \"price\": 5358.672574544688,\n        \"tiers\": [\n          {\n            \"price\": 8080.866562185786,\n            \"size\": 7706.490533569874\n          },\n          {\n            \"price\": 3138.9734302937977,\n            \"size\": 4383.485037616986\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 9630.23671335344\n        }\n      },\n      \"billing_frequency\": \"WEEKLY\"\n    },\n    {\n      \"product_id\": \"a42e6731-fddf-fb4d-f80a-65e10eb6dbee\",\n      \"product_name\": \"string\",\n      \"product_tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"product_custom_fields\": {\n        \"key_0\": \"string\"\n      },\n      \"starting_at\": \"2024-04-09T10:58:40.631Z\",\n      \"entitled\": false,\n      \"rate\": {\n        \"rate_type\": \"TIERED_PERCENTAGE\",\n        \"price\": 1459.1206282442038,\n        \"custom_rate\": {\n          \"key_0\": 3818.84612313114\n        },\n        \"quantity\": 6693.265486519656,\n        \"is_prorated\": true,\n        \"tiers\": [\n          {\n            \"price\": 1872.0965781900777,\n            \"size\": 6743.057127960581\n          },\n          {\n            \"price\": 883.6132726711343,\n            \"size\": 3450.854110599627\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 3375.2814968037924\n        },\n        \"pricing_group_values\": {\n          \"key_0\": \"string\"\n        },\n        \"credit_type\": {\n          \"name\": \"string\",\n          \"id\": \"e07d589e-242f-13e6-ddc0-1473fa2fd5f3\"\n        }\n      },\n      \"pricing_group_values\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"ending_before\": \"1973-10-23T10:21:06.241Z\",\n      \"commit_rate\": {\n        \"rate_type\": \"tiered\",\n        \"price\": 4779.594590382347,\n        \"tiers\": [\n          {\n            \"price\": 855.8272272534917,\n            \"size\": 9465.310851293438\n          },\n          {\n            \"price\": 6390.205944457554,\n            \"size\": 551.7486855814202\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 9477.546330842213\n        }\n      },\n      \"billing_frequency\": \"MONTHLY\"\n    }\n  ],\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "46f2a988-82d6-4374-a52c-cb8b8fe4c8b0",
+          "name": "Get rates",
+          "request": {
+            "name": "Get rates",
+            "description": {
+              "content": "Understand the rate schedule at a given timestamp, optionally filtering the list of rates returned based on properties such as `product_id` and `pricing_group_values`. For example, you may want to display the current price for a given product in your product experience - use this endpoint to fetch that information from its source of truth in Metronome. \n\nIf you want to understand the rates for a specific customer's contract, inclusive of contract-level overrides, use the `getContractRateSchedule` endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "getRates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"at\": \"<dateTime>\",\n  \"selectors\": [\n    {\n      \"billing_frequency\": \"<string>\",\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      },\n      \"partial_pricing_group_values\": {\n        \"key_0\": \"<string>\"\n      }\n    },\n    {\n      \"billing_frequency\": \"<string>\",\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      },\n      \"partial_pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "bd1b1f8f-00cc-4b10-8b89-e5e92218d985",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "getRates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe\",\n  \"at\": \"2024-01-01T00:00:00.000Z\",\n  \"selectors\": [\n    {\n      \"product_id\": \"d6300dbb-882e-4d2d-8dec-5125d16b65d0\",\n      \"partial_pricing_group_values\": {\n        \"region\": \"us-west-2\",\n        \"cloud\": \"aws\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"product_id\": \"7fc16f0b-b882-d887-8c5b-23f75245dd5d\",\n      \"product_name\": \"string\",\n      \"product_tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"product_custom_fields\": {\n        \"key_0\": \"string\"\n      },\n      \"starting_at\": \"2009-07-06T21:53:39.119Z\",\n      \"entitled\": true,\n      \"rate\": {\n        \"rate_type\": \"FLAT\",\n        \"price\": 8910.357670309386,\n        \"custom_rate\": {\n          \"key_0\": 6813,\n          \"key_1\": 5399\n        },\n        \"quantity\": 4693.303463156287,\n        \"is_prorated\": true,\n        \"tiers\": [\n          {\n            \"price\": 6921.58918640651,\n            \"size\": 4205.6231672388085\n          },\n          {\n            \"price\": 5176.763432653686,\n            \"size\": 9586.489092336125\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 9419.617346901683\n        },\n        \"pricing_group_values\": {\n          \"key_0\": \"string\"\n        },\n        \"credit_type\": {\n          \"name\": \"string\",\n          \"id\": \"27a8fe76-18a1-4fd3-77b1-ce4f0efb15f1\"\n        }\n      },\n      \"pricing_group_values\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      },\n      \"ending_before\": \"1975-03-13T08:51:06.485Z\",\n      \"commit_rate\": {\n        \"rate_type\": \"FLAT\",\n        \"price\": 6597.254548751574,\n        \"tiers\": [\n          {\n            \"price\": 7441.296721037921,\n            \"size\": 3597.2046192608896\n          },\n          {\n            \"price\": 971.8235028008837,\n            \"size\": 6992.233661661607\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 3639.6542292020727\n        }\n      },\n      \"billing_frequency\": \"WEEKLY\"\n    },\n    {\n      \"product_id\": \"8f81b1e0-aea2-bfd2-0c44-a1663913f3e2\",\n      \"product_name\": \"string\",\n      \"product_tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"product_custom_fields\": {\n        \"key_0\": \"string\"\n      },\n      \"starting_at\": \"1975-03-31T14:15:30.879Z\",\n      \"entitled\": true,\n      \"rate\": {\n        \"rate_type\": \"TIERED\",\n        \"price\": 7104.785666673509,\n        \"custom_rate\": {\n          \"key_0\": 4660.789521368232,\n          \"key_1\": true\n        },\n        \"quantity\": 9076.98757346375,\n        \"is_prorated\": true,\n        \"tiers\": [\n          {\n            \"price\": 1883.9430687762715,\n            \"size\": 4488.849069280435\n          },\n          {\n            \"price\": 3646.4050406856672,\n            \"size\": 4793.404257138266\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 960.2596510318629\n        },\n        \"pricing_group_values\": {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\"\n        },\n        \"credit_type\": {\n          \"name\": \"string\",\n          \"id\": \"4f39fcd3-a455-cb57-68ce-36f05f662abe\"\n        }\n      },\n      \"pricing_group_values\": {\n        \"key_0\": \"string\"\n      },\n      \"ending_before\": \"1985-04-29T22:28:41.075Z\",\n      \"commit_rate\": {\n        \"rate_type\": \"SUBSCRIPTION\",\n        \"price\": 3866.001050937382,\n        \"tiers\": [\n          {\n            \"price\": 2489.3416121758505,\n            \"size\": 9680.992891774313\n          },\n          {\n            \"price\": 3905.6900874329936,\n            \"size\": 5831.611661086022\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": 283.3441228342592\n        }\n      },\n      \"billing_frequency\": \"WEEKLY\"\n    }\n  ],\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6ecf403e-2be4-43da-a834-c3621d93a70f",
+          "name": "Get a rate card",
+          "request": {
+            "name": "Get a rate card",
+            "description": {
+              "content": "Return details for a specific rate card including name, description, and aliases. This endpoint does not return rates - use the dedicated getRates or getRateSchedule endpoints to understand the rates on a rate card.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "get"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "08dd33b0-9852-4f9f-84c6-c6b2737609b8",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "get"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n    \"name\": \"Test rate card\",\n    \"description\": \"Test rate card description\",\n    \"fiat_credit_type\": {\n      \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n      \"name\": \"USD (cents)\"\n    },\n    \"created_at\": \"2019-12-30T04:24:55.123Z\",\n    \"created_by\": \"Bob\",\n    \"aliases\": [\n      {\n        \"name\": \"test-rate-card\"\n      }\n    ],\n    \"custom_fields\": {\n      \"x_account_id\": \"KyVnHhSBWl7eY2bl\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5a90b774-1e78-4034-9a27-81f7d2fc220a",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "get"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"f3d51ae8-f283-44e1-9933-a3cf9ad7a6fe\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "13a749f7-990a-4e35-9561-d27d18311957",
+          "name": "List rate cards",
+          "request": {
+            "name": "List rate cards",
+            "description": {
+              "content": "List all rate cards. Returns rate card IDs, names, descriptions, aliases, and other details. To view the rates associated with a given rate card, use the getRates or getRateSchedule endpoints.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2e3bf2cf-1360-41d8-ae64-30bd9c56e646",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n      \"name\": \"Test rate card\",\n      \"description\": \"Test rate card description\",\n      \"fiat_credit_type\": {\n        \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n        \"name\": \"USD (cents)\"\n      },\n      \"created_at\": \"2019-12-30T04:24:55.123Z\",\n      \"created_by\": \"Bob\",\n      \"aliases\": [],\n      \"custom_fields\": {\n        \"x_account_id\": \"KyVnHhSBWl7eY2bl\"\n      }\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "236a7f63-faed-4362-8fda-22d111eeb045",
+          "name": "Create a rate card",
+          "request": {
+            "name": "Create a rate card",
+            "description": {
+              "content": "In Metronome, the rate card is the central location for your pricing. Rate cards were built with new product launches and pricing changes in mind - you can update your products and pricing in one place, and that change will be automatically propagated across your customer cohorts. Most clients need only maintain one or a few rate cards within Metronome.\n\n### Use this endpoint to:\n- Create a rate card with a name and description\n- Define the rate card's single underlying fiat currency, and any number of conversion rates between that fiat currency and custom pricing units. You can then add products and associated rates in the fiat currency or custom pricing unit for which you have defined a conversion rate. \n- Set aliases for the rate card. Aliases are human-readable names that you can use in the place of the id of the rate card when provisioning a customer's contract. By using an alias, you can easily create a contract and provision a customer by choosing the paygo rate card, without storing the rate card id in your internal systems. This is helpful when launching a new rate card for paygo customers, you can update the alias for paygo to be scheduled to be assigned to the new rate card without updating your code.\n\n### Key response fields:\n- The ID of the rate card you just created\n\n### Usage guidelines:\n- After creating a rate card, you can now use the addRate or addRates endpoints to add products and their prices to it\n- A rate card alias can only be used by one rate card at a time. If you create a contract with a rate card alias that is already in use by another rate card, the original rate card's alias schedule will be updated. The alias will reference the rate card to which it was most recently assigned.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "create"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"fiat_credit_type_id\": \"<uuid>\",\n  \"credit_type_conversions\": [\n    {\n      \"custom_credit_type_id\": \"<uuid>\",\n      \"fiat_per_custom_credit\": \"<number>\"\n    },\n    {\n      \"custom_credit_type_id\": \"<uuid>\",\n      \"fiat_per_custom_credit\": \"<number>\"\n    }\n  ],\n  \"aliases\": [\n    {\n      \"name\": \"<string>\",\n      \"starting_at\": \"<dateTime>\",\n      \"ending_before\": \"<dateTime>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"starting_at\": \"<dateTime>\",\n      \"ending_before\": \"<dateTime>\"\n    }\n  ],\n  \"custom_fields\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e0f9598f-1aa5-4143-b845-f7a8981d87dd",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My Rate Card\",\n  \"description\": \"My Rate Card Description\",\n  \"fiat_credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n  \"credit_type_conversions\": [\n    {\n      \"custom_credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n      \"fiat_per_custom_credit\": 2\n    }\n  ],\n  \"aliases\": [\n    {\n      \"name\": \"my-rate-card\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e55ec869-2271-4920-85e3-646d42548c37",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My Rate Card\",\n  \"description\": \"My Rate Card Description\",\n  \"fiat_credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n  \"credit_type_conversions\": [\n    {\n      \"custom_credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n      \"fiat_per_custom_credit\": 2\n    }\n  ],\n  \"aliases\": [\n    {\n      \"name\": \"my-rate-card\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6f6a7c4e-b79d-4526-919a-b7c61c3a2a8d",
+          "name": "Update a rate card",
+          "request": {
+            "name": "Update a rate card",
+            "description": {
+              "content": "Update the metadata properties of an existing rate card, including its name, description, and aliases. This endpoint is designed for managing rate card identity and reference aliases rather than modifying pricing rates.\n\nModifies the descriptive properties and alias configuration of a rate card without affecting the underlying pricing rates or schedules. This allows you to update how a rate card is identified and referenced throughout your system.\n\n### Use this endpoint to:\n- Rate card renaming: Update display names or descriptions for organizational clarity\n- Alias management: Add, modify, or schedule alias transitions for seamless rate card migrations\n- Documentation updates: Keep rate card descriptions current with business context\n- Self-serve provisioning setup: Configure aliases to enable code-free rate card transitions\n\n#### Active contract impact:\n- Alias changes: Already-created contracts continue using their originally assigned rate cards.\n- Other changes made using this endpoint will only impact the Metronome UI.\n\n#### Grandfathering existing PLG customer pricing:\n- Rate card aliases support scheduled transitions, enabling seamless rate card migrations for new customers, allowing existing customers to be grandfathered into their existing prices without code. Note that there are multiple mechanisms to support grandfathering in Metronome. \n\n#### How scheduled aliases work for PLG grandfathering:\nInitial setup:\n- Add alias to current rate card: Assign a stable alias (e.g., \"standard-pricing\") to your active rate card\n- Reference alias during contract creation: Configure your self-serve workflow to create contracts using `rate_card_alias` instead of direct `rate_card_id`\n- Automatic resolution: New contracts referencing the alias automatically resolve to the rate card associated with the alias at the point in time of provisioning\n\n#### Grandfathering process:\n- Create new rate card: Build your new rate card with updated pricing structure\n- Schedule alias transition: Add the same alias to the new rate card with a `starting_at` timestamp\n- Automatic cutover: Starting at the scheduled time, new contracts created in your PLG workflow using that alias will automatically reference the new rate card\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "update"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"aliases\": [\n    {\n      \"name\": \"<string>\",\n      \"starting_at\": \"<dateTime>\",\n      \"ending_before\": \"<dateTime>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"starting_at\": \"<dateTime>\",\n      \"ending_before\": \"<dateTime>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "25d01a1e-4b3f-44fc-ab3e-20ec3b263bb0",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"name\": \"My Updated Rate Card\",\n  \"description\": \"My Updated Rate Card Description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6c3a2aca-4fdf-4807-89f7-0c2224a1e250",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"name\": \"My Updated Rate Card\",\n  \"description\": \"My Updated Rate Card Description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b5180cd-0870-4774-9c11-b7f409c3ff4f",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"name\": \"My Updated Rate Card\",\n  \"description\": \"My Updated Rate Card Description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0ff122ae-4fda-4dc3-b539-7cc542d5544d",
+          "name": "Archive a rate card",
+          "request": {
+            "name": "Archive a rate card",
+            "description": {
+              "content": "Permanently disable a rate card by archiving it, preventing use in new contracts while preserving existing contract pricing. Use this when retiring old pricing models, consolidating rate cards, or removing outdated pricing structures. Returns the archived rate card ID and stops the rate card from appearing in contract creation workflows.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "archive"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "74e3edeb-2428-48cc-b3fd-a2da17c42c37",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"12b21470-4570-40df-8998-449d0b0bc52f\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "abe81af2-6a0c-41ba-abf4-91da70c89ada",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"12b21470-4570-40df-8998-449d0b0bc52f\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "02ad7b3a-4592-489c-aaa7-398089d3cd04",
+          "name": "Add a rate",
+          "request": {
+            "name": "Add a rate",
+            "description": {
+              "content": "Add a new rate\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "addRate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"product_id\": \"<uuid>\",\n  \"starting_at\": \"<dateTime>\",\n  \"entitled\": \"<boolean>\",\n  \"rate_type\": \"<string>\",\n  \"pricing_group_values\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  },\n  \"billing_frequency\": \"<string>\",\n  \"ending_before\": \"<dateTime>\",\n  \"price\": \"<number>\",\n  \"credit_type_id\": \"<uuid>\",\n  \"quantity\": \"<number>\",\n  \"is_prorated\": \"<boolean>\",\n  \"tiers\": [\n    {\n      \"price\": \"<number>\",\n      \"size\": \"<number>\"\n    },\n    {\n      \"price\": \"<number>\",\n      \"size\": \"<number>\"\n    }\n  ],\n  \"minimum_config\": {\n    \"minimum\": \"<number>\"\n  },\n  \"custom_rate\": {\n    \"key_0\": 5814,\n    \"key_1\": 183\n  },\n  \"commit_rate\": {\n    \"rate_type\": \"<string>\",\n    \"price\": \"<number>\",\n    \"tiers\": [\n      {\n        \"price\": \"<number>\",\n        \"size\": \"<number>\"\n      },\n      {\n        \"price\": \"<number>\",\n        \"size\": \"<number>\"\n      }\n    ],\n    \"minimum_config\": {\n      \"minimum\": \"<number>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6acf1b6a-08f5-478f-9bf7-db1cb5966182",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "addRate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n  \"entitled\": true,\n  \"rate_type\": \"FLAT\",\n  \"price\": 100,\n  \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"rate_type\": \"FLAT\",\n    \"price\": 100\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "019cfe6f-f4a0-4d48-9b5c-9a443c74df8d",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "addRate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n  \"entitled\": true,\n  \"rate_type\": \"FLAT\",\n  \"price\": 100,\n  \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba37812a-93ea-4f93-897a-c963cff51732",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "addRate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n  \"entitled\": true,\n  \"rate_type\": \"FLAT\",\n  \"price\": 100,\n  \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bd9e64e5-271e-42ec-a672-b7040eea061e",
+          "name": "Add rates",
+          "request": {
+            "name": "Add rates",
+            "description": {
+              "content": "Add new rates\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "addRates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"rates\": [\n    {\n      \"product_id\": \"<uuid>\",\n      \"starting_at\": \"<dateTime>\",\n      \"entitled\": \"<boolean>\",\n      \"rate_type\": \"<string>\",\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"billing_frequency\": \"<string>\",\n      \"ending_before\": \"<dateTime>\",\n      \"price\": \"<number>\",\n      \"credit_type_id\": \"<uuid>\",\n      \"quantity\": \"<number>\",\n      \"is_prorated\": \"<boolean>\",\n      \"tiers\": [\n        {\n          \"price\": \"<number>\",\n          \"size\": \"<number>\"\n        },\n        {\n          \"price\": \"<number>\",\n          \"size\": \"<number>\"\n        }\n      ],\n      \"minimum_config\": {\n        \"minimum\": \"<number>\"\n      },\n      \"custom_rate\": {\n        \"key_0\": 2605\n      },\n      \"commit_rate\": {\n        \"rate_type\": \"<string>\",\n        \"price\": \"<number>\",\n        \"tiers\": [\n          {\n            \"price\": \"<number>\",\n            \"size\": \"<number>\"\n          },\n          {\n            \"price\": \"<number>\",\n            \"size\": \"<number>\"\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": \"<number>\"\n        }\n      }\n    },\n    {\n      \"product_id\": \"<uuid>\",\n      \"starting_at\": \"<dateTime>\",\n      \"entitled\": \"<boolean>\",\n      \"rate_type\": \"<string>\",\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      },\n      \"billing_frequency\": \"<string>\",\n      \"ending_before\": \"<dateTime>\",\n      \"price\": \"<number>\",\n      \"credit_type_id\": \"<uuid>\",\n      \"quantity\": \"<number>\",\n      \"is_prorated\": \"<boolean>\",\n      \"tiers\": [\n        {\n          \"price\": \"<number>\",\n          \"size\": \"<number>\"\n        },\n        {\n          \"price\": \"<number>\",\n          \"size\": \"<number>\"\n        }\n      ],\n      \"minimum_config\": {\n        \"minimum\": \"<number>\"\n      },\n      \"custom_rate\": {\n        \"key_0\": 8695,\n        \"key_1\": false\n      },\n      \"commit_rate\": {\n        \"rate_type\": \"<string>\",\n        \"price\": \"<number>\",\n        \"tiers\": [\n          {\n            \"price\": \"<number>\",\n            \"size\": \"<number>\"\n          },\n          {\n            \"price\": \"<number>\",\n            \"size\": \"<number>\"\n          }\n        ],\n        \"minimum_config\": {\n          \"minimum\": \"<number>\"\n        }\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c28b22bb-91a8-4efe-9905-344ec117bcf3",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "addRates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"rates\": [\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n      \"entitled\": true,\n      \"rate_type\": \"FLAT\",\n      \"price\": 100,\n      \"pricing_group_values\": {\n        \"region\": \"us-west-2\",\n        \"cloud\": \"aws\"\n      }\n    },\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n      \"entitled\": true,\n      \"rate_type\": \"FLAT\",\n      \"price\": 120,\n      \"pricing_group_values\": {\n        \"region\": \"us-east-2\",\n        \"cloud\": \"aws\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "26f5df6d-d9dd-4a4f-8459-669c01604b66",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "addRates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"rates\": [\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n      \"entitled\": true,\n      \"rate_type\": \"FLAT\",\n      \"price\": 100,\n      \"pricing_group_values\": {\n        \"region\": \"us-west-2\",\n        \"cloud\": \"aws\"\n      }\n    },\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n      \"entitled\": true,\n      \"rate_type\": \"FLAT\",\n      \"price\": 120,\n      \"pricing_group_values\": {\n        \"region\": \"us-east-2\",\n        \"cloud\": \"aws\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aaa6e3bd-ea97-47ba-9dde-0865d0e2750e",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "addRates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"rates\": [\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n      \"entitled\": true,\n      \"rate_type\": \"FLAT\",\n      \"price\": 100,\n      \"pricing_group_values\": {\n        \"region\": \"us-west-2\",\n        \"cloud\": \"aws\"\n      }\n    },\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n      \"entitled\": true,\n      \"rate_type\": \"FLAT\",\n      \"price\": 120,\n      \"pricing_group_values\": {\n        \"region\": \"us-east-2\",\n        \"cloud\": \"aws\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ca320c40-49ae-4cae-a137-b580b776f299",
+          "name": "Set the rate card products order",
+          "request": {
+            "name": "Set the rate card products order",
+            "description": {
+              "content": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of products on the rate card.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "setRateCardProductsOrder"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"product_order\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "02e2b967-a273-4519-968f-8e824207dbdb",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "setRateCardProductsOrder"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_order\": [\n    \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n    \"b086f2f4-9851-4466-9ca0-30d53e6a42ac\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2fee9b71-b480-4504-bee5-b4c4a68555ed",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "setRateCardProductsOrder"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_order\": [\n    \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n    \"b086f2f4-9851-4466-9ca0-30d53e6a42ac\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0d3ed21-7c73-47c3-89a8-b34f35edd20a",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "setRateCardProductsOrder"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_order\": [\n    \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n    \"b086f2f4-9851-4466-9ca0-30d53e6a42ac\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4d88bca3-5abd-4489-8163-3d3deb52e173",
+          "name": "Update the rate card products order",
+          "request": {
+            "name": "Update the rate card products order",
+            "description": {
+              "content": "The ordering of products on a rate card determines the order in which the products will appear on customers' invoices. Use this endpoint to set the order of specific products on the rate card by moving them relative to their current location.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "moveRateCardProducts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"product_moves\": [\n    {\n      \"product_id\": \"<uuid>\",\n      \"position\": \"<number>\"\n    },\n    {\n      \"product_id\": \"<uuid>\",\n      \"position\": \"<number>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0e454cb1-20d8-4cbd-821c-6c9b7835d135",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "moveRateCardProducts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_moves\": [\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"position\": 0\n    },\n    {\n      \"product_id\": \"b086f2f4-9851-4466-9ca0-30d53e6a42ac\",\n      \"position\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c4af5eb4-c236-4560-9928-c97658f23305",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "moveRateCardProducts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_moves\": [\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"position\": 0\n    },\n    {\n      \"product_id\": \"b086f2f4-9851-4466-9ca0-30d53e6a42ac\",\n      \"position\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "05ac8ce9-24ad-456e-83a3-5986d29a48e8",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "moveRateCardProducts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"product_moves\": [\n    {\n      \"product_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n      \"position\": 0\n    },\n    {\n      \"product_id\": \"b086f2f4-9851-4466-9ca0-30d53e6a42ac\",\n      \"position\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.metronome.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "e48c141d-8807-4716-ad2b-14cf476d5944",
+    "name": "Metronome Alerts Rate cards API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,2679 @@
+{
+  "item": [
+    {
+      "id": "7a50145c-f89f-4259-80f9-2b13d1ad1a1a",
+      "name": "Credits and commits",
+      "description": {
+        "content": "Credits and commits are used to manage customer balances.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "01945c08-1aff-444a-950e-0a4a93e90fd6",
+          "name": "Add a manual balance entry",
+          "request": {
+            "name": "Add a manual balance entry",
+            "description": {
+              "content": "Manually adjust the available balance on a commit or credit. This entry is appended to the commit ledger as a new event. Optionally include a description that provides the reasoning for the entry.\n\n### Use this endpoint to:\n- Address incorrect usage burn-down caused by malformed usage or invalid config\n- Decrease available balance to account for outages where usage may have not been tracked or sent to Metronome\n- Issue credits to customers in the form of increased balance on existing commit or credit\n\n### Usage guidelines:\nManual ledger entries can be extremely useful for resolving discrepancies in Metronome. However, most corrections to inaccurate billings can be modified upstream of the commit, whether that is via contract editing, rate editing, or other actions that cause an invoice to be recalculated.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "addManualBalanceLedgerEntry"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"id\": \"<uuid>\",\n  \"segment_id\": \"<uuid>\",\n  \"amount\": \"<number>\",\n  \"reason\": \"<string>\",\n  \"contract_id\": \"<uuid>\",\n  \"per_group_amounts\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"timestamp\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "56ec0d3e-e8f7-4dbb-8555-0d82139ef025",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "addManualBalanceLedgerEntry"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"segment_id\": \"66368e29-3f97-4d15-a6e9-120897f0070a\",\n  \"amount\": -1000,\n  \"reason\": \"Reason for entry\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "42b73568-655e-4b3c-8344-673495347838",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "addManualBalanceLedgerEntry"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"segment_id\": \"66368e29-3f97-4d15-a6e9-120897f0070a\",\n  \"amount\": -1000,\n  \"reason\": \"Reason for entry\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d0533613-0eb2-4009-91f3-b4aca42a7789",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "addManualBalanceLedgerEntry"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"segment_id\": \"66368e29-3f97-4d15-a6e9-120897f0070a\",\n  \"amount\": -1000,\n  \"reason\": \"Reason for entry\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b873f902-730a-4aaf-87a8-15bd7c1bd0bc",
+          "name": "List commits",
+          "request": {
+            "name": "List commits",
+            "description": {
+              "content": "Retrieve all commit agreements for a customer, including both prepaid and postpaid commitments. This endpoint provides comprehensive visibility into contractual spending obligations, enabling you to track commitment utilization and manage customer contracts effectively.\n\n### Use this endpoint to:\n- Display commitment balances and utilization in customer dashboards\n- Track prepaid commitment drawdown and remaining balances\n- Monitor postpaid commitment progress toward minimum thresholds\n- Build commitment tracking and forecasting tools\n- Show commitment history with optional ledger details\n- Manage rollover balances between contract periods\n\n### Key response fields:\nAn array of Commit objects containing:\n- Commit type: PREPAID (pay upfront) or POSTPAID (pay at true-up)\n- Rate type: COMMIT_RATE (discounted) or LIST_RATE (standard pricing)\n- Access schedule: When commitment funds become available\n- Invoice schedule: When the customer is billed\n- Product targeting: Which product(s) usage is eligible to draw from this commit\n- Optional ledger entries: Transaction history (if `include_ledgers=true`)\n- Balance information: Current available amount (if `include_balance=true`)\n- Rollover settings: Fraction of unused amount that carries forward\n\n### Usage guidelines:\n- Pagination: Results limited to 25 commits per page; use 'next_page' for more\n- Date filtering options:\n    - `covering_date`: Commits active on a specific date\n    - `starting_at`: Commits with access on/after a date\n    - `effective_before`: Commits with access before a date (exclusive)\n- Scope options:\n    - `include_contract_commits`: Include contract-level commits (not just customer-level)\n    - `include_archived`: Include archived commits and commits from archived contracts\n- Performance considerations:\n    - include_ledgers: Adds detailed transaction history (slower)\n    - include_balance: Adds current balance calculation (slower)\n- Optional filtering: Use commit_id to retrieve a specific commit\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerCommits",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"commit_id\": \"<uuid>\",\n  \"covering_date\": \"<dateTime>\",\n  \"starting_at\": \"<dateTime>\",\n  \"effective_before\": \"<dateTime>\",\n  \"include_contract_commits\": \"<boolean>\",\n  \"include_archived\": \"<boolean>\",\n  \"include_ledgers\": \"<boolean>\",\n  \"include_balance\": \"<boolean>\",\n  \"next_page\": \"<string>\",\n  \"limit\": 25\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "aa865b42-55f7-44b9-8a5a-0de5aeb624fe",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCommits",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"commit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"include_ledgers\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\",\n      \"type\": \"PREPAID\",\n      \"rate_type\": \"LIST_RATE\",\n      \"name\": \"My test commit\",\n      \"description\": \"My test commit description\",\n      \"priority\": 100,\n      \"product\": {\n        \"id\": \"2e30f074-d04c-412e-a134-851ebfa5ceb2\",\n        \"name\": \"My product A\"\n      },\n      \"rollover_fraction\": 0.1,\n      \"applicable_product_ids\": [\n        \"13a2179b-f0cb-460b-85a1-cd42964ca533\"\n      ],\n      \"applicable_contract_ids\": [\n        \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n      ],\n      \"access_schedule\": {\n        \"credit_type\": {\n          \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"name\": \"USD (cents)\"\n        },\n        \"schedule_items\": [\n          {\n            \"id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\",\n            \"amount\": 10000000,\n            \"starting_at\": \"2020-02-01T00:00:00.000Z\",\n            \"ending_before\": \"2021-02-01T00:00:00.000Z\"\n          }\n        ]\n      },\n      \"invoice_schedule\": {\n        \"credit_type\": {\n          \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"name\": \"USD (cents)\"\n        },\n        \"schedule_items\": [\n          {\n            \"id\": \"f15e4e23-f74e-4de4-9b3a-8b07434116c4\",\n            \"invoice_id\": \"525b9759-7bbd-4a05-aab1-d7c43c976b57\",\n            \"amount\": 10000000,\n            \"unit_price\": 10000000,\n            \"quantity\": 1,\n            \"timestamp\": \"2020-03-01T00:00:00.000Z\"\n          }\n        ],\n        \"do_not_invoice\": false\n      },\n      \"invoice_contract\": {\n        \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n      },\n      \"ledger\": [\n        {\n          \"invoice_id\": \"525b9759-7bbd-4a05-aab1-d7c43c976b57\",\n          \"amount\": 10000000,\n          \"timestamp\": \"2020-03-01T00:00:00.000Z\",\n          \"type\": \"PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION\",\n          \"segment_id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\"\n        }\n      ],\n      \"uniqueness_key\": \"946g9bepi1-uniqueness-key\",\n      \"created_at\": \"2020-01-01T00:00:00.000Z\"\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "af73a891-2fde-494a-a82d-e3bf02e2bac3",
+          "name": "Create a commit",
+          "request": {
+            "name": "Create a commit",
+            "description": {
+              "content": "Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later). \n\nNote: In most cases, you should add commitments directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to establish customer-level spending commitments that can be applied across multiple contracts or scoped to specific contracts. Customer-level commits are ideal for:\n- Enterprise-wide minimum spending agreements that span multiple contracts\n- Multi-contract volume commitments with shared spending pools\n- Cross-contract discount tiers based on aggregate usage\n\n#### Commit type Requirements: \n- You must specify either \"prepaid\" or \"postpaid\" as the commit type:\n- Prepaid commits: Customer pays upfront; invoice_schedule is optional (if omitted, creates a commit without an invoice)\n- Postpaid commits: Customer pays when the commitment expires (the end of the access_schedule); invoice_schedule is required and must match access_schedule totals. \n\n#### Billing configuration:\n- invoice_contract_id is required for postpaid commits and for prepaid commits with billing (only optional for free prepaid commits) unless do_not_invoice is set to true\n- For postpaid commits: access_schedule and invoice_schedule must have matching amounts\n- For postpaid commits: only one schedule item is allowed in both schedules.\n\n#### Scoping flexibility:\nCustomer-level commits can be configured in a few ways:\n- Contract-specific: Use the `applicable_contract_ids` field to limit the commit to specific contracts\n- Cross-contract: Leave `applicable_contract_ids` empty to allow the commit to be used across all of the customer's contracts\n\n#### Product targeting:\nCommits can be scoped to specific products using applicable_product_ids, applicable_product_tags, or specifiers, or left unrestricted to apply to all products.\n\n#### Priority considerations:\nWhen multiple commits are applicable, the one with the lower priority value will be consumed first. If there is a tie, contract level commits and credits will be applied before customer level commits and credits. Plan your priority scheme carefully to ensure commits are applied in the desired order.\n\n### Usage guidelines:\n⚠️ Preferred Alternative: In most cases, you should add commits directly to contracts using the create contract or edit contract APIs instead of creating customer-level commits. Contract-level commits provide better organization and are the recommended approach for standard use cases.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerCommits",
+                "create"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"type\": \"<string>\",\n  \"priority\": \"<number>\",\n  \"product_id\": \"<uuid>\",\n  \"access_schedule\": {\n    \"schedule_items\": [\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      },\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      }\n    ],\n    \"credit_type_id\": \"<uuid>\"\n  },\n  \"rate_type\": \"<string>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"invoice_schedule\": {\n    \"credit_type_id\": \"<uuid>\",\n    \"schedule_items\": [\n      {\n        \"timestamp\": \"<dateTime>\",\n        \"unit_price\": \"<number>\",\n        \"quantity\": \"<number>\",\n        \"amount\": \"<number>\"\n      },\n      {\n        \"timestamp\": \"<dateTime>\",\n        \"unit_price\": \"<number>\",\n        \"quantity\": \"<number>\",\n        \"amount\": \"<number>\"\n      }\n    ],\n    \"recurring_schedule\": {\n      \"starting_at\": \"<dateTime>\",\n      \"ending_before\": \"<dateTime>\",\n      \"frequency\": \"<string>\",\n      \"amount_distribution\": \"<string>\",\n      \"unit_price\": \"<number>\",\n      \"quantity\": \"<number>\",\n      \"amount\": \"<number>\"\n    },\n    \"do_not_invoice\": false\n  },\n  \"invoice_contract_id\": \"<uuid>\",\n  \"applicable_product_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"applicable_product_tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"applicable_contract_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"specifiers\": [\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    },\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    }\n  ],\n  \"netsuite_sales_order_id\": \"<string>\",\n  \"salesforce_opportunity_id\": \"<string>\",\n  \"custom_fields\": {\n    \"key_0\": \"<string>\"\n  },\n  \"uniqueness_key\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "14cb6fa6-aa92-480b-96da-48397bd24e98",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCommits",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"type\": \"prepaid\",\n  \"name\": \"My Commit\",\n  \"priority\": 100,\n  \"product_id\": \"f14d6729-6a44-4b13-9908-9387f1918790\",\n  \"invoice_contract_id\": \"e57d6929-c2f1-4796-a9a8-63cedefe848d\",\n  \"access_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"amount\": 1000,\n        \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n        \"ending_before\": \"2020-02-01T00:00:00.000Z\"\n      }\n    ]\n  },\n  \"invoice_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"unit_price\": 10000000,\n        \"quantity\": 1,\n        \"timestamp\": \"2020-03-01T00:00:00.000Z\"\n      }\n    ],\n    \"do_not_invoice\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "398ff64f-877c-4c9e-b805-43af43bceda3",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCommits",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"type\": \"prepaid\",\n  \"name\": \"My Commit\",\n  \"priority\": 100,\n  \"product_id\": \"f14d6729-6a44-4b13-9908-9387f1918790\",\n  \"invoice_contract_id\": \"e57d6929-c2f1-4796-a9a8-63cedefe848d\",\n  \"access_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"amount\": 1000,\n        \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n        \"ending_before\": \"2020-02-01T00:00:00.000Z\"\n      }\n    ]\n  },\n  \"invoice_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"unit_price\": 10000000,\n        \"quantity\": 1,\n        \"timestamp\": \"2020-03-01T00:00:00.000Z\"\n      }\n    ],\n    \"do_not_invoice\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9dc95be5-bf8e-4337-85e6-47be5a98a852",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCommits",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"type\": \"prepaid\",\n  \"name\": \"My Commit\",\n  \"priority\": 100,\n  \"product_id\": \"f14d6729-6a44-4b13-9908-9387f1918790\",\n  \"invoice_contract_id\": \"e57d6929-c2f1-4796-a9a8-63cedefe848d\",\n  \"access_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"amount\": 1000,\n        \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n        \"ending_before\": \"2020-02-01T00:00:00.000Z\"\n      }\n    ]\n  },\n  \"invoice_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"unit_price\": 10000000,\n        \"quantity\": 1,\n        \"timestamp\": \"2020-03-01T00:00:00.000Z\"\n      }\n    ],\n    \"do_not_invoice\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ebcae65c-7948-4e28-a62c-a6c3e463d8e6",
+          "name": "Update the commit end date",
+          "request": {
+            "name": "Update the commit end date",
+            "description": {
+              "content": "Shortens the end date of a prepaid commit to terminate it earlier than originally scheduled. Use this endpoint when you need to cancel or reduce the duration of an existing prepaid commit. Only works with prepaid commit types and can only move the end date forward (earlier), not extend it. \n\n### Usage guidelines:\nTo extend commit end dates or make other comprehensive edits, use the 'edit commit' endpoint instead.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerCommits",
+                "updateEndDate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"commit_id\": \"<uuid>\",\n  \"access_ending_before\": \"<dateTime>\",\n  \"invoices_ending_before\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d39429c4-56cb-42b1-a0fb-97b66007bfc7",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCommits",
+                    "updateEndDate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"commit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"access_ending_before\": \"2020-01-01T00:00:00.000Z\",\n  \"invoices_ending_before\": \"2020-01-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e1e3899d-f5c9-4ac4-9051-4b3684f25ccb",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCommits",
+                    "updateEndDate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"commit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"access_ending_before\": \"2020-01-01T00:00:00.000Z\",\n  \"invoices_ending_before\": \"2020-01-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f6c17f79-381c-406e-99e7-84875e695943",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCommits",
+                    "updateEndDate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"commit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"access_ending_before\": \"2020-01-01T00:00:00.000Z\",\n  \"invoices_ending_before\": \"2020-01-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d3593e39-0616-4cbb-8dd1-5bd05758bf11",
+          "name": "Release external payment gate threshold commit",
+          "request": {
+            "name": "Release external payment gate threshold commit",
+            "description": {
+              "content": "If using threshold billing with an external payment gateway, Metronome does not facilitate the payment gating process on behalf of the client. As a result, clients must facilitate the transaction themselves. This end-point is used to either release or cancel the commit pending on the outcome of the external payment attempt.\n\nTo release the commit, you must pass the `workflow_id` provided in the `payment_gate.external_initiate` webhook.\n\n### Use this endpoint to:\nFacilitate payment gating workflows for threshold billing if using a payment gateway Metronome does not support today.\n\n### Usage guidelines:\nEnsure that you are set up to consume the `payment_gate.external_initiate` webhook and save the `workflow_id`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "commits",
+                "threshold-billing",
+                "release"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workflow_id\": \"<uuid>\",\n  \"outcome\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f5a4f8fa-8b20-4278-babb-256ef11c2a2a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "commits",
+                    "threshold-billing",
+                    "release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workflow_id\": \"5576ba1f-4a33-b473-3f05-6162d87b4a33\",\n  \"outcome\": \"paid\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7689726a-65de-4806-9bf7-c44ee8de2a32",
+          "name": "Disable trueup for commit",
+          "request": {
+            "name": "Disable trueup for commit",
+            "description": {
+              "content": "Disable the true-up invoice for a postpaid commit. If used, the true-up invoice will not be generated.\n\nFor postpaid commits, usage during the access period is paid for in arrears. If the total amount paid during the access period is less than the committed amount, there's a final true-up invoice on the invoice_date.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "commits",
+                "disableTrueup"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"commit_id\": \"<uuid>\",\n  \"contract_id\": \"<uuid>\",\n  \"amendment_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e8f95992-13a2-41c9-a4e9-adac6876c910",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "commits",
+                    "disableTrueup"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"commit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"contract_id\": \"7526bacf-f08a-47af-b473-bc57b88890e1\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a9607b9b-2135-48b7-acc8-60745c1c8627",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "commits",
+                    "disableTrueup"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"commit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"contract_id\": \"7526bacf-f08a-47af-b473-bc57b88890e1\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4a780235-84c8-4305-a42d-034210eb9736",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "commits",
+                    "disableTrueup"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"commit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"contract_id\": \"7526bacf-f08a-47af-b473-bc57b88890e1\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7d10f857-0376-44bd-957f-0b74ed35a7e9",
+          "name": "List credits",
+          "request": {
+            "name": "List credits",
+            "description": {
+              "content": "Retrieve a detailed list of all credits available to a customer, including promotional credits and contract-specific credits. This endpoint provides comprehensive visibility into credit balances, access schedules, and usage rules, enabling you to build credit management interfaces and track available funding.\n\n### Use this endpoint to:\n- Display all available credits in customer billing dashboards\n- Show credit balances and expiration dates\n- Track credit usage history with optional ledger details\n- Build credit management and reporting tools\n- Monitor promotional credit utilization\n• Support customer inquiries about available credits\n\n### Key response fields:\nAn array of Credit objects containing:\n- Credit details: Name, priority, and which applicable products/tags it applies to\n- Product ID: The `product_id` of the credit. This is for external mapping into your quote-to-cash stack, not the product it applies to. \n- Access schedule: When credits become available and expire\n- Optional ledger entries: Transaction history (if `include_ledgers=true`)\n- Balance information: Current available amount (if `include_balance=true`)\n- Metadata: Custom fields and usage specifiers\n\n### Usage guidelines:\n- Pagination: Results limited to 25 commits per page; use next_page for more\n- Date filtering options:\n    - `covering_date`: Credits active on a specific date\n    - `starting_at`: Credits with access on/after a date\n    - `effective_before`: Credits with access before a date (exclusive)\n- Scope options:\n    - `include_contract_credits`: Include contract-level credits (not just customer-level)\n    - `include_archived`: Include archived credits and credits from archived contracts\n- Performance considerations:\n    - `include_ledgers`: Adds detailed transaction history (slower)\n    - `include_balance`: Adds current balance calculation (slower)\n- Optional filtering: Use credit_id to retrieve a specific commit\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerCredits",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"credit_id\": \"<uuid>\",\n  \"covering_date\": \"<dateTime>\",\n  \"starting_at\": \"<dateTime>\",\n  \"effective_before\": \"<dateTime>\",\n  \"include_contract_credits\": \"<boolean>\",\n  \"include_archived\": \"<boolean>\",\n  \"include_ledgers\": \"<boolean>\",\n  \"include_balance\": \"<boolean>\",\n  \"next_page\": \"<string>\",\n  \"limit\": 25\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "76ff1a61-0f3e-4622-8d29-c94631469089",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCredits",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"credit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"include_ledgers\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"fa411f5b-fb85-4755-9d4d-530717be083c\",\n      \"type\": \"CREDIT\",\n      \"rate_type\": \"LIST_RATE\",\n      \"name\": \"My test credit\",\n      \"description\": \"My test credit description\",\n      \"priority\": 100,\n      \"product\": {\n        \"id\": \"2e30f074-d04c-412e-a134-851ebfa5ceb2\",\n        \"name\": \"My product A\"\n      },\n      \"applicable_product_ids\": [\n        \"13a2179b-f0cb-460b-85a1-cd42964ca533\"\n      ],\n      \"applicable_contract_ids\": [\n        \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n      ],\n      \"access_schedule\": {\n        \"credit_type\": {\n          \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"name\": \"USD (cents)\"\n        },\n        \"schedule_items\": [\n          {\n            \"id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\",\n            \"amount\": 10000000,\n            \"starting_at\": \"2020-02-01T00:00:00.000Z\",\n            \"ending_before\": \"2021-02-01T00:00:00.000Z\"\n          }\n        ]\n      },\n      \"ledger\": [\n        {\n          \"invoice_id\": \"525b9759-7bbd-4a05-aab1-d7c43c976b57\",\n          \"amount\": 10000000,\n          \"timestamp\": \"2020-03-01T00:00:00.000Z\",\n          \"type\": \"CREDIT_AUTOMATED_INVOICE_DEDUCTION\",\n          \"segment_id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\"\n        }\n      ],\n      \"uniqueness_key\": \"372p7cvwr3-uniqueness-key\"\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "08e6bbad-1d47-4b41-8e0c-ac0af3bc15ec",
+          "name": "Create a credit",
+          "request": {
+            "name": "Create a credit",
+            "description": {
+              "content": "Creates customer-level credits that provide spending allowances or free credit balances for customers across their Metronome usage. Note: In most cases, you should add credits directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to provision credits directly at the customer level that can be applied across multiple contracts or scoped to specific contracts. Customer-level credits are ideal for:\n- Customer onboarding incentives that apply globally\n- Flexible spending allowances that aren't tied to a single contract\n- Migration scenarios where you need to preserve existing customer balances\n\n#### Scoping flexibility: \nCustomer-level credits can be configured in two ways:\n- Contract-specific: Use the applicable_contract_ids field to limit the credit to specific contracts\n- Cross-contract: Leave applicable_contract_ids empty to allow the credit to be used across all of the customer's contracts\n\n#### Product Targeting: \nCredits can be scoped to specific products using `applicable_product_ids` or `applicable_product_tags`, or left unrestricted to apply to all products.\n\n#### Priority considerations: \nWhen multiple credits are applicable, the one with the lower priority value will be consumed first. If there is a tie, contract level commits and credits will be applied before customer level commits and credits. Plan your priority scheme carefully to ensure credits are applied in the desired order.\n\n#### Access Schedule Required: \nYou must provide an `access_schedule` that defines when and how much credit becomes available to the customer over time. This usually is aligned to the contract schedule or starts immediately and is set to expire in the future.\n\n### Usage Guidelines:\n⚠️ Preferred Alternative: In most cases, you should add credits directly to contracts using the contract/create or contract/edit APIs instead of creating customer-level credits. Contract-level credits provide better organization, and are easier for finance teams to recognize revenue, and are the recommended approach for most use cases.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerCredits",
+                "create"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"priority\": \"<number>\",\n  \"product_id\": \"<uuid>\",\n  \"access_schedule\": {\n    \"schedule_items\": [\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      },\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      }\n    ],\n    \"credit_type_id\": \"<uuid>\"\n  },\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"applicable_product_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"applicable_product_tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"specifiers\": [\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    },\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    }\n  ],\n  \"applicable_contract_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"netsuite_sales_order_id\": \"<string>\",\n  \"salesforce_opportunity_id\": \"<string>\",\n  \"custom_fields\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"rate_type\": \"<string>\",\n  \"uniqueness_key\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "699bef65-864b-4514-bd0f-5c36934e03f5",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCredits",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"name\": \"My Credit\",\n  \"priority\": 100,\n  \"product_id\": \"f14d6729-6a44-4b13-9908-9387f1918790\",\n  \"access_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"amount\": 1000,\n        \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n        \"ending_before\": \"2020-02-01T00:00:00.000Z\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8159f26-ab57-408a-b56e-23dff68f00d8",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCredits",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"name\": \"My Credit\",\n  \"priority\": 100,\n  \"product_id\": \"f14d6729-6a44-4b13-9908-9387f1918790\",\n  \"access_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"amount\": 1000,\n        \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n        \"ending_before\": \"2020-02-01T00:00:00.000Z\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f97fe30b-6da1-4857-b265-1b8b09cbc166",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCredits",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"name\": \"My Credit\",\n  \"priority\": 100,\n  \"product_id\": \"f14d6729-6a44-4b13-9908-9387f1918790\",\n  \"access_schedule\": {\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n    \"schedule_items\": [\n      {\n        \"amount\": 1000,\n        \"starting_at\": \"2020-01-01T00:00:00.000Z\",\n        \"ending_before\": \"2020-02-01T00:00:00.000Z\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "67a9a38d-033f-4786-8a20-1ff652e069f1",
+          "name": "Update the credit end date",
+          "request": {
+            "name": "Update the credit end date",
+            "description": {
+              "content": "Shortens the end date of an existing customer credit to terminate it earlier than originally scheduled. Only allows moving end dates forward (earlier), not extending them. \n\nNote: To extend credit end dates or make comprehensive edits, use the 'edit credit' endpoint instead.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerCredits",
+                "updateEndDate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"credit_id\": \"<uuid>\",\n  \"access_ending_before\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "403393a5-d013-4f4a-82a5-0cacb7dfcd5f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCredits",
+                    "updateEndDate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"credit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"access_ending_before\": \"2020-01-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6fbea1a5-030c-4891-a3f4-59045dcfa83b",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCredits",
+                    "updateEndDate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"credit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"access_ending_before\": \"2020-01-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c8e3cbb0-0917-499e-88ab-5469804a85fb",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerCredits",
+                    "updateEndDate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"credit_id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"access_ending_before\": \"2020-01-01T00:00:00.000Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e75141b0-7258-44a3-a0a8-9f50085e9e95",
+          "name": "List balances",
+          "request": {
+            "name": "List balances",
+            "description": {
+              "content": "Retrieve a comprehensive view of all available balances (commits and credits) for a customer. This endpoint provides real-time visibility into prepaid funds, postpaid commitments, promotional credits, and other balance types that can offset usage charges, helping you build transparent billing experiences.\n\n### Use this endpoint to:\n- Display current available balances in customer dashboards\n- Verify available funds before approving high-usage operations\n- Generate balance reports for finance teams\n- Filter balances by contract or date ranges\n\n### Key response fields:\nAn array of balance objects (all credits and commits) containing:\n\n- Balance details: Current available amount for each commit or credit\n- Metadata: Product associations, priorities, applicable date ranges\n- Optional ledger entries: Detailed transaction history (if `include_ledgers=true`)\n- Balance calculations: Including pending transactions and future-dated entries\n- Custom fields: Any additional metadata attached to balances\n\n### Usage guidelines:\n- Use the [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer) endpoint to retrieve a single combined current balance\n- Date filtering: Use `effective_before` to include only balances with access before a specific date (exclusive)\n- Set `include_balance=true` for calculated balance amounts on each commit or credit\n- Set `include_ledgers=true` for full transaction history\n- Set `include_contract_balances = true` to see contract level balances\n- Balance logic: Reflects currently accessible amounts, excluding expired/future segments\n- Manual adjustments: Includes all manual ledger entries, even future-dated ones\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerBalances",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"id\": \"<uuid>\",\n  \"covering_date\": \"<dateTime>\",\n  \"starting_at\": \"<dateTime>\",\n  \"effective_before\": \"<dateTime>\",\n  \"include_contract_balances\": \"<boolean>\",\n  \"include_archived\": \"<boolean>\",\n  \"include_ledgers\": \"<boolean>\",\n  \"include_balance\": \"<boolean>\",\n  \"next_page\": \"<string>\",\n  \"limit\": 25,\n  \"exclude_zero_balances\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9c16ef94-403c-4a98-bed0-c41c6cd4a742",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerBalances",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"id\": \"6162d87b-e5db-4a33-b7f2-76ce6ead4e85\",\n  \"include_ledgers\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\",\n      \"type\": \"PREPAID\",\n      \"rate_type\": \"LIST_RATE\",\n      \"name\": \"My test commit\",\n      \"description\": \"My test commit description\",\n      \"priority\": 100,\n      \"product\": {\n        \"id\": \"2e30f074-d04c-412e-a134-851ebfa5ceb2\",\n        \"name\": \"My product A\"\n      },\n      \"rollover_fraction\": 0.1,\n      \"applicable_product_ids\": [\n        \"13a2179b-f0cb-460b-85a1-cd42964ca533\"\n      ],\n      \"applicable_contract_ids\": [\n        \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n      ],\n      \"access_schedule\": {\n        \"credit_type\": {\n          \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"name\": \"USD (cents)\"\n        },\n        \"schedule_items\": [\n          {\n            \"id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\",\n            \"amount\": 10000000,\n            \"starting_at\": \"2020-02-01T00:00:00.000Z\",\n            \"ending_before\": \"2021-02-01T00:00:00.000Z\"\n          }\n        ]\n      },\n      \"invoice_schedule\": {\n        \"credit_type\": {\n          \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"name\": \"USD (cents)\"\n        },\n        \"schedule_items\": [\n          {\n            \"id\": \"f15e4e23-f74e-4de4-9b3a-8b07434116c4\",\n            \"invoice_id\": \"525b9759-7bbd-4a05-aab1-d7c43c976b57\",\n            \"amount\": 10000000,\n            \"unit_price\": 10000000,\n            \"quantity\": 1,\n            \"timestamp\": \"2020-03-01T00:00:00.000Z\"\n          }\n        ],\n        \"do_not_invoice\": false\n      },\n      \"invoice_contract\": {\n        \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n      },\n      \"ledger\": [\n        {\n          \"invoice_id\": \"525b9759-7bbd-4a05-aab1-d7c43c976b57\",\n          \"amount\": 10000000,\n          \"timestamp\": \"2020-03-01T00:00:00.000Z\",\n          \"type\": \"PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION\",\n          \"segment_id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\"\n        }\n      ],\n      \"uniqueness_key\": \"946g9bepi1-uniqueness-key\",\n      \"created_at\": \"2020-01-01T00:00:00.000Z\"\n    },\n    {\n      \"id\": \"fa411f5b-fb85-4755-9d4d-530717be083c\",\n      \"type\": \"CREDIT\",\n      \"rate_type\": \"LIST_RATE\",\n      \"name\": \"My test credit\",\n      \"description\": \"My test credit description\",\n      \"priority\": 100,\n      \"product\": {\n        \"id\": \"2e30f074-d04c-412e-a134-851ebfa5ceb2\",\n        \"name\": \"My product A\"\n      },\n      \"applicable_product_ids\": [\n        \"13a2179b-f0cb-460b-85a1-cd42964ca533\"\n      ],\n      \"applicable_contract_ids\": [\n        \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n      ],\n      \"access_schedule\": {\n        \"credit_type\": {\n          \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"name\": \"USD (cents)\"\n        },\n        \"schedule_items\": [\n          {\n            \"id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\",\n            \"amount\": 10000000,\n            \"starting_at\": \"2020-02-01T00:00:00.000Z\",\n            \"ending_before\": \"2021-02-01T00:00:00.000Z\"\n          }\n        ]\n      },\n      \"ledger\": [\n        {\n          \"invoice_id\": \"525b9759-7bbd-4a05-aab1-d7c43c976b57\",\n          \"amount\": 10000000,\n          \"timestamp\": \"2020-03-01T00:00:00.000Z\",\n          \"type\": \"CREDIT_AUTOMATED_INVOICE_DEDUCTION\",\n          \"segment_id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\"\n        }\n      ],\n      \"uniqueness_key\": \"372p7cvwr3-uniqueness-key\"\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "31b04e9e-d063-4431-8c2c-f11b8e7a1bbb",
+          "name": "Get the net balance of a customer",
+          "request": {
+            "name": "Get the net balance of a customer",
+            "description": {
+              "content": "Retrieve the combined current balance across any grouping of credits and commits for a customer in a single API call.\n- Display real-time available balance to customers in billing dashboards\n- Build finance dashboards showing credit utilization across customer segments\n- Validate expected vs. actual balance during billing reconciliation\n\n### Key response fields:\n- `balance`: The combined net balance available to use at this moment across all matching commits and credits\n- `credit_type_id`: The credit type (fiat or custom pricing unit) the balance is denominated in\n\n### Filtering options:\nBalance filters allow you to scope the calculation to specific subsets of commits and credits. When using multiple filter objects, they are OR'd together — if a commit or credit matches any filter, it's included in the net balance. Within a single filter object, all specified conditions are AND'd together.\n- **Balance types**: Include any combination of `PREPAID_COMMIT`, `POSTPAID_COMMIT`, and `CREDIT` (e.g., `[\"PREPAID_COMMIT\", \"CREDIT\"]` to exclude postpaid commits). If not specified, all balance types are included.\n- **Specific IDs**: Target exact commit or credit IDs for precise balance queries\n- **Custom fields**: Filter by custom field key-value pairs; when multiple pairs are provided, commits must match all of them\n\n**Example**: To get the balance of all free-trial credits OR all signup-promotion commits, you'd pass two filter objects — one filtering for CREDIT with custom field campaign: free-trial, and another filtering for PREPAID_COMMIT with custom field campaign: signup-promotion.\n\n### Usage guidelines:\n- **Balance ledger details**: Use the [listBalances](https://docs.metronome.com/api-reference/credits-and-commits/list-balances) endpoint instead to understand detailed ledger drawdowns for each individual balance\n- **Draft invoice handling**: Use `invoice_inclusion_mode` to control whether pending draft invoice deductions are included (`FINALIZED_AND_DRAFT`, the default) or excluded (`FINALIZED`) from the balance calculation\n- **Account hierarchies**: When querying a child customer, shared commits from parent contracts are not included — query the parent customer directly to see shared commit balances\n- **Negative balances**: Manual ledger entries can cause negative segment balances; these are treated as zero when calculating the net balance\n- **Credit types**: If `credit_type_id` is not specified, the balance defaults to USD (cents)\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "customerBalances",
+                "getNetBalance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"credit_type_id\": \"<uuid>\",\n  \"filters\": [\n    {\n      \"balance_types\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"ids\": [\n        \"<uuid>\",\n        \"<uuid>\"\n      ],\n      \"custom_fields\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      }\n    },\n    {\n      \"balance_types\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"ids\": [\n        \"<uuid>\",\n        \"<uuid>\"\n      ],\n      \"custom_fields\": {\n        \"key_0\": \"<string>\"\n      }\n    }\n  ],\n  \"invoice_inclusion_mode\": \"FINALIZED_AND_DRAFT\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f825fd5a-051d-44db-84d2-368030fec683",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerBalances",
+                    "getNetBalance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n  \"filters\": [\n    {\n      \"balance_types\": [\n        \"CREDIT\"\n      ],\n      \"custom_fields\": {\n        \"campaign\": \"free-trial\"\n      }\n    },\n    {\n      \"balance_types\": [\n        \"PREPAID_COMMIT\",\n        \"POSTPAID_COMMIT\"\n      ],\n      \"custom_fields\": {\n        \"campaign\": \"signup-promotion\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"balance\": 123.45,\n    \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71891db3-665e-4139-a991-03ba4f951316",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "customerBalances",
+                    "getNetBalance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n  \"filters\": [\n    {\n      \"balance_types\": [\n        \"CREDIT\"\n      ],\n      \"custom_fields\": {\n        \"campaign\": \"free-trial\"\n      }\n    },\n    {\n      \"balance_types\": [\n        \"PREPAID_COMMIT\",\n        \"POSTPAID_COMMIT\"\n      ],\n      \"custom_fields\": {\n        \"campaign\": \"signup-promotion\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "915d43f1-2716-407a-a0f5-c23503a3b00b",
+          "name": "List seat balances",
+          "request": {
+            "name": "List seat balances",
+            "description": {
+              "content": "Retrieve detailed balance for seat-based credits and commits from the contract's subscriptions, broken down by individual seats.\n\n### Use this endpoint to:\n- Display per-seat balance information in customer dashboards\n- Filter balance data by subscription or specific seats\n\n### Key response fields:\nAn array of seat balance objects containing:\n- Seat id\n- Balance: current total balance across all commits and credits\n\n### Usage guidelines:\n- Date filtering: use `covering_date` OR `starting_at`/`ending_before` to filter balance data by time range\n- Set `include_credits_and_commits=true` for detailed commits and credits breakdown per seat\n- Set `include_ledgers=true` for detailed transaction history per commit/credit per seat\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "seatBalances",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"contract_id\": \"<uuid>\",\n  \"subscription_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"seat_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"include_credits_and_commits\": false,\n  \"include_ledgers\": false,\n  \"starting_at\": \"<dateTime>\",\n  \"effective_before\": \"<dateTime>\",\n  \"covering_date\": \"<dateTime>\",\n  \"limit\": \"<integer>\",\n  \"cursor\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "556909c1-edce-4921-b9cb-95c69d87604a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "seatBalances",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"subscription_ids\": [\n    \"8deed800-1b7a-495d-a207-6c52bac54dc9\"\n  ],\n  \"include_credits_and_commits\": true,\n  \"include_ledgers\": true,\n  \"covering_date\": \"2024-03-01T00:00:00.000Z\",\n  \"limit\": 25\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"seat_id\": \"seat_1\",\n      \"balances\": [\n        {\n          \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"balance\": 30000,\n          \"starting_balance\": 50000\n        }\n      ],\n      \"commits\": [\n        {\n          \"id\": \"62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\",\n          \"balance\": 30000,\n          \"start_date\": \"2024-01-01T00:00:00.000Z\",\n          \"end_date\": \"2024-02-01T00:00:00.000Z\",\n          \"ledger_entries\": [\n            {\n              \"type\": \"PREPAID_COMMIT_SEGMENT_START\",\n              \"amount\": 50000,\n              \"timestamp\": \"2024-01-01T00:00:00.000Z\"\n            },\n            {\n              \"type\": \"PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION\",\n              \"amount\": -20000,\n              \"timestamp\": \"2024-01-31T00:00:00.000Z\"\n            }\n          ]\n        }\n      ],\n      \"credits\": [\n        {\n          \"id\": \"fa411f5b-fb85-4755-9d4d-530717be083c\",\n          \"balance\": 20000,\n          \"start_date\": \"2024-01-01T00:00:00.000Z\",\n          \"end_date\": \"2024-02-01T00:00:00.000Z\",\n          \"ledger_entries\": [\n            {\n              \"type\": \"CREDIT_SEGMENT_START\",\n              \"amount\": 25000,\n              \"timestamp\": \"2024-01-01T00:00:00.000Z\"\n            },\n            {\n              \"type\": \"CREDIT_AUTOMATED_INVOICE_DEDUCTION\",\n              \"amount\": -5000,\n              \"timestamp\": \"2024-01-31T00:00:00.000Z\"\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"seat_id\": \"seat_2\",\n      \"balances\": [\n        {\n          \"credit_type_id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n          \"balance\": 45000,\n          \"starting_balance\": 45000\n        }\n      ],\n      \"commits\": [\n        {\n          \"id\": \"62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\",\n          \"balance\": 45000,\n          \"start_date\": \"2024-01-01T00:00:00.000Z\",\n          \"end_date\": \"2024-02-01T00:00:00.000Z\",\n          \"ledger_entries\": [\n            {\n              \"type\": \"PREPAID_COMMIT_SEGMENT_START\",\n              \"amount\": 45000,\n              \"timestamp\": \"2024-01-01T00:00:00.000Z\"\n            }\n          ]\n        }\n      ],\n      \"credits\": []\n    }\n  ],\n  \"pagination\": {\n    \"next_page\": \"eyJsYXN0X3NlYXRfaWQiai\",\n    \"seats_included\": 2,\n    \"seats_available_for_next_page\": 8\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0b28f3b8-85ed-4e2c-9897-437ef7335161",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "seatBalances",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"13117714-3f05-48e5-a6e9-a66093f13b4d\",\n  \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"subscription_ids\": [\n    \"8deed800-1b7a-495d-a207-6c52bac54dc9\"\n  ],\n  \"include_credits_and_commits\": true,\n  \"include_ledgers\": true,\n  \"covering_date\": \"2024-03-01T00:00:00.000Z\",\n  \"limit\": 25\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0bf4a904-29bb-4f40-b446-95a8a5afbf8d",
+          "name": "Edit a commit",
+          "request": {
+            "name": "Edit a commit",
+            "description": {
+              "content": "Edit specific details for a contract-level or customer-level commit. Use this endpoint to modify individual commit access schedules, invoice schedules, applicable products, invoicing contracts, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated.\n- If a commit's invoice schedule item is associated with a finalized invoice, you cannot remove or update the invoice schedule item.\n- If a commit's invoice schedule item is associated with a voided invoice, you cannot remove the invoice schedule item.\n- You cannot remove an commit access schedule segment that was applied to a finalized invoice. You can void the invoice beforehand and then remove the access schedule segment.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "contracts",
+                "commits",
+                "edit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"commit_id\": \"<uuid>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"access_schedule\": {\n    \"add_schedule_items\": [\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      },\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      }\n    ],\n    \"update_schedule_items\": [\n      {\n        \"id\": \"<uuid>\",\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      },\n      {\n        \"id\": \"<uuid>\",\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      }\n    ],\n    \"remove_schedule_items\": [\n      {\n        \"id\": \"<uuid>\"\n      },\n      {\n        \"id\": \"<uuid>\"\n      }\n    ]\n  },\n  \"invoice_schedule\": {\n    \"add_schedule_items\": [\n      {\n        \"timestamp\": \"<dateTime>\",\n        \"amount\": \"<number>\",\n        \"quantity\": \"<number>\",\n        \"unit_price\": \"<number>\"\n      },\n      {\n        \"timestamp\": \"<dateTime>\",\n        \"amount\": \"<number>\",\n        \"quantity\": \"<number>\",\n        \"unit_price\": \"<number>\"\n      }\n    ],\n    \"update_schedule_items\": [\n      {\n        \"id\": \"<uuid>\",\n        \"timestamp\": \"<dateTime>\",\n        \"amount\": \"<number>\",\n        \"quantity\": \"<number>\",\n        \"unit_price\": \"<number>\"\n      },\n      {\n        \"id\": \"<uuid>\",\n        \"timestamp\": \"<dateTime>\",\n        \"amount\": \"<number>\",\n        \"quantity\": \"<number>\",\n        \"unit_price\": \"<number>\"\n      }\n    ],\n    \"remove_schedule_items\": [\n      {\n        \"id\": \"<uuid>\"\n      },\n      {\n        \"id\": \"<uuid>\"\n      }\n    ]\n  },\n  \"invoice_contract_id\": \"<uuid>\",\n  \"applicable_product_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"applicable_product_tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"specifiers\": [\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    },\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    }\n  ],\n  \"product_id\": \"<uuid>\",\n  \"priority\": \"<number>\",\n  \"rate_type\": \"<string>\",\n  \"hierarchy_configuration\": {\n    \"child_access\": {\n      \"type\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "255d7689-21fa-454c-8bee-3ca965f8651b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "commits",
+                    "edit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"commit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\",\n  \"access_schedule\": {\n    \"update_schedule_items\": [\n      {\n        \"id\": \"d5edbd32-c744-48cb-9475-a9bca0e6fa39\",\n        \"ending_before\": \"2025-03-12T00:00:00Z\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "701dfae2-3cf3-400b-82ef-d8efca50f14e",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "commits",
+                    "edit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"commit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\",\n  \"access_schedule\": {\n    \"update_schedule_items\": [\n      {\n        \"id\": \"d5edbd32-c744-48cb-9475-a9bca0e6fa39\",\n        \"ending_before\": \"2025-03-12T00:00:00Z\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"CustomerNotFound\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "90ee0601-6c22-41b2-a223-4059f0333eb6",
+          "name": "Edit a credit",
+          "request": {
+            "name": "Edit a credit",
+            "description": {
+              "content": "Edit details for a contract-level or customer-level credit. \n\n### Use this endpoint to: \n- Extend the duration or the amount of an existing free credit like a trial \n- Modify individual credit access schedules, applicable products, priority, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated. \n- You cannot remove an access schedule segment that was applied to a finalized invoice. You can void the invoice beforehand and then remove the access schedule segment.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "contracts",
+                "credits",
+                "edit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"credit_id\": \"<uuid>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"access_schedule\": {\n    \"add_schedule_items\": [\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      },\n      {\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      }\n    ],\n    \"update_schedule_items\": [\n      {\n        \"id\": \"<uuid>\",\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      },\n      {\n        \"id\": \"<uuid>\",\n        \"amount\": \"<number>\",\n        \"starting_at\": \"<dateTime>\",\n        \"ending_before\": \"<dateTime>\"\n      }\n    ],\n    \"remove_schedule_items\": [\n      {\n        \"id\": \"<uuid>\"\n      },\n      {\n        \"id\": \"<uuid>\"\n      }\n    ]\n  },\n  \"applicable_product_ids\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"applicable_product_tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"specifiers\": [\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    },\n    {\n      \"product_id\": \"<uuid>\",\n      \"product_tags\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"pricing_group_values\": {\n        \"key_0\": \"<string>\"\n      },\n      \"presentation_group_values\": {\n        \"key_0\": \"<string>\"\n      },\n      \"exclude\": [\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        },\n        {\n          \"product_tags\": [\n            \"<string>\",\n            \"<string>\"\n          ]\n        }\n      ]\n    }\n  ],\n  \"product_id\": \"<uuid>\",\n  \"priority\": \"<number>\",\n  \"rate_type\": \"<string>\",\n  \"hierarchy_configuration\": {\n    \"child_access\": {\n      \"type\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2dcc7980-6ccc-40cd-9a0c-9e6b833ade9f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "credits",
+                    "edit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"credit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\",\n  \"access_schedule\": {\n    \"update_schedule_items\": [\n      {\n        \"id\": \"d5edbd32-c744-48cb-9475-a9bca0e6fa39\",\n        \"ending_before\": \"2025-03-12T00:00:00Z\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d6d1eb37-2861-4901-ab37-773ff2e26bfe",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "credits",
+                    "edit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"credit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\",\n  \"access_schedule\": {\n    \"update_schedule_items\": [\n      {\n        \"id\": \"d5edbd32-c744-48cb-9475-a9bca0e6fa39\",\n        \"ending_before\": \"2025-03-12T00:00:00Z\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"CustomerNotFound\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "37a7c3f2-e809-4cff-ba1c-6f8362ef10a6",
+          "name": "Archive a commit",
+          "request": {
+            "name": "Archive a commit",
+            "description": {
+              "content": "Archive a contract-level or customer-level commit. Use this endpoint to deactivate a commit while preserving historical records. You will not be able to archive a commit until all of the finalized usage invoices the commit has been applied to are voided, and all of the finalized invoices for commit payment have been voided. \n\nExample workflow: \nThe customer was provisioned a prepaid commit erroneously. It was applied to their most recent finalized usage invoice.\n- First, void the finalized invoice that the commit was applied to. Also, void the finalized invoice associated with the commit payment. \n- Then, use the archiveCommit endpoint to deactivate the commit.\n- Finally, regenerate the voided invoice. The invoice will be regenerated without the application of the commit, which has now been archived. \n\n### Usage guidelines:\n- Once a commit has been archived, it will no longer appear by default on the endpoints `listCustomerCommits` or `listCustomerBalances`. Use the `include_archived` parameter to choose to fetch the details. \n- Once a commit has been archived, it has a null ledger and 0 remaining balance. \n- Archiving a commit fully deactivates the entire access schedule. If you want to reduce the amount granted in a commit, consider editing the access schedule using the `editCommit` endpoint, or adding a manual ledger entry using the `addManualBalanceLedgerEntry` endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "contracts",
+                "commits",
+                "archive"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"commit_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1d6175a8-57fa-48a7-b149-f0b90b207462",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "commits",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"commit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "10c45181-d3c9-4648-ae22-65a414c67211",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "commits",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"commit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"CustomerNotFound\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8ca4f920-805a-460b-b00e-3ed46cdfe2f5",
+          "name": "Archive a credit",
+          "request": {
+            "name": "Archive a credit",
+            "description": {
+              "content": "Archive a contract-level or customer-level credit. Use this endpoint to deactivate a credit while preserving historical records. You will not be able to archive a credit until all of the finalized invoices the credit has been applied to are voided. \n\nExample workflow: \nThe customer was granted a free credit erroneously. It was applied to their most recent finalized invoice.\n- First, void the finalized invoice that the credit was applied to. \n- Then, use the archiveCredit endpoint to deactivate the credit. \n- Finally, regenerate the voided invoice. The invoice will be regenerated without the application of the credit, which has now been archived. \n\n### Usage guidelines:\n- Once a credit has been archived, it will no longer appear by default on the endpoints `listCustomerCredits` or `listCustomerBalances`. Use the `include_archived` parameter to choose to fetch the details. \n- Once a credit has been archived, it has a null ledger and 0 remaining balance. \n- Archiving a credit fully deactivates the entire access schedule. If you want to reduce the amount granted in a credit, consider editing the access schedule using the `editCredit` endpoint, or adding a manual ledger entry using the `addManualBalanceLedgerEntry` endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "contracts",
+                "credits",
+                "archive"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"credit_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5dedc180-994d-48d6-ba5b-749169ceff48",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "credits",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"credit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "35a2de0e-5e14-4c6f-9dbd-5895ebc059cd",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "contracts",
+                    "credits",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"4c91c473-fc12-445a-9c38-40421d47023f\",\n  \"credit_id\": \"5e7e82cf-ccb7-428c-a96f-a8e4f67af822\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"CustomerNotFound\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.metronome.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "328a0e51-b4cd-4c34-b224-bd0c53da1adf",
+    "name": "Metronome Alerts Credits and commits API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)",
+      "type": "text/plain"
+    }
+  }
+}

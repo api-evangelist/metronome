@@ -1,0 +1,273 @@
+{
+  "item": [
+    {
+      "id": "daa1f033-673d-40ba-a26c-6b8f5099f49e",
+      "name": "Security",
+      "description": {
+        "content": "[Security](https://docs.metronome.com/developer-resources/security/) endpoints allow you to retrieve security-related data.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c3e5d619-c73f-4bef-b5f4-f3981753fc34",
+          "name": "Get audit logs",
+          "request": {
+            "name": "Get audit logs",
+            "description": {
+              "content": "Get a comprehensive audit trail of all operations performed in your Metronome account, whether initiated through the API, web interface, or automated processes. This endpoint provides detailed logs of who did what and when, enabling compliance reporting, security monitoring, and operational troubleshooting across all interaction channels.\n\n### Use this endpoint to:\n- Monitor all account activity for security and compliance purposes\n- Track configuration changes regardless of source (API, UI, or system)\n- Investigate issues by reviewing historical operations\n\n### Key response fields: \nAn array of AuditLog objects containing:\n- id: Unique identifier for the audit log entry\n- timestamp: When the action occurred (RFC 3339 format)\n- actor: Information about who performed the action\n- request: Details including request ID, IP address, and user agent\n- `resource_type`: The type of resource affected (e.g., customer, contract, invoice)\n- `resource_id`: The specific resource identifier\n- `action`: The operation performed\n- `next_page`: Cursor for continuous log retrieval\n\n### Usage guidelines:\n- Continuous retrieval: The next_page token enables uninterrupted log streaming—save it between requests to ensure no logs are missed\n- Empty responses: An empty data array means no new logs yet; continue polling with the same next_page token\n- Date filtering:\n    - `starting_on`: Earliest logs to return (inclusive)\n    - `ending_before`: Latest logs to return (exclusive)\n    - Cannot be used with `next_page`\n- Resource filtering: Must specify both `resource_type` and `resource_id` together\n- Sort order: Default is `date_asc`; use `date_desc` for newest first\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "auditLogs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                },
+                {
+                  "disabled": false,
+                  "key": "starting_on",
+                  "value": "<dateTime>",
+                  "description": "RFC 3339 timestamp of the earliest audit log to return. Cannot be used with 'next_page'."
+                },
+                {
+                  "disabled": false,
+                  "key": "ending_before",
+                  "value": "<dateTime>",
+                  "description": "RFC 3339 timestamp (exclusive). Cannot be used with 'next_page'."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "<string>",
+                  "description": "Sort order by timestamp, e.g. date_asc or date_desc. Defaults to date_asc."
+                },
+                {
+                  "disabled": false,
+                  "key": "resource_id",
+                  "value": "<string>",
+                  "description": "Optional parameter that can be used to filter which audit logs are returned. If you specify resource_id, you must also specify resource_type."
+                },
+                {
+                  "disabled": false,
+                  "key": "resource_type",
+                  "value": "<string>",
+                  "description": "Optional parameter that can be used to filter which audit logs are returned. If you specify resource_type, you must also specify resource_id."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "acbb6cdb-d46b-4cae-9a12-9776ba7d3565",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "auditLogs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "starting_on",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "ending_before",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "resource_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "resource_type",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"timestamp\": \"2004-07-02T04:42:18.260Z\",\n      \"request\": {\n        \"id\": \"string\",\n        \"ip\": \"string\",\n        \"user_agent\": \"string\"\n      },\n      \"actor\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"string\"\n      },\n      \"resource_type\": \"string\",\n      \"resource_id\": \"string\",\n      \"action\": \"string\",\n      \"status\": \"pending\",\n      \"description\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"timestamp\": \"1986-05-01T17:49:46.752Z\",\n      \"request\": {\n        \"id\": \"string\",\n        \"ip\": \"string\",\n        \"user_agent\": \"string\"\n      },\n      \"actor\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"string\"\n      },\n      \"resource_type\": \"string\",\n      \"resource_id\": \"string\",\n      \"action\": \"string\",\n      \"status\": \"failure\",\n      \"description\": \"string\"\n    }\n  ],\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f2c7e8f-9f20-4b08-b0d8-d16a14d82020",
+          "name": "Get services",
+          "request": {
+            "name": "Get services",
+            "description": {
+              "content": "Gets Metronome's service registry with associated IP addresses for security allowlisting and firewall configuration. Use this endpoint to maintain an up-to-date list of IPs that your systems should trust for Metronome communications. Returns service names and their current IP ranges, with new IPs typically appearing 30+ days before first use to ensure smooth allowlist updates.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "services"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "046c026e-3d97-45e8-a0c6-41adee5a604e",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "services"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"services\": [\n    {\n      \"name\": \"string\",\n      \"usage\": \"accepts_connections_at\",\n      \"ips\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"name\": \"string\",\n      \"usage\": \"accepts_connections_at\",\n      \"ips\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.metronome.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "9e127f06-f3ac-440f-a575-387a393cd4e9",
+    "name": "Metronome Alerts Security API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)",
+      "type": "text/plain"
+    }
+  }
+}

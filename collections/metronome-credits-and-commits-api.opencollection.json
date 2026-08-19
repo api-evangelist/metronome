@@ -1,0 +1,264 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Credits and commits API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Credits and commits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add a manual balance entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/addManualBalanceLedgerEntry",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Manually adjust the available balance on a commit or credit. This entry is appended to the commit ledger as a new event. Optionally include a description that provides the reasoning for the entry.\n\n### Use this endpoint to:\n- Address incorrect usage burn-down caused by malformed usage or invalid config\n- Decrease available balance to account for outages where usage may have not been tracked or sent to Metronome\n- Issue credits to customers in the form of increased balance on existing commit or c"
+        },
+        {
+          "info": {
+            "name": "List commits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCommits/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve all commit agreements for a customer, including both prepaid and postpaid commitments. This endpoint provides comprehensive visibility into contractual spending obligations, enabling you to track commitment utilization and manage customer contracts effectively.\n\n### Use this endpoint to:\n- Display commitment balances and utilization in customer dashboards\n- Track prepaid commitment drawdown and remaining balances\n- Monitor postpaid commitment progress toward minimum thresholds\n- Build c"
+        },
+        {
+          "info": {
+            "name": "Create a commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCommits/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later). \n\nNote: In most cases, you should add commitments directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to establish customer-level spending commitments that can be applied across mult"
+        },
+        {
+          "info": {
+            "name": "Update the commit end date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCommits/updateEndDate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Shortens the end date of a prepaid commit to terminate it earlier than originally scheduled. Use this endpoint when you need to cancel or reduce the duration of an existing prepaid commit. Only works with prepaid commit types and can only move the end date forward (earlier), not extend it. \n\n### Usage guidelines:\nTo extend commit end dates or make other comprehensive edits, use the 'edit commit' endpoint instead.\n"
+        },
+        {
+          "info": {
+            "name": "Release external payment gate threshold commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/commits/threshold-billing/release",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "If using threshold billing with an external payment gateway, Metronome does not facilitate the payment gating process on behalf of the client. As a result, clients must facilitate the transaction themselves. This end-point is used to either release or cancel the commit pending on the outcome of the external payment attempt.\n\nTo release the commit, you must pass the `workflow_id` provided in the `payment_gate.external_initiate` webhook.\n\n### Use this endpoint to:\nFacilitate payment gating workflo"
+        },
+        {
+          "info": {
+            "name": "Disable trueup for commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/commits/disableTrueup",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Disable the true-up invoice for a postpaid commit. If used, the true-up invoice will not be generated.\n\nFor postpaid commits, usage during the access period is paid for in arrears. If the total amount paid during the access period is less than the committed amount, there's a final true-up invoice on the invoice_date.\n"
+        },
+        {
+          "info": {
+            "name": "List credits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCredits/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve a detailed list of all credits available to a customer, including promotional credits and contract-specific credits. This endpoint provides comprehensive visibility into credit balances, access schedules, and usage rules, enabling you to build credit management interfaces and track available funding.\n\n### Use this endpoint to:\n- Display all available credits in customer billing dashboards\n- Show credit balances and expiration dates\n- Track credit usage history with optional ledger detai"
+        },
+        {
+          "info": {
+            "name": "Create a credit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCredits/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates customer-level credits that provide spending allowances or free credit balances for customers across their Metronome usage. Note: In most cases, you should add credits directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to provision credits directly at the customer level that can be applied across multiple contracts or scoped to specific contracts. Customer-level credits are ideal for:\n- Customer onboa"
+        },
+        {
+          "info": {
+            "name": "Update the credit end date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerCredits/updateEndDate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Shortens the end date of an existing customer credit to terminate it earlier than originally scheduled. Only allows moving end dates forward (earlier), not extending them. \n\nNote: To extend credit end dates or make comprehensive edits, use the 'edit credit' endpoint instead.\n"
+        },
+        {
+          "info": {
+            "name": "List balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerBalances/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve a comprehensive view of all available balances (commits and credits) for a customer. This endpoint provides real-time visibility into prepaid funds, postpaid commitments, promotional credits, and other balance types that can offset usage charges, helping you build transparent billing experiences.\n\n### Use this endpoint to:\n- Display current available balances in customer dashboards\n- Verify available funds before approving high-usage operations\n- Generate balance reports for finance tea"
+        },
+        {
+          "info": {
+            "name": "Get the net balance of a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/customerBalances/getNetBalance",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve the combined current balance across any grouping of credits and commits for a customer in a single API call.\n- Display real-time available balance to customers in billing dashboards\n- Build finance dashboards showing credit utilization across customer segments\n- Validate expected vs. actual balance during billing reconciliation\n\n### Key response fields:\n- `balance`: The combined net balance available to use at this moment across all matching commits and credits\n- `credit_type_id`: The c"
+        },
+        {
+          "info": {
+            "name": "List seat balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/seatBalances/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve detailed balance for seat-based credits and commits from the contract's subscriptions, broken down by individual seats.\n\n### Use this endpoint to:\n- Display per-seat balance information in customer dashboards\n- Filter balance data by subscription or specific seats\n\n### Key response fields:\nAn array of seat balance objects containing:\n- Seat id\n- Balance: current total balance across all commits and credits\n\n### Usage guidelines:\n- Date filtering: use `covering_date` OR `starting_at`/`en"
+        },
+        {
+          "info": {
+            "name": "Edit a commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/commits/edit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit specific details for a contract-level or customer-level commit. Use this endpoint to modify individual commit access schedules, invoice schedules, applicable products, invoicing contracts, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated.\n- If a commit's invoice schedule item is associated with a finalized invoice, you cannot remove or update the i"
+        },
+        {
+          "info": {
+            "name": "Edit a credit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/credits/edit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit details for a contract-level or customer-level credit. \n\n### Use this endpoint to: \n- Extend the duration or the amount of an existing free credit like a trial \n- Modify individual credit access schedules, applicable products, priority, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated. \n- You cannot remove an access schedule segment that was applie"
+        },
+        {
+          "info": {
+            "name": "Archive a commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/commits/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive a contract-level or customer-level commit. Use this endpoint to deactivate a commit while preserving historical records. You will not be able to archive a commit until all of the finalized usage invoices the commit has been applied to are voided, and all of the finalized invoices for commit payment have been voided. \n\nExample workflow: \nThe customer was provisioned a prepaid commit erroneously. It was applied to their most recent finalized usage invoice.\n- First, void the finalized invoi"
+        },
+        {
+          "info": {
+            "name": "Archive a credit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v2/contracts/credits/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Archive a contract-level or customer-level credit. Use this endpoint to deactivate a credit while preserving historical records. You will not be able to archive a credit until all of the finalized invoices the credit has been applied to are voided. \n\nExample workflow: \nThe customer was granted a free credit erroneously. It was applied to their most recent finalized invoice.\n- First, void the finalized invoice that the credit was applied to. \n- Then, use the archiveCredit endpoint to deactivate t"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

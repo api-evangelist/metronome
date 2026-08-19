@@ -1,0 +1,129 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Named schedules API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Named schedules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a customer's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/getNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a named schedule for the given customer. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Update a customer's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/customers/updateNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a named schedule for the given customer. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Get a contract's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/getNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a named schedule for the given contract. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "List contract named schedules",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/listNamedSchedules",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List contract-level named schedules for a customer, optionally scoped to a single contract."
+        },
+        {
+          "info": {
+            "name": "Update a contract's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contracts/updateNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a named schedule for the given contract. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Get a rate card's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/getNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a named schedule for the given rate card. This endpoint's availability is dependent on your client's configuration."
+        },
+        {
+          "info": {
+            "name": "Update a rate card's named schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/contract-pricing/rate-cards/updateNamedSchedule",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a named schedule for the given rate card. This endpoint's availability is dependent on your client's configuration."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

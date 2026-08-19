@@ -1,0 +1,742 @@
+{
+  "item": [
+    {
+      "id": "8b54d265-f4cb-4650-98e7-c82a83f4dbc5",
+      "name": "Named schedules",
+      "description": {
+        "content": "Named schedules are used for storing custom data that can change over time. Named schedules are often used in custom pricing logic.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a465c7fe-5a0a-4e73-9b2f-d361d7a957b7",
+          "name": "Get a customer's named schedule",
+          "request": {
+            "name": "Get a customer's named schedule",
+            "description": {
+              "content": "Get a named schedule for the given customer. This endpoint's availability is dependent on your client's configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                "getNamedSchedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"schedule_name\": \"<string>\",\n  \"covering_date\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "22345867-9bd2-46d7-a33c-bc97e4a5776e",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "getNamedSchedule"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"9b85c1c1-5238-4f2a-a409-61412905e1e1\",\n  \"schedule_name\": \"my-schedule\",\n  \"covering_date\": \"2022-02-15T00:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"starting_at\": \"2022-02-01T00:00:00Z\",\n      \"ending_before\": \"2022-03-01T00:00:00Z\",\n      \"value\": \"my-value\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b641d66d-c0ac-45c0-aa98-8b96224e5992",
+          "name": "Update a customer's named schedule",
+          "request": {
+            "name": "Update a customer's named schedule",
+            "description": {
+              "content": "Update a named schedule for the given customer. This endpoint's availability is dependent on your client's configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "customers",
+                "updateNamedSchedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"schedule_name\": \"<string>\",\n  \"starting_at\": \"<dateTime>\",\n  \"value\": {},\n  \"ending_before\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0b1d6399-a215-4128-be8d-0f4ea4253046",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "customers",
+                    "updateNamedSchedule"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"9b85c1c1-5238-4f2a-a409-61412905e1e1\",\n  \"schedule_name\": \"my-schedule\",\n  \"starting_at\": \"2022-02-01T00:00:00Z\",\n  \"ending_before\": \"2022-02-15T00:00:00Z\",\n  \"value\": {\n    \"my_key\": \"my_value\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e3a382b0-c7fd-4d7e-9369-6e417e2e8790",
+          "name": "Get a contract's named schedule",
+          "request": {
+            "name": "Get a contract's named schedule",
+            "description": {
+              "content": "Get a named schedule for the given contract. This endpoint's availability is dependent on your client's configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "getNamedSchedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"contract_id\": \"<uuid>\",\n  \"schedule_name\": \"<string>\",\n  \"covering_date\": \"<dateTime>\",\n  \"properties\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7fbdc36a-a149-4c57-8cdb-f788b073b2d1",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "getNamedSchedule"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"9b85c1c1-5238-4f2a-a409-61412905e1e1\",\n  \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"schedule_name\": \"my-schedule\",\n  \"covering_date\": \"2022-02-15T00:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"starting_at\": \"2022-02-01T00:00:00Z\",\n      \"ending_before\": \"2022-03-01T00:00:00Z\",\n      \"value\": \"my-value\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "780e5992-e785-4347-8a84-534224f34bcc",
+          "name": "List contract named schedules",
+          "request": {
+            "name": "List contract named schedules",
+            "description": {
+              "content": "List contract-level named schedules for a customer, optionally scoped to a single contract.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "listNamedSchedules"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"contract_id\": \"<uuid>\",\n  \"schedule_name\": \"<string>\",\n  \"properties\": {\n    \"key_0\": \"<string>\"\n  },\n  \"covering_date\": \"<dateTime>\",\n  \"limit\": \"<integer>\",\n  \"next_page\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "82b444c7-8572-4c4b-a70a-d4ea92e52d75",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "listNamedSchedules"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"9b85c1c1-5238-4f2a-a409-61412905e1e1\",\n  \"schedule_name\": \"reserved-instance\",\n  \"properties\": {\n    \"sku\": \"A100\"\n  },\n  \"covering_date\": \"2026-01-15T00:00:00Z\",\n  \"limit\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n      \"schedule_name\": \"reserved-instance\",\n      \"properties\": {\n        \"sku\": \"A100\"\n      },\n      \"segments\": [\n        {\n          \"starting_at\": \"2026-01-01T00:00:00Z\",\n          \"ending_before\": \"2026-07-01T00:00:00Z\",\n          \"value\": 50\n        },\n        {\n          \"starting_at\": \"2026-07-01T00:00:00Z\",\n          \"value\": 80\n        }\n      ]\n    },\n    {\n      \"contract_id\": \"74d99eeb-b8c3-4f13-a7ef-fcf5f01686d6\",\n      \"schedule_name\": \"reserved-instance\",\n      \"properties\": {\n        \"sku\": \"A100\"\n      },\n      \"segments\": [\n        {\n          \"starting_at\": \"2026-06-01T00:00:00Z\",\n          \"value\": 30\n        }\n      ]\n    }\n  ],\n  \"next_page\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "230cfec8-7090-453d-be27-844bac5b9b1a",
+          "name": "Update a contract's named schedule",
+          "request": {
+            "name": "Update a contract's named schedule",
+            "description": {
+              "content": "Update a named schedule for the given contract. This endpoint's availability is dependent on your client's configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                "updateNamedSchedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"<uuid>\",\n  \"contract_id\": \"<uuid>\",\n  \"schedule_name\": \"<string>\",\n  \"starting_at\": \"<dateTime>\",\n  \"value\": {},\n  \"ending_before\": \"<dateTime>\",\n  \"properties\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b88bbdfb-6b19-4919-9316-0adbe15aa2e0",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    "updateNamedSchedule"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"9b85c1c1-5238-4f2a-a409-61412905e1e1\",\n  \"contract_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"schedule_name\": \"my-schedule\",\n  \"starting_at\": \"2022-02-01T00:00:00Z\",\n  \"ending_before\": \"2022-02-15T00:00:00Z\",\n  \"value\": {\n    \"my_key\": \"my_value\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "72f32922-c057-4135-ab44-be57c74853d5",
+          "name": "Get a rate card's named schedule",
+          "request": {
+            "name": "Get a rate card's named schedule",
+            "description": {
+              "content": "Get a named schedule for the given rate card. This endpoint's availability is dependent on your client's configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "getNamedSchedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"schedule_name\": \"<string>\",\n  \"covering_date\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f3c30fbe-84f9-4562-91f1-f65214bb442b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "getNamedSchedule"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"schedule_name\": \"my-schedule\",\n  \"covering_date\": \"2022-02-15T00:00:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"starting_at\": \"2022-02-01T00:00:00Z\",\n      \"ending_before\": \"2022-03-01T00:00:00Z\",\n      \"value\": \"my-value\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "615f4cb8-1e26-4089-af03-3a3f7b594e62",
+          "name": "Update a rate card's named schedule",
+          "request": {
+            "name": "Update a rate card's named schedule",
+            "description": {
+              "content": "Update a named schedule for the given rate card. This endpoint's availability is dependent on your client's configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-pricing",
+                "rate-cards",
+                "updateNamedSchedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rate_card_id\": \"<uuid>\",\n  \"schedule_name\": \"<string>\",\n  \"starting_at\": \"<dateTime>\",\n  \"value\": {},\n  \"ending_before\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3d888a14-d1e1-4e43-b15b-ac06c791cd6e",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-pricing",
+                    "rate-cards",
+                    "updateNamedSchedule"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rate_card_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n  \"schedule_name\": \"my-schedule\",\n  \"starting_at\": \"2022-02-01T00:00:00Z\",\n  \"ending_before\": \"2022-02-15T00:00:00Z\",\n  \"value\": {\n    \"my_key\": \"my_value\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.metronome.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "29ac98aa-b656-4e51-b6b1-1e7b38559a2e",
+    "name": "Metronome Alerts Named schedules API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Metronome Alerts Billable Metrics API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Billable Metrics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all billable metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/billable-metrics",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "include_archived",
+                "value": "",
+                "type": "query",
+                "description": "If true, the list of returned metrics will include archived metrics"
+              }
+            ]
+          },
+          "docs": "Retrieves all billable metrics with their complete configurations. Use this for programmatic discovery and management of billable metrics, such as associating metrics to products and auditing for orphaned or archived metrics. \nImportant: Archived metrics are excluded by default; use `include_archived`=`true` parameter to include them.\n"
+        },
+        {
+          "info": {
+            "name": "Create a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/billable-metrics",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new billable metric"
+        },
+        {
+          "info": {
+            "name": "Create a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/billable-metrics/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create billable metrics programmatically with this endpoint—an essential step in configuring your pricing and packaging in Metronome.\n\nA billable metric is a customizable query that filters and aggregates events from your event stream. These metrics are continuously tracked as usage data enters Metronome through the ingestion pipeline. The ingestion process transforms raw usage data into actionable pricing metrics, enabling accurate metering and billing for your products.\n\n### Use this endpoint "
+        },
+        {
+          "info": {
+            "name": "Archive a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.metronome.com/v1/billable-metrics/archive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to retire billable metrics that are no longer used. After a billable metric is archived, that billable metric can no longer be used in any new Products to define how that product should be metered. If you archive a billable metric that is already associated with a Product, the Product will continue to function as usual, metering based on the definition of the archived billable metric. \n\nArchived billable metrics will be returned on the `getBillableMetric` and `listBillableMetri"
+        },
+        {
+          "info": {
+            "name": "Get a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/billable-metrics/:billable_metric_id",
+            "params": [
+              {
+                "name": "billable_metric_id",
+                "value": "13117714-3f05-48e5-a6e9-a66093f13b4d",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves the complete configuration for a specific billable metric by its ID. Use this to review billable metric setup before associating it with products. Returns the metric's `name`, `event_type_filter`, `property_filters`, `aggregation_type`, `aggregation_key`, `group_keys`, `custom fields`, and `SQL query` (if it's a SQL billable metric). \n\nImportant: \n- Archived billable metrics will include an `archived_at` timestamp; they no longer process new usage events but remain accessible for histo"
+        },
+        {
+          "info": {
+            "name": "Update a billable metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.metronome.com/v1/billable-metrics/:billable_metric_id",
+            "params": [
+              {
+                "name": "billable_metric_id",
+                "value": "13117714-3f05-48e5-a6e9-a66093f13b4d",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates only the display name of an existing billable metric. Use this to correct mistakes or apply standardized naming conventions across all billable metrics. Returns the billable metric ID to confirm the update. \n\nImportant: Only the name can be modified via this endpoint; configurations cannot be changed after creation. \n\n#### Example workflow:\nIf you need to make changes to a streaming billable metric, for example, Metronome supports easily rolling out these changes using a simple workflow:"
+        },
+        {
+          "info": {
+            "name": "Get billable metrics for a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.metronome.com/v1/customers/:customer_id/billable-metrics",
+            "params": [
+              {
+                "name": "customer_id",
+                "value": "d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc",
+                "type": "path"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max number of results that should be returned"
+              },
+              {
+                "name": "next_page",
+                "value": "",
+                "type": "query",
+                "description": "Cursor that indicates where the next page of results should start."
+              },
+              {
+                "name": "on_current_plan",
+                "value": "",
+                "type": "query",
+                "description": "If true, the list of metrics will be filtered to just ones that are on the customer's current plan"
+              },
+              {
+                "name": "include_archived",
+                "value": "",
+                "type": "query",
+                "description": "If true, the list of returned metrics will include archived metrics"
+              }
+            ]
+          },
+          "docs": "Get all billable metrics available for a specific customer. Supports pagination and filtering by current plan status or archived metrics. Use this endpoint to see which metrics are being tracked for billing calculations for a given customer.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

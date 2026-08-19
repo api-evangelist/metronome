@@ -1,0 +1,531 @@
+{
+  "item": [
+    {
+      "id": "83428cf0-c426-4c4c-8820-5ee367cced56",
+      "name": "Packages",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "031a9a0a-1d5e-4606-8ca9-515cef6b4456",
+          "name": "Get a package",
+          "request": {
+            "name": "Get a package",
+            "description": {
+              "content": "Gets the details for a specific package, including name, aliases, duration, and terms. Use this endpoint to understand a package’s alias schedule, or display a specific package’s details to end customers.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "packages",
+                "get"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"package_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b28a2d07-c6a7-4956-9165-d3a99c5006cf",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "packages",
+                    "get"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"package_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n    \"name\": \"Basic Package\",\n    \"usage_statement_schedule\": {\n      \"frequency\": \"MONTHLY\"\n    },\n    \"created_at\": \"2019-12-31T14:23:55.234Z\",\n    \"created_by\": \"Alice\",\n    \"commits\": [\n      {\n        \"id\": \"62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\",\n        \"type\": \"PREPAID\",\n        \"name\": \"My test commit\",\n        \"description\": \"My test commit description\",\n        \"product\": {\n          \"id\": \"2e30f074-d04c-412e-a134-851ebfa5ceb2\",\n          \"name\": \"My product A\"\n        },\n        \"applicable_product_ids\": [\n          \"13a2179b-f0cb-460b-85a1-cd42964ca533\"\n        ],\n        \"access_schedule\": {\n          \"credit_type\": {\n            \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n            \"name\": \"USD (cents)\"\n          },\n          \"schedule_items\": [\n            {\n              \"id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\",\n              \"amount\": 10000000,\n              \"starting_at_offset\": {\n                \"unit\": \"MONTHS\",\n                \"value\": 1\n              },\n              \"duration\": {\n                \"unit\": \"MONTHS\",\n                \"value\": 3\n              }\n            }\n          ]\n        },\n        \"invoice_schedule\": {\n          \"credit_type\": {\n            \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n            \"name\": \"USD (cents)\"\n          },\n          \"schedule_items\": [\n            {\n              \"id\": \"f15e4e23-f74e-4de4-9b3a-8b07434116c4\",\n              \"unit_price\": 10000000,\n              \"quantity\": 1,\n              \"date_offset\": {\n                \"unit\": \"MONTHS\",\n                \"value\": 4\n              }\n            }\n          ],\n          \"do_not_invoice\": false\n        }\n      }\n    ],\n    \"overrides\": [\n      {\n        \"id\": \"6cf3292a-e85c-4be6-822c-e25ba9d19757\",\n        \"starting_at_offset\": {\n          \"unit\": \"MONTHS\",\n          \"value\": 1\n        },\n        \"type\": \"MULTIPLIER\",\n        \"multiplier\": 0.1,\n        \"override_specifiers\": [\n          {\n            \"product_id\": \"eae8903b-693b-41a7-8c0b-f23748c9a9c8\"\n          }\n        ]\n      }\n    ],\n    \"scheduled_charges\": [\n      {\n        \"id\": \"04dbca69-0bc2-45c6-ba22-a53934353b10\",\n        \"name\": \"Test Scheduled Charge\",\n        \"description\": \"Test Scheduled Charge Description\",\n        \"product\": {\n          \"id\": \"eae8903b-693b-41a7-8c0b-f23748c9a9c8\",\n          \"name\": \"My product B\"\n        },\n        \"schedule\": {\n          \"credit_type\": {\n            \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n            \"name\": \"USD (cents)\"\n          },\n          \"schedule_items\": [\n            {\n              \"id\": \"f15e4e23-f74e-4de4-9b3a-8b07434116c4\",\n              \"unit_price\": 10000000,\n              \"quantity\": 1,\n              \"date_offset\": {\n                \"unit\": \"MONTHS\",\n                \"value\": 4\n              }\n            }\n          ]\n        }\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d6e7b76-f2af-4442-b74e-e0eeb468c70c",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "packages",
+                    "get"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"package_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c6e6fd5d-3770-4d3a-9a92-27c53713cc2b",
+          "name": "List all packages",
+          "request": {
+            "name": "List all packages",
+            "description": {
+              "content": "Lists all packages with details including name, aliases, duration, and terms. To view contracts on a specific package, use the `listContractsOnPackage` endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "packages",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max number of results that should be returned"
+                },
+                {
+                  "disabled": false,
+                  "key": "next_page",
+                  "value": "<string>",
+                  "description": "Cursor that indicates where the next page of results should start."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"archive_filter\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e7f45ff7-f66f-4000-8e4e-e1ae17d38cf0",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "packages",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "next_page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\",\n      \"name\": \"Test Package\",\n      \"usage_statement_schedule\": {\n        \"frequency\": \"MONTHLY\"\n      },\n      \"created_at\": \"2019-12-31T14:23:55.234Z\",\n      \"created_by\": \"Alice\",\n      \"commits\": [\n        {\n          \"id\": \"62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35\",\n          \"type\": \"PREPAID\",\n          \"name\": \"My test commit\",\n          \"description\": \"My test commit description\",\n          \"product\": {\n            \"id\": \"2e30f074-d04c-412e-a134-851ebfa5ceb2\",\n            \"name\": \"My product A\"\n          },\n          \"applicable_product_ids\": [\n            \"13a2179b-f0cb-460b-85a1-cd42964ca533\"\n          ],\n          \"access_schedule\": {\n            \"credit_type\": {\n              \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n              \"name\": \"USD (cents)\"\n            },\n            \"schedule_items\": [\n              {\n                \"id\": \"2d45952c-5a6e-43a9-8aab-f61ee21be81a\",\n                \"amount\": 10000000,\n                \"starting_at_offset\": {\n                  \"unit\": \"MONTHS\",\n                  \"value\": 1\n                },\n                \"duration\": {\n                  \"unit\": \"MONTHS\",\n                  \"value\": 3\n                }\n              }\n            ]\n          },\n          \"invoice_schedule\": {\n            \"credit_type\": {\n              \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n              \"name\": \"USD (cents)\"\n            },\n            \"schedule_items\": [\n              {\n                \"id\": \"f15e4e23-f74e-4de4-9b3a-8b07434116c4\",\n                \"unit_price\": 10000000,\n                \"quantity\": 1,\n                \"date_offset\": {\n                  \"unit\": \"MONTHS\",\n                  \"value\": 4\n                }\n              }\n            ],\n            \"do_not_invoice\": false\n          }\n        }\n      ],\n      \"overrides\": [\n        {\n          \"id\": \"6cf3292a-e85c-4be6-822c-e25ba9d19757\",\n          \"starting_at_offset\": {\n            \"unit\": \"MONTHS\",\n            \"value\": 1\n          },\n          \"type\": \"MULTIPLIER\",\n          \"multiplier\": 0.1,\n          \"override_specifiers\": [\n            {\n              \"product_id\": \"eae8903b-693b-41a7-8c0b-f23748c9a9c8\"\n            }\n          ]\n        }\n      ],\n      \"scheduled_charges\": [\n        {\n          \"id\": \"04dbca69-0bc2-45c6-ba22-a53934353b10\",\n          \"name\": \"Test Scheduled Charge\",\n          \"description\": \"Test Scheduled Charge Description\",\n          \"product\": {\n            \"id\": \"eae8903b-693b-41a7-8c0b-f23748c9a9c8\",\n            \"name\": \"My product B\"\n          },\n          \"schedule\": {\n            \"credit_type\": {\n              \"id\": \"2714e483-4ff1-48e4-9e25-ac732e8f24f2\",\n              \"name\": \"USD (cents)\"\n            },\n            \"schedule_items\": [\n              {\n                \"id\": \"f15e4e23-f74e-4de4-9b3a-8b07434116c4\",\n                \"unit_price\": 10000000,\n                \"quantity\": 1,\n                \"date_offset\": {\n                  \"unit\": \"MONTHS\",\n                  \"value\": 4\n                }\n              }\n            ]\n          }\n        }\n      ]\n    },\n    {\n      \"id\": \"67ee9504-ae43-4317-b70e-1c449910e14f\",\n      \"name\": \"Test Package 2\",\n      \"commits\": [],\n      \"overrides\": [],\n      \"scheduled_charges\": [],\n      \"usage_statement_schedule\": {\n        \"frequency\": \"MONTHLY\"\n      },\n      \"created_at\": \"2021-07-10T00:00:00.000Z\",\n      \"created_by\": \"Bob\"\n    }\n  ],\n  \"next_page\": \"eyJvZmZzZXQiOjF9\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "66c26903-1ccb-40c9-a4b7-81786d52311b",
+          "name": "Archive a package",
+          "request": {
+            "name": "Archive a package",
+            "description": {
+              "content": "Archive a package. Archived packages cannot be used to create new contracts. However, existing contracts associated with the package will continue to function as normal. Once you archive a package, you can still retrieve it in the UI and API, but you cannot unarchive it.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "packages",
+                "archive"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"package_id\": \"<uuid>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "17e81983-b9dd-4086-b65e-8107aadd417f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "packages",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"package_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "476861b6-3697-429d-ba66-158879898dd8",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "packages",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"package_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "87092b9d-8f79-40b8-939d-7899c60fe0af",
+              "name": "The specified resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "packages",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"package_id\": \"d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.metronome.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "08a5f43f-8079-427b-bf20-5f2bf4547a0e",
+    "name": "Metronome Alerts Packages API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)",
+      "type": "text/plain"
+    }
+  }
+}
