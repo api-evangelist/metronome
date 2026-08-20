@@ -98,6 +98,8 @@ apis:
   humanURL: https://docs.metronome.com/
   baseURL: https://api.metronome.com
   tags:
+  - Custom Fields
+  tags_raw:
   - Custom fields
   properties:
   - type: OpenAPI
@@ -129,6 +131,8 @@ apis:
   humanURL: https://docs.metronome.com/
   baseURL: https://api.metronome.com
   tags:
+  - Integration
+  tags_raw:
   - Integrations
   properties:
   - type: OpenAPI
@@ -176,6 +180,8 @@ apis:
   humanURL: https://docs.metronome.com/
   baseURL: https://api.metronome.com
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: OpenAPI
@@ -218,6 +224,8 @@ apis:
   humanURL: https://docs.metronome.com/
   baseURL: https://api.metronome.com
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
