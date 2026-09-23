@@ -1,8 +1,8 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Metronome Alerts Credits and commits API
+  title: Metronome Credits and commits API
   version: 1.0.0
-  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+  description: Credits and commits are used to manage customer balances.
 servers:
 - url: https://api.metronome.com
   description: Production server
@@ -28,9 +28,7 @@ paths:
 
         ### Usage guidelines:
 
-        Manual ledger entries can be extremely useful for resolving discrepancies in Metronome. However, most corrections to inaccurate billings can be modified upstream of the commit, whether that is via contract editing, rate editing, or other actions that cause an invoice to be recalculated.
-
-        '
+        Manual ledger entries can be extremely useful for resolving discrepancies in Metronome. However, most corrections to inaccurate billings can be modified upstream of the commit, whether that is via contract editing, rate editing, or other actions that cause an invoice to be recalculated.'
       operationId: addManualBalanceLedgerEntry-v1
       summary: Add a manual balance entry
       tags:
@@ -61,7 +59,70 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1/contracts/customerCommits/list:
     post:
-      description: "Retrieve all commit agreements for a customer, including both prepaid and postpaid commitments. This endpoint provides comprehensive visibility into contractual spending obligations, enabling you to track commitment utilization and manage customer contracts effectively.\n\n### Use this endpoint to:\n- Display commitment balances and utilization in customer dashboards\n- Track prepaid commitment drawdown and remaining balances\n- Monitor postpaid commitment progress toward minimum thresholds\n- Build commitment tracking and forecasting tools\n- Show commitment history with optional ledger details\n- Manage rollover balances between contract periods\n\n### Key response fields:\nAn array of Commit objects containing:\n- Commit type: PREPAID (pay upfront) or POSTPAID (pay at true-up)\n- Rate type: COMMIT_RATE (discounted) or LIST_RATE (standard pricing)\n- Access schedule: When commitment funds become available\n- Invoice schedule: When the customer is billed\n- Product targeting: Which product(s) usage is eligible to draw from this commit\n- Optional ledger entries: Transaction history (if `include_ledgers=true`)\n- Balance information: Current available amount (if `include_balance=true`)\n- Rollover settings: Fraction of unused amount that carries forward\n\n### Usage guidelines:\n- Pagination: Results limited to 25 commits per page; use 'next_page' for more\n- Date filtering options:\n    - `covering_date`: Commits active on a specific date\n    - `starting_at`: Commits with access on/after a date\n    - `effective_before`: Commits with access before a date (exclusive)\n- Scope options:\n    - `include_contract_commits`: Include contract-level commits (not just customer-level)\n    - `include_archived`: Include archived commits and commits from archived contracts\n- Performance considerations:\n    - include_ledgers: Adds detailed transaction history (slower)\n    - include_balance: Adds current balance calculation (slower)\n- Optional filtering: Use commit_id to retrieve a specific commit\n"
+      description: 'Retrieve all commit agreements for a customer, including both prepaid and postpaid commitments. This endpoint provides comprehensive visibility into contractual spending obligations, enabling you to track commitment utilization and manage customer contracts effectively.
+
+
+        ### Use this endpoint to:
+
+        - Display commitment balances and utilization in customer dashboards
+
+        - Track prepaid commitment drawdown and remaining balances
+
+        - Monitor postpaid commitment progress toward minimum thresholds
+
+        - Build commitment tracking and forecasting tools
+
+        - Show commitment history with optional ledger details
+
+        - Manage rollover balances between contract periods
+
+
+        ### Key response fields:
+
+        An array of Commit objects containing:
+
+        - Commit type: PREPAID (pay upfront) or POSTPAID (pay at true-up)
+
+        - Rate type: COMMIT_RATE (discounted) or LIST_RATE (standard pricing)
+
+        - Access schedule: When commitment funds become available
+
+        - Invoice schedule: When the customer is billed
+
+        - Product targeting: Which product(s) usage is eligible to draw from this commit
+
+        - Optional ledger entries: Transaction history (if `include_ledgers=true`)
+
+        - Balance information: Current available amount (if `include_balance=true`)
+
+        - Rollover settings: Fraction of unused amount that carries forward
+
+
+        ### Usage guidelines:
+
+        - Pagination: Results limited to 25 commits per page; use ''next_page'' for more
+
+        - Date filtering options:
+
+        - `covering_date`: Commits active on a specific date
+
+        - `starting_at`: Commits with access on/after a date
+
+        - `effective_before`: Commits with access before a date (exclusive)
+
+        - Scope options:
+
+        - `include_contract_commits`: Include contract-level commits (not just customer-level)
+
+        - `include_archived`: Include archived commits and commits from archived contracts
+
+        - Performance considerations:
+
+        - include_ledgers: Adds detailed transaction history (slower)
+
+        - include_balance: Adds current balance calculation (slower)
+
+        - Optional filtering: Use commit_id to retrieve a specific commit'
       operationId: listCustomerCommits-v1
       summary: List commits
       tags:
@@ -134,8 +195,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/Commit'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - id: 62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35
@@ -186,7 +248,63 @@ paths:
                 next_page: null
   /v1/contracts/customerCommits/create:
     post:
-      description: "Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later). \n\nNote: In most cases, you should add commitments directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to establish customer-level spending commitments that can be applied across multiple contracts or scoped to specific contracts. Customer-level commits are ideal for:\n- Enterprise-wide minimum spending agreements that span multiple contracts\n- Multi-contract volume commitments with shared spending pools\n- Cross-contract discount tiers based on aggregate usage\n\n#### Commit type Requirements: \n- You must specify either \"prepaid\" or \"postpaid\" as the commit type:\n- Prepaid commits: Customer pays upfront; invoice_schedule is optional (if omitted, creates a commit without an invoice)\n- Postpaid commits: Customer pays when the commitment expires (the end of the access_schedule); invoice_schedule is required and must match access_schedule totals. \n\n#### Billing configuration:\n- invoice_contract_id is required for postpaid commits and for prepaid commits with billing (only optional for free prepaid commits) unless do_not_invoice is set to true\n- For postpaid commits: access_schedule and invoice_schedule must have matching amounts\n- For postpaid commits: only one schedule item is allowed in both schedules.\n\n#### Scoping flexibility:\nCustomer-level commits can be configured in a few ways:\n- Contract-specific: Use the `applicable_contract_ids` field to limit the commit to specific contracts\n- Cross-contract: Leave `applicable_contract_ids` empty to allow the commit to be used across all of the customer's contracts\n\n#### Product targeting:\nCommits can be scoped to specific products using applicable_product_ids, applicable_product_tags, or specifiers, or left unrestricted to apply to all products.\n\n#### Priority considerations:\nWhen multiple commits are applicable, the one with the lower priority value will be consumed first. If there is a tie, contract level commits and credits will be applied before customer level commits and credits. Plan your priority scheme carefully to ensure commits are applied in the desired order.\n\n### Usage guidelines:\n⚠️ Preferred Alternative: In most cases, you should add commits directly to contracts using the create contract or edit contract APIs instead of creating customer-level commits. Contract-level commits provide better organization and are the recommended approach for standard use cases.\n"
+      description: 'Creates customer-level commits that establish spending commitments for customers across their Metronome usage. Commits represent contracted spending obligations that can be either prepaid (paid upfront) or postpaid (billed later).
+
+
+        Note: In most cases, you should add commitments directly to customer contracts using the contract/create or contract/edit APIs.
+
+
+        ### Use this endpoint to:
+
+        Use this endpoint when you need to establish customer-level spending commitments that can be applied across multiple contracts or scoped to specific contracts. Customer-level commits are ideal for:
+
+        - Enterprise-wide minimum spending agreements that span multiple contracts
+
+        - Multi-contract volume commitments with shared spending pools
+
+        - Cross-contract discount tiers based on aggregate usage
+
+
+        #### Commit type Requirements:
+
+        - You must specify either "prepaid" or "postpaid" as the commit type:
+
+        - Prepaid commits: Customer pays upfront; invoice_schedule is optional (if omitted, creates a commit without an invoice)
+
+        - Postpaid commits: Customer pays when the commitment expires (the end of the access_schedule); invoice_schedule is required and must match access_schedule totals.
+
+
+        #### Billing configuration:
+
+        - invoice_contract_id is required for postpaid commits and for prepaid commits with billing (only optional for free prepaid commits) unless do_not_invoice is set to true
+
+        - For postpaid commits: access_schedule and invoice_schedule must have matching amounts
+
+        - For postpaid commits: only one schedule item is allowed in both schedules.
+
+
+        #### Scoping flexibility:
+
+        Customer-level commits can be configured in a few ways:
+
+        - Contract-specific: Use the `applicable_contract_ids` field to limit the commit to specific contracts
+
+        - Cross-contract: Leave `applicable_contract_ids` empty to allow the commit to be used across all of the customer''s contracts
+
+
+        #### Product targeting:
+
+        Commits can be scoped to specific products using applicable_product_ids, applicable_product_tags, or specifiers, or left unrestricted to apply to all products.
+
+
+        #### Priority considerations:
+
+        When multiple commits are applicable, the one with the lower priority value will be consumed first. If there is a tie, contract level commits and credits will be applied before customer level commits and credits. Plan your priority scheme carefully to ensure commits are applied in the desired order.
+
+
+        ### Usage guidelines:
+
+        ⚠️ Preferred Alternative: In most cases, you should add commits directly to contracts using the create contract or edit contract APIs instead of creating customer-level commits. Contract-level commits provide better organization and are the recommended approach for standard use cases.'
       operationId: createCustomerCommit-v1
       summary: Create a commit
       tags:
@@ -242,7 +360,12 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1/contracts/customerCommits/updateEndDate:
     post:
-      description: "Shortens the end date of a prepaid commit to terminate it earlier than originally scheduled. Use this endpoint when you need to cancel or reduce the duration of an existing prepaid commit. Only works with prepaid commit types and can only move the end date forward (earlier), not extend it. \n\n### Usage guidelines:\nTo extend commit end dates or make other comprehensive edits, use the 'edit commit' endpoint instead.\n"
+      description: 'Shortens the end date of a prepaid commit to terminate it earlier than originally scheduled. Use this endpoint when you need to cancel or reduce the duration of an existing prepaid commit. Only works with prepaid commit types and can only move the end date forward (earlier), not extend it.
+
+
+        ### Usage guidelines:
+
+        To extend commit end dates or make other comprehensive edits, use the ''edit commit'' endpoint instead.'
       operationId: updateCommitEndDate-v1
       summary: Update the commit end date
       tags:
@@ -296,9 +419,7 @@ paths:
 
         ### Usage guidelines:
 
-        Ensure that you are set up to consume the `payment_gate.external_initiate` webhook and save the `workflow_id`.
-
-        '
+        Ensure that you are set up to consume the `payment_gate.external_initiate` webhook and save the `workflow_id`.'
       operationId: releaseExternalPaymentGateThresholdCommit-v1
       summary: Release external payment gate threshold commit
       tags:
@@ -320,9 +441,7 @@ paths:
       description: 'Disable the true-up invoice for a postpaid commit. If used, the true-up invoice will not be generated.
 
 
-        For postpaid commits, usage during the access period is paid for in arrears. If the total amount paid during the access period is less than the committed amount, there''s a final true-up invoice on the invoice_date.
-
-        '
+        For postpaid commits, usage during the access period is paid for in arrears. If the total amount paid during the access period is less than the committed amount, there''s a final true-up invoice on the invoice_date.'
       operationId: disableCommitTrueup-v1
       summary: Disable trueup for commit
       tags:
@@ -362,7 +481,66 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1/contracts/customerCredits/list:
     post:
-      description: "Retrieve a detailed list of all credits available to a customer, including promotional credits and contract-specific credits. This endpoint provides comprehensive visibility into credit balances, access schedules, and usage rules, enabling you to build credit management interfaces and track available funding.\n\n### Use this endpoint to:\n- Display all available credits in customer billing dashboards\n- Show credit balances and expiration dates\n- Track credit usage history with optional ledger details\n- Build credit management and reporting tools\n- Monitor promotional credit utilization\n• Support customer inquiries about available credits\n\n### Key response fields:\nAn array of Credit objects containing:\n- Credit details: Name, priority, and which applicable products/tags it applies to\n- Product ID: The `product_id` of the credit. This is for external mapping into your quote-to-cash stack, not the product it applies to. \n- Access schedule: When credits become available and expire\n- Optional ledger entries: Transaction history (if `include_ledgers=true`)\n- Balance information: Current available amount (if `include_balance=true`)\n- Metadata: Custom fields and usage specifiers\n\n### Usage guidelines:\n- Pagination: Results limited to 25 commits per page; use next_page for more\n- Date filtering options:\n    - `covering_date`: Credits active on a specific date\n    - `starting_at`: Credits with access on/after a date\n    - `effective_before`: Credits with access before a date (exclusive)\n- Scope options:\n    - `include_contract_credits`: Include contract-level credits (not just customer-level)\n    - `include_archived`: Include archived credits and credits from archived contracts\n- Performance considerations:\n    - `include_ledgers`: Adds detailed transaction history (slower)\n    - `include_balance`: Adds current balance calculation (slower)\n- Optional filtering: Use credit_id to retrieve a specific commit\n"
+      description: 'Retrieve a detailed list of all credits available to a customer, including promotional credits and contract-specific credits. This endpoint provides comprehensive visibility into credit balances, access schedules, and usage rules, enabling you to build credit management interfaces and track available funding.
+
+
+        ### Use this endpoint to:
+
+        - Display all available credits in customer billing dashboards
+
+        - Show credit balances and expiration dates
+
+        - Track credit usage history with optional ledger details
+
+        - Build credit management and reporting tools
+
+        - Monitor promotional credit utilization
+
+        • Support customer inquiries about available credits
+
+
+        ### Key response fields:
+
+        An array of Credit objects containing:
+
+        - Credit details: Name, priority, and which applicable products/tags it applies to
+
+        - Product ID: The `product_id` of the credit. This is for external mapping into your quote-to-cash stack, not the product it applies to.
+
+        - Access schedule: When credits become available and expire
+
+        - Optional ledger entries: Transaction history (if `include_ledgers=true`)
+
+        - Balance information: Current available amount (if `include_balance=true`)
+
+        - Metadata: Custom fields and usage specifiers
+
+
+        ### Usage guidelines:
+
+        - Pagination: Results limited to 25 commits per page; use next_page for more
+
+        - Date filtering options:
+
+        - `covering_date`: Credits active on a specific date
+
+        - `starting_at`: Credits with access on/after a date
+
+        - `effective_before`: Credits with access before a date (exclusive)
+
+        - Scope options:
+
+        - `include_contract_credits`: Include contract-level credits (not just customer-level)
+
+        - `include_archived`: Include archived credits and credits from archived contracts
+
+        - Performance considerations:
+
+        - `include_ledgers`: Adds detailed transaction history (slower)
+
+        - `include_balance`: Adds current balance calculation (slower)
+
+        - Optional filtering: Use credit_id to retrieve a specific commit'
       operationId: listCustomerCredits-v1
       summary: List credits
       tags:
@@ -435,8 +613,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/Credit'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - id: fa411f5b-fb85-4755-9d4d-530717be083c
@@ -471,7 +650,47 @@ paths:
                 next_page: null
   /v1/contracts/customerCredits/create:
     post:
-      description: "Creates customer-level credits that provide spending allowances or free credit balances for customers across their Metronome usage. Note: In most cases, you should add credits directly to customer contracts using the contract/create or contract/edit APIs.\n\n### Use this endpoint to:\nUse this endpoint when you need to provision credits directly at the customer level that can be applied across multiple contracts or scoped to specific contracts. Customer-level credits are ideal for:\n- Customer onboarding incentives that apply globally\n- Flexible spending allowances that aren't tied to a single contract\n- Migration scenarios where you need to preserve existing customer balances\n\n#### Scoping flexibility: \nCustomer-level credits can be configured in two ways:\n- Contract-specific: Use the applicable_contract_ids field to limit the credit to specific contracts\n- Cross-contract: Leave applicable_contract_ids empty to allow the credit to be used across all of the customer's contracts\n\n#### Product Targeting: \nCredits can be scoped to specific products using `applicable_product_ids` or `applicable_product_tags`, or left unrestricted to apply to all products.\n\n#### Priority considerations: \nWhen multiple credits are applicable, the one with the lower priority value will be consumed first. If there is a tie, contract level commits and credits will be applied before customer level commits and credits. Plan your priority scheme carefully to ensure credits are applied in the desired order.\n\n#### Access Schedule Required: \nYou must provide an `access_schedule` that defines when and how much credit becomes available to the customer over time. This usually is aligned to the contract schedule or starts immediately and is set to expire in the future.\n\n### Usage Guidelines:\n⚠️ Preferred Alternative: In most cases, you should add credits directly to contracts using the contract/create or contract/edit APIs instead of creating customer-level credits. Contract-level credits provide better organization, and are easier for finance teams to recognize revenue, and are the recommended approach for most use cases.\n"
+      description: 'Creates customer-level credits that provide spending allowances or free credit balances for customers across their Metronome usage. Note: In most cases, you should add credits directly to customer contracts using the contract/create or contract/edit APIs.
+
+
+        ### Use this endpoint to:
+
+        Use this endpoint when you need to provision credits directly at the customer level that can be applied across multiple contracts or scoped to specific contracts. Customer-level credits are ideal for:
+
+        - Customer onboarding incentives that apply globally
+
+        - Flexible spending allowances that aren''t tied to a single contract
+
+        - Migration scenarios where you need to preserve existing customer balances
+
+
+        #### Scoping flexibility:
+
+        Customer-level credits can be configured in two ways:
+
+        - Contract-specific: Use the applicable_contract_ids field to limit the credit to specific contracts
+
+        - Cross-contract: Leave applicable_contract_ids empty to allow the credit to be used across all of the customer''s contracts
+
+
+        #### Product Targeting:
+
+        Credits can be scoped to specific products using `applicable_product_ids` or `applicable_product_tags`, or left unrestricted to apply to all products.
+
+
+        #### Priority considerations:
+
+        When multiple credits are applicable, the one with the lower priority value will be consumed first. If there is a tie, contract level commits and credits will be applied before customer level commits and credits. Plan your priority scheme carefully to ensure credits are applied in the desired order.
+
+
+        #### Access Schedule Required:
+
+        You must provide an `access_schedule` that defines when and how much credit becomes available to the customer over time. This usually is aligned to the contract schedule or starts immediately and is set to expire in the future.
+
+
+        ### Usage Guidelines:
+
+        ⚠️ Preferred Alternative: In most cases, you should add credits directly to contracts using the contract/create or contract/edit APIs instead of creating customer-level credits. Contract-level credits provide better organization, and are easier for finance teams to recognize revenue, and are the recommended approach for most use cases.'
       operationId: createCustomerCredit-v1
       summary: Create a credit
       tags:
@@ -518,7 +737,10 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1/contracts/customerCredits/updateEndDate:
     post:
-      description: "Shortens the end date of an existing customer credit to terminate it earlier than originally scheduled. Only allows moving end dates forward (earlier), not extending them. \n\nNote: To extend credit end dates or make comprehensive edits, use the 'edit credit' endpoint instead.\n"
+      description: 'Shortens the end date of an existing customer credit to terminate it earlier than originally scheduled. Only allows moving end dates forward (earlier), not extending them.
+
+
+        Note: To extend credit end dates or make comprehensive edits, use the ''edit credit'' endpoint instead.'
       operationId: updateCreditEndDate-v1
       summary: Update the credit end date
       tags:
@@ -590,7 +812,7 @@ paths:
 
         ### Usage guidelines:
 
-        - Use the [getNetBalance](https://docs.metronome.com/api-reference/credits-and-commits/get-the-net-balance-of-a-customer) endpoint to retrieve a single combined current balance
+        - Use the getNetBalance endpoint to retrieve a single combined current balance
 
         - Date filtering: Use `effective_before` to include only balances with access before a specific date (exclusive)
 
@@ -602,9 +824,7 @@ paths:
 
         - Balance logic: Reflects currently accessible amounts, excluding expired/future segments
 
-        - Manual adjustments: Includes all manual ledger entries, even future-dated ones
-
-        '
+        - Manual adjustments: Includes all manual ledger entries, even future-dated ones'
       operationId: listCustomerBalances-v1
       summary: List balances
       tags:
@@ -685,8 +905,9 @@ paths:
                       - $ref: '#/components/schemas/Commit'
                       - $ref: '#/components/schemas/Credit'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - id: 62c0cb84-bf3f-48b9-9bcf-a8ddf8c1cf35
@@ -798,7 +1019,7 @@ paths:
 
         ### Usage guidelines:
 
-        - **Balance ledger details**: Use the [listBalances](https://docs.metronome.com/api-reference/credits-and-commits/list-balances) endpoint instead to understand detailed ledger drawdowns for each individual balance
+        - **Balance ledger details**: Use the listBalances endpoint instead to understand detailed ledger drawdowns for each individual balance
 
         - **Draft invoice handling**: Use `invoice_inclusion_mode` to control whether pending draft invoice deductions are included (`FINALIZED_AND_DRAFT`, the default) or excluded (`FINALIZED`) from the balance calculation
 
@@ -806,9 +1027,7 @@ paths:
 
         - **Negative balances**: Manual ledger entries can cause negative segment balances; these are treated as zero when calculating the net balance
 
-        - **Credit types**: If `credit_type_id` is not specified, the balance defaults to USD (cents)
-
-        '
+        - **Credit types**: If `credit_type_id` is not specified, the balance defaults to USD (cents)'
       operationId: getNetBalance-v1
       summary: Get the net balance of a customer
       tags:
@@ -915,9 +1134,7 @@ paths:
 
         - Set `include_credits_and_commits=true` for detailed commits and credits breakdown per seat
 
-        - Set `include_ledgers=true` for detailed transaction history per commit/credit per seat
-
-        '
+        - Set `include_ledgers=true` for detailed transaction history per commit/credit per seat'
       summary: List seat balances
       operationId: listSeatBalances-v1
       tags:
@@ -1020,8 +1237,9 @@ paths:
                         type: number
                         description: Number of seats available to fetch in the next page
                       next_page:
-                        type: string
-                        nullable: true
+                        type:
+                        - string
+                        - 'null'
                         description: Token to retrieve the next page of results. Null if no more pages available
               example:
                 data:
@@ -1077,7 +1295,18 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v2/contracts/commits/edit:
     post:
-      description: "Edit specific details for a contract-level or customer-level commit. Use this endpoint to modify individual commit access schedules, invoice schedules, applicable products, invoicing contracts, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated.\n- If a commit's invoice schedule item is associated with a finalized invoice, you cannot remove or update the invoice schedule item.\n- If a commit's invoice schedule item is associated with a voided invoice, you cannot remove the invoice schedule item.\n- You cannot remove an commit access schedule segment that was applied to a finalized invoice. You can void the invoice beforehand and then remove the access schedule segment.\n"
+      description: 'Edit specific details for a contract-level or customer-level commit. Use this endpoint to modify individual commit access schedules, invoice schedules, applicable products, invoicing contracts, or other fields.
+
+
+        ### Usage guidelines:
+
+        - As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated.
+
+        - If a commit''s invoice schedule item is associated with a finalized invoice, you cannot remove or update the invoice schedule item.
+
+        - If a commit''s invoice schedule item is associated with a voided invoice, you cannot remove the invoice schedule item.
+
+        - You cannot remove an commit access schedule segment that was applied to a finalized invoice. You can void the invoice beforehand and then remove the access schedule segment.'
       summary: Edit a commit
       operationId: editCommit-v2
       tags:
@@ -1128,7 +1357,21 @@ paths:
                     type: string
   /v2/contracts/credits/edit:
     post:
-      description: "Edit details for a contract-level or customer-level credit. \n\n### Use this endpoint to: \n- Extend the duration or the amount of an existing free credit like a trial \n- Modify individual credit access schedules, applicable products, priority, or other fields. \n\n### Usage guidelines:\n- As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated. \n- You cannot remove an access schedule segment that was applied to a finalized invoice. You can void the invoice beforehand and then remove the access schedule segment.\n"
+      description: 'Edit details for a contract-level or customer-level credit.
+
+
+        ### Use this endpoint to:
+
+        - Extend the duration or the amount of an existing free credit like a trial
+
+        - Modify individual credit access schedules, applicable products, priority, or other fields.
+
+
+        ### Usage guidelines:
+
+        - As with all edits in Metronome, draft invoices will reflect the edit immediately, while finalized invoices are untouched unless voided and regenerated.
+
+        - You cannot remove an access schedule segment that was applied to a finalized invoice. You can void the invoice beforehand and then remove the access schedule segment.'
       summary: Edit a credit
       operationId: editCredit-v2
       tags:
@@ -1179,7 +1422,27 @@ paths:
                     type: string
   /v2/contracts/commits/archive:
     post:
-      description: "Archive a contract-level or customer-level commit. Use this endpoint to deactivate a commit while preserving historical records. You will not be able to archive a commit until all of the finalized usage invoices the commit has been applied to are voided, and all of the finalized invoices for commit payment have been voided. \n\nExample workflow: \nThe customer was provisioned a prepaid commit erroneously. It was applied to their most recent finalized usage invoice.\n- First, void the finalized invoice that the commit was applied to. Also, void the finalized invoice associated with the commit payment. \n- Then, use the archiveCommit endpoint to deactivate the commit.\n- Finally, regenerate the voided invoice. The invoice will be regenerated without the application of the commit, which has now been archived. \n\n### Usage guidelines:\n- Once a commit has been archived, it will no longer appear by default on the endpoints `listCustomerCommits` or `listCustomerBalances`. Use the `include_archived` parameter to choose to fetch the details. \n- Once a commit has been archived, it has a null ledger and 0 remaining balance. \n- Archiving a commit fully deactivates the entire access schedule. If you want to reduce the amount granted in a commit, consider editing the access schedule using the `editCommit` endpoint, or adding a manual ledger entry using the `addManualBalanceLedgerEntry` endpoint.\n"
+      description: 'Archive a contract-level or customer-level commit. Use this endpoint to deactivate a commit while preserving historical records. You will not be able to archive a commit until all of the finalized usage invoices the commit has been applied to are voided, and all of the finalized invoices for commit payment have been voided.
+
+
+        Example workflow:
+
+        The customer was provisioned a prepaid commit erroneously. It was applied to their most recent finalized usage invoice.
+
+        - First, void the finalized invoice that the commit was applied to. Also, void the finalized invoice associated with the commit payment.
+
+        - Then, use the archiveCommit endpoint to deactivate the commit.
+
+        - Finally, regenerate the voided invoice. The invoice will be regenerated without the application of the commit, which has now been archived.
+
+
+        ### Usage guidelines:
+
+        - Once a commit has been archived, it will no longer appear by default on the endpoints `listCustomerCommits` or `listCustomerBalances`. Use the `include_archived` parameter to choose to fetch the details.
+
+        - Once a commit has been archived, it has a null ledger and 0 remaining balance.
+
+        - Archiving a commit fully deactivates the entire access schedule. If you want to reduce the amount granted in a commit, consider editing the access schedule using the `editCommit` endpoint, or adding a manual ledger entry using the `addManualBalanceLedgerEntry` endpoint.'
       summary: Archive a commit
       operationId: archiveCommit-v2
       tags:
@@ -1226,7 +1489,27 @@ paths:
                     type: string
   /v2/contracts/credits/archive:
     post:
-      description: "Archive a contract-level or customer-level credit. Use this endpoint to deactivate a credit while preserving historical records. You will not be able to archive a credit until all of the finalized invoices the credit has been applied to are voided. \n\nExample workflow: \nThe customer was granted a free credit erroneously. It was applied to their most recent finalized invoice.\n- First, void the finalized invoice that the credit was applied to. \n- Then, use the archiveCredit endpoint to deactivate the credit. \n- Finally, regenerate the voided invoice. The invoice will be regenerated without the application of the credit, which has now been archived. \n\n### Usage guidelines:\n- Once a credit has been archived, it will no longer appear by default on the endpoints `listCustomerCredits` or `listCustomerBalances`. Use the `include_archived` parameter to choose to fetch the details. \n- Once a credit has been archived, it has a null ledger and 0 remaining balance. \n- Archiving a credit fully deactivates the entire access schedule. If you want to reduce the amount granted in a credit, consider editing the access schedule using the `editCredit` endpoint, or adding a manual ledger entry using the `addManualBalanceLedgerEntry` endpoint.\n"
+      description: 'Archive a contract-level or customer-level credit. Use this endpoint to deactivate a credit while preserving historical records. You will not be able to archive a credit until all of the finalized invoices the credit has been applied to are voided.
+
+
+        Example workflow:
+
+        The customer was granted a free credit erroneously. It was applied to their most recent finalized invoice.
+
+        - First, void the finalized invoice that the credit was applied to.
+
+        - Then, use the archiveCredit endpoint to deactivate the credit.
+
+        - Finally, regenerate the voided invoice. The invoice will be regenerated without the application of the credit, which has now been archived.
+
+
+        ### Usage guidelines:
+
+        - Once a credit has been archived, it will no longer appear by default on the endpoints `listCustomerCredits` or `listCustomerBalances`. Use the `include_archived` parameter to choose to fetch the details.
+
+        - Once a credit has been archived, it has a null ledger and 0 remaining balance.
+
+        - Archiving a credit fully deactivates the entire access schedule. If you want to reduce the amount granted in a credit, consider editing the access schedule using the `editCredit` endpoint, or adding a manual ledger entry using the `addManualBalanceLedgerEntry` endpoint.'
       summary: Archive a credit
       operationId: archiveCredit-v2
       tags:
@@ -1273,30 +1556,753 @@ paths:
                     type: string
 components:
   schemas:
-    SeatBalance:
+    CommitHierarchyChildAccessAll:
       type: object
       required:
-      - seat_id
-      - balances
+      - type
       properties:
-        seat_id:
+        type:
           type: string
-          description: The unique identifier for the seat
-        balances:
+          enum:
+          - ALL
+          - all
+    CreditRolloverLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - new_contract_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_ROLLOVER
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        new_contract_id:
+          type: string
+          format: uuid
+    SeatBalanceCreditLedgerEntryType:
+      type: string
+      enum:
+      - CREDIT_SEGMENT_START
+      - CREDIT_AUTOMATED_INVOICE_DEDUCTION
+      - CREDIT_EXPIRATION
+      - CREDIT_CANCELED
+      - CREDIT_CREDITED
+      - CREDIT_MANUAL
+      - CREDIT_SEAT_BASED_ADJUSTMENT
+      - CREDIT_ROLLOVER
+    SeatBalanceCommitLedger:
+      type: object
+      required:
+      - type
+      - amount
+      - timestamp
+      properties:
+        type:
+          $ref: '#/components/schemas/SeatBalanceCommitLedgerEntryType'
+          description: Commit ledger type
+        amount:
+          type: number
+          description: Amount of the ledger entry
+        timestamp:
+          type: string
+          format: date-time
+          description: The datetime when the ledger is created
+    CommitHierarchyChildAccessNone:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - NONE
+          - none
+    PrepaidCommitExpirationLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_EXPIRATION
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    ScheduleDurationInput:
+      type: object
+      required:
+      - schedule_items
+      properties:
+        credit_type_id:
+          type: string
+          format: uuid
+          description: Defaults to USD (cents) if not passed
+        schedule_items:
           type: array
           items:
-            $ref: '#/components/schemas/SeatBalanceByCreditType'
-        commits:
-          type: array
-          nullable: true
-          description: Array of commits applicable to this seat with their balances
+            type: object
+            required:
+            - amount
+            - starting_at
+            - ending_before
+            properties:
+              amount:
+                type: number
+              starting_at:
+                type: string
+                format: date-time
+                description: RFC 3339 timestamp (inclusive)
+              ending_before:
+                type: string
+                format: date-time
+                description: RFC 3339 timestamp (exclusive)
+    EditCommitPayload:
+      type: object
+      required:
+      - customer_id
+      - commit_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose commit is being edited
+        commit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to edit
+        name:
+          type: string
+          description: Updated name for the commit
+        description:
+          type: string
+          description: Updated description for the commit
+        access_schedule:
+          $ref: '#/components/schemas/UpdateAccessScheduleInput'
+        invoice_schedule:
+          $ref: '#/components/schemas/UpdateInvoiceScheduleInput'
+        invoice_contract_id:
+          type: string
+          format: uuid
+          description: ID of contract to use for invoicing
+        applicable_product_ids:
+          type:
+          - array
+          - 'null'
           items:
-            $ref: '#/components/schemas/SeatCommitBalance'
-        credits:
-          type: array
-          description: Array of credits applicable to this seat with their balances
+            type: string
+            format: uuid
+          description: Which products the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
+        applicable_product_tags:
+          type:
+          - array
+          - 'null'
           items:
-            $ref: '#/components/schemas/SeatCreditBalance'
+            type: string
+          description: Which tags the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
+        specifiers:
+          type:
+          - array
+          - 'null'
+          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`. Instead, to target usage by product or product tag, pass those values in the body of `specifiers`.
+          items:
+            $ref: '#/components/schemas/CommitSpecifierInput'
+        product_id:
+          type: string
+          format: uuid
+        priority:
+          type:
+          - number
+          - 'null'
+          description: If multiple commits are applicable, the one with the lower priority will apply first.
+        rate_type:
+          type: string
+          enum:
+          - LIST_RATE
+          - list_rate
+          - COMMIT_RATE
+          - commit_rate
+          description: If provided, updates the commit to use the specified rate type for current and future invoices. Previously finalized invoices will need to be voided and regenerated to reflect the rate type change.
+        hierarchy_configuration:
+          $ref: '#/components/schemas/CommitHierarchyConfiguration'
+          description: Optional configuration for commit hierarchy access control
+    CreditExpirationLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_EXPIRATION
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    UpdateCreditEndDatePayload:
+      type: object
+      required:
+      - customer_id
+      - credit_id
+      - access_ending_before
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose credit is to be updated
+        credit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to update
+        access_ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when access to the credit will end and it will no longer be possible to draw it down (exclusive).
+    UpdateInvoiceScheduleInput:
+      type: object
+      properties:
+        add_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - timestamp
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              amount:
+                type: number
+              quantity:
+                type: number
+              unit_price:
+                type: number
+        update_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                type: string
+                format: uuid
+              timestamp:
+                type: string
+                format: date-time
+              amount:
+                type: number
+              quantity:
+                type: number
+              unit_price:
+                type: number
+        remove_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                type: string
+                format: uuid
+    SeatBalanceByCreditType:
+      type: object
+      required:
+      - credit_type_id
+      - balance
+      - starting_balance
+      properties:
+        credit_type_id:
+          type: string
+          format: uuid
+        balance:
+          type: number
+          description: The total balance across all commits and credits for this seat, of this credit type.
+        starting_balance:
+          type: number
+          description: The total initial balances of all commits and credits for this seat, of this credit type.
+    CommitHierarchyConfiguration:
+      type: object
+      required:
+      - child_access
+      properties:
+        child_access:
+          oneOf:
+          - $ref: '#/components/schemas/CommitHierarchyChildAccessAll'
+          - $ref: '#/components/schemas/CommitHierarchyChildAccessNone'
+          - $ref: '#/components/schemas/CommitHierarchyChildAccessContractIds'
+    CreditCanceledLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_CANCELED
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    UpdateCommitEndDatePayload:
+      type: object
+      required:
+      - customer_id
+      - commit_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose commit is to be updated
+        commit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to update. Only supports "PREPAID" commits.
+        access_ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when access to the commit will end and it will no longer be possible to draw it down (exclusive). If not provided, the access will not be updated.
+        invoices_ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the commit will stop being invoiced (exclusive). If not provided, the invoice schedule will not be updated.
+    CreateCustomerCommitPayload:
+      type: object
+      required:
+      - customer_id
+      - type
+      - priority
+      - product_id
+      - access_schedule
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - PREPAID
+          - prepaid
+          - POSTPAID
+          - postpaid
+        rate_type:
+          type: string
+          enum:
+          - COMMIT_RATE
+          - commit_rate
+          - LIST_RATE
+          - list_rate
+        name:
+          type: string
+          minLength: 1
+          description: displayed on invoices
+        description:
+          type: string
+          description: Used only in UI/API. It is not exposed to end customers.
+        priority:
+          type: number
+          description: If multiple credits or commits are applicable, the one with the lower priority will apply first.
+        product_id:
+          type: string
+          format: uuid
+          description: ID of the fixed product associated with the commit. This is required because products are used to invoice the commit amount.
+        access_schedule:
+          $ref: '#/components/schemas/ScheduleDurationInput'
+          description: Schedule for distributing the commit to the customer. For "POSTPAID" commits only one schedule item is allowed and amount must match invoice_schedule total.
+        invoice_schedule:
+          $ref: '#/components/schemas/SchedulePointInTimeInput'
+          description: 'Required for "POSTPAID" commits: the true up invoice will be generated at this time and only one schedule item is allowed; the total must match accesss_schedule amount. Optional for "PREPAID" commits: if not provided, this will be a "complimentary" commit with no invoice.'
+        invoice_contract_id:
+          type: string
+          format: uuid
+          description: The contract that this commit will be billed on. This is required for "POSTPAID" commits and for "PREPAID" commits unless there is no invoice schedule above (i.e., the commit is 'free'), or if do_not_invoice is set to true.
+        applicable_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Which products the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
+        applicable_product_tags:
+          type: array
+          items:
+            type: string
+          description: Which tags the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
+        applicable_contract_ids:
+          type: array
+          items:
+            type: string
+          description: Which contract the commit applies to. If not provided, the commit applies to all contracts.
+        specifiers:
+          type: array
+          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`.
+          items:
+            $ref: '#/components/schemas/CommitSpecifierInput'
+        netsuite_sales_order_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        salesforce_opportunity_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        custom_fields:
+          x-cf-entity: commit
+          $ref: '#/components/schemas/CustomField'
+        uniqueness_key:
+          $ref: '#/components/schemas/UniquenessKeyForCommitsAndCredits'
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    PrepaidCommitSegmentStartLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_SEGMENT_START
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    PrepaidCommitRolloverLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - new_contract_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_ROLLOVER
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        new_contract_id:
+          type: string
+          format: uuid
+    SeatCreditBalance:
+      type: object
+      required:
+      - id
+      - balance
+      - start_date
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The credit ID
+        balance:
+          type: number
+          description: The current balance for this credit for this specific seat
+        start_date:
+          type: string
+          format: date-time
+          description: The datetime when the credit becomes active
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The datetime when the credit expires
+        ledger_entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeatBalanceCreditLedger'
+          description: Transaction history for this credit for this seat (only included if include_ledgers=true)
+    ApplySeatIncreaseConfigForRecurringCommit:
+      type: object
+      required:
+      - is_prorated
+      properties:
+        is_prorated:
+          type: boolean
+          description: Indicates whether a mid-period seat increase should be prorated.
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    CommitHierarchyChildAccessContractIds:
+      type: object
+      required:
+      - type
+      - contract_ids
+      properties:
+        type:
+          type: string
+          enum:
+          - CONTRACT_IDS
+          - contract_ids
+        contract_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: uuid
+    SchedulePointInTime:
+      type: object
+      properties:
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - amount
+            - unit_price
+            - quantity
+            - timestamp
+            properties:
+              id:
+                type: string
+                format: uuid
+              invoice_id:
+                type:
+                - string
+                - 'null'
+                format: uuid
+              amount:
+                type: number
+              unit_price:
+                type: number
+              quantity:
+                type: number
+              timestamp:
+                type: string
+                format: date-time
+        do_not_invoice:
+          type: boolean
+          description: This field is only applicable to commit invoice schedules. If true, this schedule will not generate an invoice.
+          default: false
+    PostpaidCommitAutomatedInvoiceDeductionLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    PrepaidCommitSeatBasedAdjustmentLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    SeatBalanceCommitLedgerEntryType:
+      type: string
+      enum:
+      - PREPAID_COMMIT_SEGMENT_START
+      - PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
+      - PREPAID_COMMIT_ROLLOVER
+      - PREPAID_COMMIT_EXPIRATION
+      - PREPAID_COMMIT_CANCELED
+      - PREPAID_COMMIT_CREDITED
+      - PREPAID_COMMIT_MANUAL
+      - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
+    PrepaidCommitManualLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - reason
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_MANUAL
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        reason:
+          type: string
+    AddManualBalanceLedgerEntryPayload:
+      type: object
+      required:
+      - customer_id
+      - id
+      - segment_id
+      - amount
+      - reason
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose balance is to be updated.
+        contract_id:
+          type: string
+          format: uuid
+          description: ID of the contract to update. Leave blank to update a customer level balance.
+        id:
+          type: string
+          format: uuid
+          description: ID of the balance (commit or credit) to update.
+        segment_id:
+          type: string
+          format: uuid
+          description: ID of the segment to update.
+        amount:
+          type: number
+          description: Amount to add to the segment. A negative number will draw down from the balance.
+        per_group_amounts:
+          type: object
+          additionalProperties:
+            type: number
+          description: If using individually configured commits/credits attached to seat managed subscriptions, the amount to add for each seat. Must sum to total amount.
+        reason:
+          type: string
+          description: Reason for the manual adjustment. This will be displayed in the ledger.
+        timestamp:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the manual adjustment takes place. If not provided, it will default to the start of the segment.
+    CommitSpecifierInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: If provided, the specifier will only apply to the product with the specified ID.
+        product_tags:
+          type: array
+          items:
+            type: string
+          description: If provided, the specifier will only apply to products with all the specified tags.
+        pricing_group_values:
+          type: object
+          additionalProperties:
+            type: string
+          description: If provided, the specifier will apply to product usage with these set of pricing group values.
+        presentation_group_values:
+          type: object
+          additionalProperties:
+            type: string
+          description: If provided, the specifier will apply to product usage with these set of presentation group values.
+        exclude:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:exclude-specifiers-ga
+          type: array
+          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
+          items:
+            $ref: '#/components/schemas/ExcludeSpecifier'
     PrepaidCommitCreditedLedgerEntry:
       type: object
       required:
@@ -1327,55 +2333,45 @@ components:
             - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
           type: string
           format: uuid
-    CommitHierarchyChildAccessAll:
+    DisableCommitTrueupPayload:
       type: object
       required:
-      - type
+      - customer_id
+      - commit_id
+      - contract_id
       properties:
-        type:
+        customer_id:
           type: string
-          enum:
-          - ALL
-          - all
-    PrepaidCommitSeatBasedAdjustmentLedgerEntry:
+          format: uuid
+          description: ID of the customer whose commit is to be updated
+        commit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to update
+        contract_id:
+          type: string
+          format: uuid
+          description: ID of the contract that the commit is on
+        amendment_id:
+          type: string
+          format: uuid
+          description: If applicable, the amendment ID that the commit is on
+    PostpaidCommitInitialBalanceLedgerEntry:
       type: object
       required:
       - type
       - timestamp
       - amount
-      - segment_id
       properties:
         type:
           type: string
           enum:
-          - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
+          - POSTPAID_COMMIT_INITIAL_BALANCE
         timestamp:
           type: string
           format: date-time
         amount:
           type: number
-        segment_id:
-          type: string
-          format: uuid
-    SubscriptionConfigAllocation:
-      type: string
-      enum:
-      - INDIVIDUAL
-      - POOLED
-    ArchiveCreditPayload:
-      type: object
-      required:
-      - customer_id
-      - credit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose credit is being archived
-        credit_id:
-          type: string
-          format: uuid
-          description: ID of the credit to archive
     CreditSeatBasedAdjustmentLedgerEntry:
       type: object
       required:
@@ -1396,71 +2392,66 @@ components:
         segment_id:
           type: string
           format: uuid
-    EditCommitPayload:
+    CommitLedger:
+      oneOf:
+      - $ref: '#/components/schemas/PrepaidCommitSegmentStartLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitAutomatedInvoiceDeductionLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitRolloverLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitExpirationLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitCanceledLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/PrepaidCommitCreditedLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/PrepaidCommitSeatBasedAdjustmentLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitInitialBalanceLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitAutomatedInvoiceDeductionLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitRolloverLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitTrueupLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitManualLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitManualLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitExpirationLedgerEntry'
+    UniquenessKeyForCommitsAndCredits:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Prevents the creation of duplicates. If a request to create a commit or credit is made with a uniqueness key that was previously used to create a commit or credit, a new record will not be created and the request will fail with a 409 error.
+    BalanceForCommitsAndCredits:
+      type: number
+      description: The current balance of the credit or commit. This balance reflects the amount of credit or commit that the customer has access to use at this moment - thus, expired and upcoming credit or commit segments contribute 0 to the balance. The balance will match the sum of all ledger entries with the exception of the case where the sum of negative manual ledger entries exceeds the positive amount remaining on the credit or commit - in that case, the balance will be 0. All manual ledger entries associated with active credit or commit segments are included in the balance, including future-dated manual ledger entries.
+    CreditManualLedgerEntry:
       type: object
       required:
-      - customer_id
-      - commit_id
+      - type
+      - timestamp
+      - amount
+      - reason
       properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose commit is being edited
-        commit_id:
-          type: string
-          format: uuid
-          description: ID of the commit to edit
-        name:
-          type: string
-          description: Updated name for the commit
-        description:
-          type: string
-          description: Updated description for the commit
-        access_schedule:
-          $ref: '#/components/schemas/UpdateAccessScheduleInput'
-        invoice_schedule:
-          $ref: '#/components/schemas/UpdateInvoiceScheduleInput'
-        invoice_contract_id:
-          type: string
-          format: uuid
-          description: ID of contract to use for invoicing
-        applicable_product_ids:
-          type: array
-          nullable: true
-          items:
-            type: string
-            format: uuid
-          description: Which products the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
-        applicable_product_tags:
-          type: array
-          nullable: true
-          items:
-            type: string
-          description: Which tags the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
-        specifiers:
-          nullable: true
-          type: array
-          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`. Instead, to target usage by product or product tag, pass those values in the body of `specifiers`.
-          items:
-            $ref: '#/components/schemas/CommitSpecifierInput'
-        product_id:
-          type: string
-          format: uuid
-        priority:
-          type: number
-          nullable: true
-          description: If multiple commits are applicable, the one with the lower priority will apply first.
-        rate_type:
+        type:
           type: string
           enum:
-          - LIST_RATE
-          - list_rate
-          - COMMIT_RATE
-          - commit_rate
-          description: If provided, updates the commit to use the specified rate type for current and future invoices. Previously finalized invoices will need to be voided and regenerated to reflect the rate type change.
-        hierarchy_configuration:
-          $ref: '#/components/schemas/CommitHierarchyConfiguration'
-          description: Optional configuration for commit hierarchy access control
+          - CREDIT_MANUAL
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        reason:
+          type: string
+    RecurringScheduleFrequency:
+      type: string
+      enum:
+      - MONTHLY
+      - monthly
+      - QUARTERLY
+      - quarterly
+      - SEMI_ANNUAL
+      - semi_annual
+      - ANNUAL
+      - annual
     Commit:
       type: object
       required:
@@ -1615,30 +2606,74 @@ components:
             - Rollover commits: when the new contract started
 
             '
-    PostpaidCommitRolloverLedgerEntry:
+    EditCreditPayload:
       type: object
       required:
-      - type
-      - timestamp
-      - amount
-      - new_contract_id
-      - segment_id
+      - customer_id
+      - credit_id
       properties:
-        type:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose credit is being edited
+        credit_id:
+          type: string
+          format: uuid
+          description: ID of the credit to edit
+        name:
+          type: string
+          description: Updated name for the credit
+        description:
+          type: string
+          description: Updated description for the credit
+        access_schedule:
+          $ref: '#/components/schemas/UpdateAccessScheduleInput'
+        applicable_product_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uuid
+          description: Which products the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
+        applicable_product_tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Which tags the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
+        specifiers:
+          type:
+          - array
+          - 'null'
+          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`. Instead, to target usage by product or product tag, pass those values in the body of `specifiers`.
+          items:
+            $ref: '#/components/schemas/CommitSpecifierInput'
+        product_id:
+          type: string
+          format: uuid
+        priority:
+          type:
+          - number
+          - 'null'
+          description: If multiple commits are applicable, the one with the lower priority will apply first.
+        rate_type:
           type: string
           enum:
-          - POSTPAID_COMMIT_ROLLOVER
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        new_contract_id:
-          type: string
-          format: uuid
+          - LIST_RATE
+          - list_rate
+          - COMMIT_RATE
+          - commit_rate
+          description: If provided, updates the credit to use the specified rate type for current and future invoices. Previously finalized invoices will need to be voided and regenerated to reflect the rate type change.
+        hierarchy_configuration:
+          $ref: '#/components/schemas/CommitHierarchyConfiguration'
+          description: Optional configuration for credit hierarchy access control
+    SubscriptionConfigAllocation:
+      type: string
+      enum:
+      - INDIVIDUAL
+      - POOLED
     ExcludeSpecifier:
       type: object
       properties:
@@ -1647,551 +2682,38 @@ components:
           items:
             type: string
           description: If provided, the specifier will not apply to products with all the specified tags.
-    RecurringScheduleFrequency:
-      type: string
-      enum:
-      - MONTHLY
-      - monthly
-      - QUARTERLY
-      - quarterly
-      - SEMI_ANNUAL
-      - semi_annual
-      - ANNUAL
-      - annual
-    ScheduleDuration:
-      type: object
-      required:
-      - schedule_items
-      properties:
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - amount
-            - starting_at
-            - ending_before
-            properties:
-              id:
-                type: string
-                format: uuid
-              amount:
-                type: number
-              starting_at:
-                type: string
-                format: date-time
-              ending_before:
-                type: string
-                format: date-time
-    SeatBalanceCreditLedger:
-      type: object
-      required:
-      - type
-      - amount
-      - timestamp
-      properties:
-        type:
-          $ref: '#/components/schemas/SeatBalanceCreditLedgerEntryType'
-          description: Credit ledger type
-        amount:
-          type: number
-          description: Amount of the ledger entry
-        timestamp:
-          type: string
-          format: date-time
-          description: The datetime when the ledger is created
-    CreditRolloverLedgerEntry:
+    CreditLedger:
+      oneOf:
+      - $ref: '#/components/schemas/CreditSegmentStartLedgerEntry'
+      - $ref: '#/components/schemas/CreditAutomatedInvoiceDeductionLedgerEntry'
+      - $ref: '#/components/schemas/CreditExpirationLedgerEntry'
+      - $ref: '#/components/schemas/CreditCanceledLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/CreditCreditedLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/CreditManualLedgerEntry'
+      - $ref: '#/components/schemas/CreditSeatBasedAdjustmentLedgerEntry'
+      - $ref: '#/components/schemas/CreditRolloverLedgerEntry'
+    PostpaidCommitExpirationLedgerEntry:
       type: object
       required:
       - type
       - timestamp
       - amount
-      - new_contract_id
-      - segment_id
       properties:
         type:
           type: string
           enum:
-          - CREDIT_ROLLOVER
+          - POSTPAID_COMMIT_EXPIRATION
         timestamp:
           type: string
           format: date-time
         amount:
           type: number
-        segment_id:
-          type: string
-          format: uuid
-        new_contract_id:
-          type: string
-          format: uuid
-    SeatBalanceCommitLedgerEntryType:
-      type: string
-      enum:
-      - PREPAID_COMMIT_SEGMENT_START
-      - PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
-      - PREPAID_COMMIT_ROLLOVER
-      - PREPAID_COMMIT_EXPIRATION
-      - PREPAID_COMMIT_CANCELED
-      - PREPAID_COMMIT_CREDITED
-      - PREPAID_COMMIT_MANUAL
-      - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
-    PostpaidCommitTrueupLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_TRUEUP
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    AddManualBalanceLedgerEntryPayload:
-      type: object
-      required:
-      - customer_id
-      - id
-      - segment_id
-      - amount
-      - reason
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose balance is to be updated.
-        contract_id:
-          type: string
-          format: uuid
-          description: ID of the contract to update. Leave blank to update a customer level balance.
-        id:
-          type: string
-          format: uuid
-          description: ID of the balance (commit or credit) to update.
-        segment_id:
-          type: string
-          format: uuid
-          description: ID of the segment to update.
-        amount:
-          type: number
-          description: Amount to add to the segment. A negative number will draw down from the balance.
-        per_group_amounts:
-          type: object
-          additionalProperties:
-            type: number
-          description: If using individually configured commits/credits attached to seat managed subscriptions, the amount to add for each seat. Must sum to total amount.
-        reason:
-          type: string
-          description: Reason for the manual adjustment. This will be displayed in the ledger.
-        timestamp:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the manual adjustment takes place. If not provided, it will default to the start of the segment.
-    CommitHierarchyConfiguration:
-      type: object
-      required:
-      - child_access
-      properties:
-        child_access:
-          oneOf:
-          - $ref: '#/components/schemas/CommitHierarchyChildAccessAll'
-          - $ref: '#/components/schemas/CommitHierarchyChildAccessNone'
-          - $ref: '#/components/schemas/CommitHierarchyChildAccessContractIds'
-    PostpaidCommitAutomatedInvoiceDeductionLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    PrepaidCommitRolloverLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - new_contract_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_ROLLOVER
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        new_contract_id:
-          type: string
-          format: uuid
-    SchedulePointInTime:
-      type: object
-      properties:
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - amount
-            - unit_price
-            - quantity
-            - timestamp
-            properties:
-              id:
-                type: string
-                format: uuid
-              invoice_id:
-                type: string
-                format: uuid
-                nullable: true
-              amount:
-                type: number
-              unit_price:
-                type: number
-              quantity:
-                type: number
-              timestamp:
-                type: string
-                format: date-time
-        do_not_invoice:
-          type: boolean
-          description: This field is only applicable to commit invoice schedules. If true, this schedule will not generate an invoice.
-          default: false
-    CreditManualLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - reason
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_MANUAL
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        reason:
-          type: string
-    BalanceForCommitsAndCredits:
-      type: number
-      description: The current balance of the credit or commit. This balance reflects the amount of credit or commit that the customer has access to use at this moment - thus, expired and upcoming credit or commit segments contribute 0 to the balance. The balance will match the sum of all ledger entries with the exception of the case where the sum of negative manual ledger entries exceeds the positive amount remaining on the credit or commit - in that case, the balance will be 0. All manual ledger entries associated with active credit or commit segments are included in the balance, including future-dated manual ledger entries.
-    CreditCreditedLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_CREDITED
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    SeatCommitBalance:
-      type: object
-      required:
-      - id
-      - balance
-      - start_date
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The commit or credit ID
-        balance:
-          type: number
-          description: The current balance for this commit for this specific seat
-        start_date:
-          type: string
-          format: date-time
-          description: The datetime when the commit becomes active
-        end_date:
-          type: string
-          format: date-time
-          nullable: true
-          description: The datetime when the commit expires
-        ledger_entries:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeatBalanceCommitLedger'
-          description: Transaction history for this commit for this seat (only included if include_ledgers=true)
-    ArchiveCommitPayload:
-      type: object
-      required:
-      - customer_id
-      - commit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose commit is being archived
-        commit_id:
-          type: string
-          format: uuid
-          description: ID of the commit to archive
-    CreditExpirationLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_EXPIRATION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-    ExternalPaymentGateThresholdCommitPayload:
-      type: object
-      required:
-      - workflow_id
-      - outcome
-      properties:
-        workflow_id:
-          type: string
-          format: uuid
-          description: ID of the workflow to continue
-        outcome:
-          type: string
-          enum:
-          - paid
-          - PAID
-          - failed
-          - FAILED
-          description: The outcome of the external payment gate
-    CreditCanceledLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_CANCELED
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    CommitHierarchyChildAccessContractIds:
-      type: object
-      required:
-      - type
-      - contract_ids
-      properties:
-        type:
-          type: string
-          enum:
-          - CONTRACT_IDS
-          - contract_ids
-        contract_ids:
-          type: array
-          minItems: 1
-          items:
-            type: string
-            format: uuid
-    PrepaidCommitCanceledLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_CANCELED
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-    SeatBalanceByCreditType:
-      type: object
-      required:
-      - credit_type_id
-      - balance
-      - starting_balance
-      properties:
-        credit_type_id:
-          type: string
-          format: uuid
-        balance:
-          type: number
-          description: The total balance across all commits and credits for this seat, of this credit type.
-        starting_balance:
-          type: number
-          description: The total initial balances of all commits and credits for this seat, of this credit type.
-    SeatBalanceCommitLedger:
-      type: object
-      required:
-      - type
-      - amount
-      - timestamp
-      properties:
-        type:
-          $ref: '#/components/schemas/SeatBalanceCommitLedgerEntryType'
-          description: Commit ledger type
-        amount:
-          type: number
-          description: Amount of the ledger entry
-        timestamp:
-          type: string
-          format: date-time
-          description: The datetime when the ledger is created
-    UpdateCommitEndDatePayload:
-      type: object
-      required:
-      - customer_id
-      - commit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose commit is to be updated
-        commit_id:
-          type: string
-          format: uuid
-          description: ID of the commit to update. Only supports "PREPAID" commits.
-        access_ending_before:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when access to the commit will end and it will no longer be possible to draw it down (exclusive). If not provided, the access will not be updated.
-        invoices_ending_before:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the commit will stop being invoiced (exclusive). If not provided, the invoice schedule will not be updated.
-    PostpaidCommitManualLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - reason
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_MANUAL
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        reason:
-          type: string
     Error:
       required:
       - message
@@ -2229,6 +2751,20 @@ components:
             - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
           type: string
           format: uuid
+    ArchiveCreditPayload:
+      type: object
+      required:
+      - customer_id
+      - credit_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose credit is being archived
+        credit_id:
+          type: string
+          format: uuid
+          description: ID of the credit to archive
     UpdateAccessScheduleInput:
       type: object
       properties:
@@ -2277,63 +2813,116 @@ components:
               id:
                 type: string
                 format: uuid
-    Id:
-      required:
-      - id
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-    PostpaidCommitExpirationLedgerEntry:
+    CreditCreditedLedgerEntry:
       type: object
       required:
       - type
       - timestamp
       - amount
+      - invoice_id
+      - segment_id
       properties:
         type:
           type: string
           enum:
-          - POSTPAID_COMMIT_EXPIRATION
+          - CREDIT_CREDITED
         timestamp:
           type: string
           format: date-time
         amount:
           type: number
-    CommitHierarchyChildAccessNone:
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    PostpaidCommitManualLedgerEntry:
       type: object
       required:
       - type
+      - timestamp
+      - amount
+      - reason
       properties:
         type:
           type: string
           enum:
-          - NONE
-          - none
-    BalanceFilter:
+          - POSTPAID_COMMIT_MANUAL
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        reason:
+          type: string
+    SeatBalanceCreditLedger:
       type: object
+      required:
+      - type
+      - amount
+      - timestamp
       properties:
-        balance_types:
-          type: array
-          description: The balance type to filter by.
-          items:
-            type: string
-            enum:
-            - PREPAID_COMMIT
-            - POSTPAID_COMMIT
-            - CREDIT
-        ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Specific IDs to compute balance across.
-        custom_fields:
-          type: object
-          description: Custom fields to compute balance across. Must match all custom fields
-          additionalProperties:
-            type: string
+        type:
+          $ref: '#/components/schemas/SeatBalanceCreditLedgerEntryType'
+          description: Credit ledger type
+        amount:
+          type: number
+          description: Amount of the ledger entry
+        timestamp:
+          type: string
+          format: date-time
+          description: The datetime when the ledger is created
+    CreditAutomatedInvoiceDeductionLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_AUTOMATED_INVOICE_DEDUCTION
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    ArchiveCommitPayload:
+      type: object
+      required:
+      - customer_id
+      - commit_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose commit is being archived
+        commit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to archive
     CreateCustomerCreditPayload:
       type: object
       required:
@@ -2406,30 +2995,183 @@ components:
           - list_rate
         uniqueness_key:
           $ref: '#/components/schemas/UniquenessKeyForCommitsAndCredits'
-    DisableCommitTrueupPayload:
+    ScheduleDuration:
       type: object
       required:
-      - customer_id
-      - commit_id
-      - contract_id
+      - schedule_items
       properties:
-        customer_id:
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - amount
+            - starting_at
+            - ending_before
+            properties:
+              id:
+                type: string
+                format: uuid
+              amount:
+                type: number
+              starting_at:
+                type: string
+                format: date-time
+              ending_before:
+                type: string
+                format: date-time
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    PostpaidCommitRolloverLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - new_contract_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - POSTPAID_COMMIT_ROLLOVER
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
           type: string
           format: uuid
-          description: ID of the customer whose commit is to be updated
-        commit_id:
+        new_contract_id:
           type: string
           format: uuid
-          description: ID of the commit to update
+    SeatBalance:
+      type: object
+      required:
+      - seat_id
+      - balances
+      properties:
+        seat_id:
+          type: string
+          description: The unique identifier for the seat
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeatBalanceByCreditType'
+        commits:
+          type:
+          - array
+          - 'null'
+          description: Array of commits applicable to this seat with their balances
+          items:
+            $ref: '#/components/schemas/SeatCommitBalance'
+        credits:
+          type: array
+          description: Array of credits applicable to this seat with their balances
+          items:
+            $ref: '#/components/schemas/SeatCreditBalance'
+    PrepaidCommitCanceledLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_CANCELED
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
         contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
           type: string
           format: uuid
-          description: ID of the contract that the commit is on
-        amendment_id:
+    PostpaidCommitTrueupLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      properties:
+        type:
+          type: string
+          enum:
+          - POSTPAID_COMMIT_TRUEUP
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        invoice_id:
           type: string
           format: uuid
-          description: If applicable, the amendment ID that the commit is on
-    SeatCreditBalance:
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    CreditSegmentStartLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_SEGMENT_START
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    ExternalPaymentGateThresholdCommitPayload:
+      type: object
+      required:
+      - workflow_id
+      - outcome
+      properties:
+        workflow_id:
+          type: string
+          format: uuid
+          description: ID of the workflow to continue
+        outcome:
+          type: string
+          enum:
+          - paid
+          - PAID
+          - failed
+          - FAILED
+          description: The outcome of the external payment gate
+    SeatCommitBalance:
       type: object
       required:
       - id
@@ -2439,24 +3181,25 @@ components:
         id:
           type: string
           format: uuid
-          description: The credit ID
+          description: The commit or credit ID
         balance:
           type: number
-          description: The current balance for this credit for this specific seat
+          description: The current balance for this commit for this specific seat
         start_date:
           type: string
           format: date-time
-          description: The datetime when the credit becomes active
+          description: The datetime when the commit becomes active
         end_date:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
-          description: The datetime when the credit expires
+          description: The datetime when the commit expires
         ledger_entries:
           type: array
           items:
-            $ref: '#/components/schemas/SeatBalanceCreditLedger'
-          description: Transaction history for this credit for this seat (only included if include_ledgers=true)
+            $ref: '#/components/schemas/SeatBalanceCommitLedger'
+          description: Transaction history for this commit for this seat (only included if include_ledgers=true)
     Credit:
       type: object
       required:
@@ -2578,311 +3321,6 @@ components:
             contract_id:
               type: string
               format: uuid
-    ApplySeatIncreaseConfigForRecurringCommit:
-      type: object
-      required:
-      - is_prorated
-      properties:
-        is_prorated:
-          type: boolean
-          description: Indicates whether a mid-period seat increase should be prorated.
-    UniquenessKeyForCommitsAndCredits:
-      type: string
-      minLength: 1
-      maxLength: 128
-      description: Prevents the creation of duplicates. If a request to create a commit or credit is made with a uniqueness key that was previously used to create a commit or credit, a new record will not be created and the request will fail with a 409 error.
-    SeatBalanceCreditLedgerEntryType:
-      type: string
-      enum:
-      - CREDIT_SEGMENT_START
-      - CREDIT_AUTOMATED_INVOICE_DEDUCTION
-      - CREDIT_EXPIRATION
-      - CREDIT_CANCELED
-      - CREDIT_CREDITED
-      - CREDIT_MANUAL
-      - CREDIT_SEAT_BASED_ADJUSTMENT
-      - CREDIT_ROLLOVER
-    PostpaidCommitInitialBalanceLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_INITIAL_BALANCE
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-    EditCreditPayload:
-      type: object
-      required:
-      - customer_id
-      - credit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose credit is being edited
-        credit_id:
-          type: string
-          format: uuid
-          description: ID of the credit to edit
-        name:
-          type: string
-          description: Updated name for the credit
-        description:
-          type: string
-          description: Updated description for the credit
-        access_schedule:
-          $ref: '#/components/schemas/UpdateAccessScheduleInput'
-        applicable_product_ids:
-          type: array
-          nullable: true
-          items:
-            type: string
-            format: uuid
-          description: Which products the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
-        applicable_product_tags:
-          type: array
-          nullable: true
-          items:
-            type: string
-          description: Which tags the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
-        specifiers:
-          nullable: true
-          type: array
-          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`. Instead, to target usage by product or product tag, pass those values in the body of `specifiers`.
-          items:
-            $ref: '#/components/schemas/CommitSpecifierInput'
-        product_id:
-          type: string
-          format: uuid
-        priority:
-          type: number
-          nullable: true
-          description: If multiple commits are applicable, the one with the lower priority will apply first.
-        rate_type:
-          type: string
-          enum:
-          - LIST_RATE
-          - list_rate
-          - COMMIT_RATE
-          - commit_rate
-          description: If provided, updates the credit to use the specified rate type for current and future invoices. Previously finalized invoices will need to be voided and regenerated to reflect the rate type change.
-        hierarchy_configuration:
-          $ref: '#/components/schemas/CommitHierarchyConfiguration'
-          description: Optional configuration for credit hierarchy access control
-    CreateCustomerCommitPayload:
-      type: object
-      required:
-      - customer_id
-      - type
-      - priority
-      - product_id
-      - access_schedule
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - PREPAID
-          - prepaid
-          - POSTPAID
-          - postpaid
-        rate_type:
-          type: string
-          enum:
-          - COMMIT_RATE
-          - commit_rate
-          - LIST_RATE
-          - list_rate
-        name:
-          type: string
-          minLength: 1
-          description: displayed on invoices
-        description:
-          type: string
-          description: Used only in UI/API. It is not exposed to end customers.
-        priority:
-          type: number
-          description: If multiple credits or commits are applicable, the one with the lower priority will apply first.
-        product_id:
-          type: string
-          format: uuid
-          description: ID of the fixed product associated with the commit. This is required because products are used to invoice the commit amount.
-        access_schedule:
-          $ref: '#/components/schemas/ScheduleDurationInput'
-          description: Schedule for distributing the commit to the customer. For "POSTPAID" commits only one schedule item is allowed and amount must match invoice_schedule total.
-        invoice_schedule:
-          $ref: '#/components/schemas/SchedulePointInTimeInput'
-          description: 'Required for "POSTPAID" commits: the true up invoice will be generated at this time and only one schedule item is allowed; the total must match accesss_schedule amount. Optional for "PREPAID" commits: if not provided, this will be a "complimentary" commit with no invoice.'
-        invoice_contract_id:
-          type: string
-          format: uuid
-          description: The contract that this commit will be billed on. This is required for "POSTPAID" commits and for "PREPAID" commits unless there is no invoice schedule above (i.e., the commit is 'free'), or if do_not_invoice is set to true.
-        applicable_product_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Which products the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
-        applicable_product_tags:
-          type: array
-          items:
-            type: string
-          description: Which tags the commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
-        applicable_contract_ids:
-          type: array
-          items:
-            type: string
-          description: Which contract the commit applies to. If not provided, the commit applies to all contracts.
-        specifiers:
-          type: array
-          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`.
-          items:
-            $ref: '#/components/schemas/CommitSpecifierInput'
-        netsuite_sales_order_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          description: This field's availability is dependent on your client's configuration.
-        salesforce_opportunity_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          description: This field's availability is dependent on your client's configuration.
-        custom_fields:
-          x-cf-entity: commit
-          $ref: '#/components/schemas/CustomField'
-        uniqueness_key:
-          $ref: '#/components/schemas/UniquenessKeyForCommitsAndCredits'
-    PrepaidCommitSegmentStartLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_SEGMENT_START
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-    PrepaidCommitManualLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - reason
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_MANUAL
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        reason:
-          type: string
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
-    UpdateInvoiceScheduleInput:
-      type: object
-      properties:
-        add_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - timestamp
-            properties:
-              timestamp:
-                type: string
-                format: date-time
-              amount:
-                type: number
-              quantity:
-                type: number
-              unit_price:
-                type: number
-        update_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                format: uuid
-              timestamp:
-                type: string
-                format: date-time
-              amount:
-                type: number
-              quantity:
-                type: number
-              unit_price:
-                type: number
-        remove_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                format: uuid
-    PrepaidCommitExpirationLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_EXPIRATION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
     SchedulePointInTimeInput:
       type: object
       description: Must provide either schedule_items or recurring_schedule.
@@ -2953,142 +3391,6 @@ components:
           type: boolean
           description: This field is only applicable to commit invoice schedules. If true, this schedule will not generate an invoice.
           default: false
-    CommitLedger:
-      oneOf:
-      - $ref: '#/components/schemas/PrepaidCommitSegmentStartLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitAutomatedInvoiceDeductionLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitRolloverLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitExpirationLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitCanceledLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/PrepaidCommitCreditedLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/PrepaidCommitSeatBasedAdjustmentLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitInitialBalanceLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitAutomatedInvoiceDeductionLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitRolloverLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitTrueupLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitManualLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitManualLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitExpirationLedgerEntry'
-    UpdateCreditEndDatePayload:
-      type: object
-      required:
-      - customer_id
-      - credit_id
-      - access_ending_before
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose credit is to be updated
-        credit_id:
-          type: string
-          format: uuid
-          description: ID of the commit to update
-        access_ending_before:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when access to the credit will end and it will no longer be possible to draw it down (exclusive).
-    ScheduleDurationInput:
-      type: object
-      required:
-      - schedule_items
-      properties:
-        credit_type_id:
-          type: string
-          format: uuid
-          description: Defaults to USD (cents) if not passed
-        schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - amount
-            - starting_at
-            - ending_before
-            properties:
-              amount:
-                type: number
-              starting_at:
-                type: string
-                format: date-time
-                description: RFC 3339 timestamp (inclusive)
-              ending_before:
-                type: string
-                format: date-time
-                description: RFC 3339 timestamp (exclusive)
-    CreditLedger:
-      oneOf:
-      - $ref: '#/components/schemas/CreditSegmentStartLedgerEntry'
-      - $ref: '#/components/schemas/CreditAutomatedInvoiceDeductionLedgerEntry'
-      - $ref: '#/components/schemas/CreditExpirationLedgerEntry'
-      - $ref: '#/components/schemas/CreditCanceledLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/CreditCreditedLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/CreditManualLedgerEntry'
-      - $ref: '#/components/schemas/CreditSeatBasedAdjustmentLedgerEntry'
-      - $ref: '#/components/schemas/CreditRolloverLedgerEntry'
-    CommitSpecifierInput:
-      type: object
-      properties:
-        product_id:
-          type: string
-          format: uuid
-          description: If provided, the specifier will only apply to the product with the specified ID.
-        product_tags:
-          type: array
-          items:
-            type: string
-          description: If provided, the specifier will only apply to products with all the specified tags.
-        pricing_group_values:
-          type: object
-          additionalProperties:
-            type: string
-          description: If provided, the specifier will apply to product usage with these set of pricing group values.
-        presentation_group_values:
-          type: object
-          additionalProperties:
-            type: string
-          description: If provided, the specifier will apply to product usage with these set of presentation group values.
-        exclude:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:exclude-specifiers-ga
-          type: array
-          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
-          items:
-            $ref: '#/components/schemas/ExcludeSpecifier'
-    CreditSegmentStartLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_SEGMENT_START
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
     CommitSpecifier:
       type: object
       properties:
@@ -3118,36 +3420,29 @@ components:
           description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
           items:
             $ref: '#/components/schemas/ExcludeSpecifier'
-    CreditAutomatedInvoiceDeductionLedgerEntry:
+    BalanceFilter:
       type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
       properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_AUTOMATED_INVOICE_DEDUCTION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
+        balance_types:
+          type: array
+          description: The balance type to filter by.
+          items:
+            type: string
+            enum:
+            - PREPAID_COMMIT
+            - POSTPAID_COMMIT
+            - CREDIT
+        ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Specific IDs to compute balance across.
+        custom_fields:
+          type: object
+          description: Custom fields to compute balance across. Must match all custom fields
+          additionalProperties:
+            type: string
   responses:
     NotFound:
       description: The specified resource was not found

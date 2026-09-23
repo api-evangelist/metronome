@@ -1,8 +1,8 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Metronome Alerts Customers API
+  title: Metronome Customers API
   version: 1.0.0
-  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+  description: Customers in Metronome represent your users for all billing and reporting. Use these endpoints to create, retrieve, update, and archive customers and their billing configuration.
 servers:
 - url: https://api.metronome.com
   description: Production server
@@ -10,7 +10,7 @@ security:
 - bearerAuth: []
 tags:
 - name: Customers
-  description: '[Customers](https://docs.metronome.com/provisioning/create-customers/) in Metronome represent your users for all billing and reporting. Use these endpoints to create, retrieve, update, and archive customers and their billing configuration.'
+  description: Customers in Metronome represent your users for all billing and reporting. Use these endpoints to create, retrieve, update, and archive customers and their billing configuration.
 paths:
   /v1/customers/setBillableStatus:
     post:
@@ -71,7 +71,18 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1/customers/archive:
     post:
-      description: "Use this endpoint to archive a customer while preserving auditability. Archiving a customer will automatically archive all contracts as of the current date and void all corresponding invoices. Use this endpoint if a customer is onboarded by mistake.\n\n### Usage guidelines:\n- Once a customer is archived, it cannot be unarchived.\n- Archived customers can still be viewed through the API or the UI for audit purposes. \n- Ingest aliases remain idempotent for archived customers. In order to reuse an ingest alias, first remove the ingest alias from the customer prior to archiving.\n- Any notifications associated with the customer will no longer be triggered.\n"
+      description: 'Use this endpoint to archive a customer while preserving auditability. Archiving a customer will automatically archive all contracts as of the current date and void all corresponding invoices. Use this endpoint if a customer is onboarded by mistake.
+
+
+        ### Usage guidelines:
+
+        - Once a customer is archived, it cannot be unarchived.
+
+        - Archived customers can still be viewed through the API or the UI for audit purposes.
+
+        - Ingest aliases remain idempotent for archived customers. In order to reuse an ingest alias, first remove the ingest alias from the customer prior to archiving.
+
+        - Any notifications associated with the customer will no longer be triggered.'
       operationId: archiveCustomer-v1
       summary: Archive a customer
       tags:
@@ -112,9 +123,7 @@ paths:
       description: 'Get detailed information for a specific customer by their Metronome ID. Returns customer profile data including name, creation date, ingest aliases, configuration settings, and custom fields. Use this endpoint to fetch complete customer details for billing operations or account management.
 
 
-        Note: If searching for a customer billing configuration, use the `/getCustomerBillingConfigurations` endpoint.
-
-        '
+        Note: If searching for a customer billing configuration, use the `/getCustomerBillingConfigurations` endpoint.'
       operationId: getCustomer-v1
       summary: Get a customer
       parameters:
@@ -148,9 +157,7 @@ paths:
                     x_account_id: KyVnHhSBWl7eY2bl
   /v1/customers:
     get:
-      description: 'Gets a paginated list of all customers in your Metronome account. Use this endpoint to browse your customer base, implement customer search functionality, or sync customer data with external systems. Returns customer details including IDs, names, and configuration settings. Supports filtering and pagination parameters for efficient data retrieval.
-
-        '
+      description: Gets a paginated list of all customers in your Metronome account. Use this endpoint to browse your customer base, implement customer search functionality, or sync customer data with external systems. Returns customer details including IDs, names, and configuration settings. Supports filtering and pagination parameters for efficient data retrieval.
       operationId: listCustomers-v1
       summary: List customers
       parameters:
@@ -203,8 +210,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/CustomerDetail'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
@@ -220,7 +228,31 @@ paths:
                     x_account_id: KyVnHhSBWl7eY2bl
                 next_page: null
     post:
-      description: "Create a new customer in Metronome and optionally the billing configuration (recommended) which dictates where invoices for the customer will be sent or where payment will be collected. \n\n### Use this endpoint to:\nExecute your customer provisioning workflows for either PLG motions, where customers originate in your platform, or SLG motions, where customers originate in your sales system.\n\n### Key response fields: \nThis end-point returns the `customer_id` created by the request. This id can be used to fetch relevant billing configurations and create contracts.\n\n### Example workflow:\n- Generally, Metronome recommends first creating the customer in the downstream payment / ERP system when payment method is collected and then creating the customer in Metronome using the response (i.e. `customer_id`) from the downstream system. If you do not create a billing configuration on customer creation, you can add it later.        \n- Once a customer is created, you can then create a contract for the customer. In the contract creation process, you will need to add the customer billing configuration to the contract to ensure Metronome invoices the customer correctly. This is because a customer can have multiple configurations.\n- As part of the customer creation process, set the ingest alias for the customer which will ensure usage is accurately mapped to the customer. Ingest aliases can be added or changed after the creation process as well.\n\n### Usage guidelines:\nFor details on different billing configurations for different systems, review the `/setCustomerBillingConfiguration` end-point.\n"
+      description: 'Create a new customer in Metronome and optionally the billing configuration (recommended) which dictates where invoices for the customer will be sent or where payment will be collected.
+
+
+        ### Use this endpoint to:
+
+        Execute your customer provisioning workflows for either PLG motions, where customers originate in your platform, or SLG motions, where customers originate in your sales system.
+
+
+        ### Key response fields:
+
+        This end-point returns the `customer_id` created by the request. This id can be used to fetch relevant billing configurations and create contracts.
+
+
+        ### Example workflow:
+
+        - Generally, Metronome recommends first creating the customer in the downstream payment / ERP system when payment method is collected and then creating the customer in Metronome using the response (i.e. `customer_id`) from the downstream system. If you do not create a billing configuration on customer creation, you can add it later.
+
+        - Once a customer is created, you can then create a contract for the customer. In the contract creation process, you will need to add the customer billing configuration to the contract to ensure Metronome invoices the customer correctly. This is because a customer can have multiple configurations.
+
+        - As part of the customer creation process, set the ingest alias for the customer which will ensure usage is accurately mapped to the customer. Ingest aliases can be added or changed after the creation process as well.
+
+
+        ### Usage guidelines:
+
+        For details on different billing configurations for different systems, review the `/setCustomerBillingConfiguration` end-point.'
       operationId: createCustomer-v1
       summary: Create a customer
       tags:
@@ -271,7 +303,16 @@ paths:
                     type: string
   /v1/customers/{customer_id}/setIngestAliases:
     post:
-      description: "Sets the ingest aliases for a customer. Use this endpoint to associate a Metronome customer with an internal ID for easier tracking between systems. Ingest aliases can be used in the `customer_id` field when sending usage events to Metronome. \n\n### Usage guidelines:\n- This call is idempotent and fully replaces the set of ingest aliases for the given customer.\n- Switching an ingest alias from one customer to another will associate all corresponding usage to the new customer.\n- Use multiple ingest aliases to model child organizations within a single Metronome customer.\n"
+      description: 'Sets the ingest aliases for a customer. Use this endpoint to associate a Metronome customer with an internal ID for easier tracking between systems. Ingest aliases can be used in the `customer_id` field when sending usage events to Metronome.
+
+
+        ### Usage guidelines:
+
+        - This call is idempotent and fully replaces the set of ingest aliases for the given customer.
+
+        - Switching an ingest alias from one customer to another will associate all corresponding usage to the new customer.
+
+        - Use multiple ingest aliases to model child organizations within a single Metronome customer.'
       operationId: setIngestAliases-v1
       summary: Create or update customer ingest aliases
       parameters:
@@ -292,9 +333,7 @@ paths:
           description: Success
   /v1/customers/{customer_id}/setName:
     post:
-      description: 'Updates the display name for a customer record. Use this to correct customer names, update business names after rebranding, or maintain accurate customer information for invoicing and reporting. Returns the updated customer object with the new name applied immediately across all billing documents and interfaces.
-
-        '
+      description: Updates the display name for a customer record. Use this to correct customer names, update business names after rebranding, or maintain accurate customer information for invoicing and reporting. Returns the updated customer object with the new name applied immediately across all billing documents and interfaces.
       operationId: setCustomerName-v1
       summary: Update a customer name
       parameters:
@@ -330,9 +369,7 @@ paths:
                   name: Example, Inc.
   /v1/customers/{customer_id}/updateConfig:
     post:
-      description: 'Update configuration settings for a specific customer, such as external system integrations (e.g., Salesforce account ID) and other customer-specific billing parameters. Use this endpoint to modify customer configurations without affecting core customer data like name or ingest aliases.
-
-        '
+      description: Update configuration settings for a specific customer, such as external system integrations (e.g., Salesforce account ID) and other customer-specific billing parameters. Use this endpoint to modify customer configurations without affecting core customer data like name or ingest aliases.
       operationId: updateCustomerConfig-v1
       summary: Update a customer configuration
       parameters:
@@ -360,9 +397,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1/getCustomerBillingProviderConfigurations:
     post:
-      description: 'Returns all billing configurations previously set for the customer. Use during the contract provisioning process to fetch the `billing_provider_configuration_id` needed to set the contract billing configuration.
-
-        '
+      description: Returns all billing configurations previously set for the customer. Use during the contract provisioning process to fetch the `billing_provider_configuration_id` needed to set the contract billing configuration.
       operationId: getCustomerBillingProviderConfigurations-v1
       summary: Fetch billing provider configurations for a customer
       tags:
@@ -427,9 +462,7 @@ paths:
       x-mint:
         groups:
         - ff:revenue-rec-configurations-enabled
-      description: 'Returns all revenue system configurations previously set for the customer.
-
-        '
+      description: Returns all revenue system configurations previously set for the customer.
       operationId: getCustomerRevenueSystemConfigurations-v1
       summary: Fetch revenue system configurations for a customer
       tags:
@@ -488,7 +521,37 @@ paths:
                 $ref: '#/components/schemas/Error'
   /v1/setCustomerBillingProviderConfigurations:
     post:
-      description: "Create a billing configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to collect payment in or send the invoice to. You can create multiple configurations per customer. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the billing configuration can then be associated to the customer's contract.\n- Add a new configuration to an existing customer. This might be used as part of an upgrade or downgrade workflow where the customer was previously billed through system A (e.g. Stripe) but will now be billed through system B (e.g. AWS). Once created, the new configuration can then be associated to the customer's contract.\n- Multiple configurations can be added per destination. For example, you can create two Stripe billing configurations for a Metronome customer that each have a distinct `collection_method`.\n\n### Delivery method options:\n- `direct_to_billing_provider`: Use when Metronome should send invoices directly to the billing provider's API (e.g., Stripe, NetSuite). This is the most common method for automated billing workflows.\n- `tackle`: Use specifically for AWS Marketplace transactions that require Tackle's co-selling platform for partner attribution and commission tracking.\n- `aws_sqs`: Use when you want invoice data delivered to an AWS SQS queue for custom processing before sending to your billing system.\n- `aws_sns`: Use when you want invoice notifications published to an AWS SNS topic for event-driven billing workflows.\n\n### Key response fields: \nThe id for the customer billing configuration. This id can be used to associate the billing configuration to a contract.\n\n### Usage guidelines:\nMust use the `delivery_method_id` if you have multiple Stripe accounts connected to Metronome.\n"
+      description: 'Create a billing configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to collect payment in or send the invoice to. You can create multiple configurations per customer. The configuration formats are distinct for each downstream provider.
+
+
+        ### Use this endpoint to:
+
+        - Add the initial configuration to an existing customer. Once created, the billing configuration can then be associated to the customer''s contract.
+
+        - Add a new configuration to an existing customer. This might be used as part of an upgrade or downgrade workflow where the customer was previously billed through system A (e.g. Stripe) but will now be billed through system B (e.g. AWS). Once created, the new configuration can then be associated to the customer''s contract.
+
+        - Multiple configurations can be added per destination. For example, you can create two Stripe billing configurations for a Metronome customer that each have a distinct `collection_method`.
+
+
+        ### Delivery method options:
+
+        - `direct_to_billing_provider`: Use when Metronome should send invoices directly to the billing provider''s API (e.g., Stripe, NetSuite). This is the most common method for automated billing workflows.
+
+        - `tackle`: Use specifically for AWS Marketplace transactions that require Tackle''s co-selling platform for partner attribution and commission tracking.
+
+        - `aws_sqs`: Use when you want invoice data delivered to an AWS SQS queue for custom processing before sending to your billing system.
+
+        - `aws_sns`: Use when you want invoice notifications published to an AWS SNS topic for event-driven billing workflows.
+
+
+        ### Key response fields:
+
+        The id for the customer billing configuration. This id can be used to associate the billing configuration to a contract.
+
+
+        ### Usage guidelines:
+
+        Must use the `delivery_method_id` if you have multiple Stripe accounts connected to Metronome.'
       operationId: setCustomerBillingProviderConfigurations-v1
       summary: Set billing provider configurations for a customer
       tags:
@@ -574,7 +637,36 @@ paths:
                 $ref: '#/components/schemas/Error'
   /v1/archiveCustomerBillingProviderConfigurations:
     post:
-      description: "Deprecate an existing billing configuration for a customer to handle churn or billing and collection preference changes. Archiving a billing configuration takes effect immediately. If there are active contracts using the configuration, Metronome will archive the configuration on the contract and immediately stop metering to downstream systems.\n\n### Use this endpoint to:\n- Remove billing provider customer data and configurations when no longer needed\n- Clean up test or deprecated billing provider configurations\n- Free up uniqueness keys for reuse with new billing provider configurations\n- Disable threshold recharge configurations associated with archived billing providers\n\n### Key response fields:\nA successful response returns:\n- `success`: Boolean indicating the operation completed successfully\n- `error`: Null on success, error message on failure\n\n### Usage guidelines:\n- Archiving a contract configuration during a grace period will result in the invoice not being sent to the customer\n- Automatically disables both spend-based and credit-based threshold recharge configurations for contracts using the archived billing provider        \n- You can archive multiple configurations for a single customer in a single request, but any validation failures for an individual configuration will prevent the entire operation from succeeding\n"
+      description: 'Deprecate an existing billing configuration for a customer to handle churn or billing and collection preference changes. Archiving a billing configuration takes effect immediately. If there are active contracts using the configuration, Metronome will archive the configuration on the contract and immediately stop metering to downstream systems.
+
+
+        ### Use this endpoint to:
+
+        - Remove billing provider customer data and configurations when no longer needed
+
+        - Clean up test or deprecated billing provider configurations
+
+        - Free up uniqueness keys for reuse with new billing provider configurations
+
+        - Disable threshold recharge configurations associated with archived billing providers
+
+
+        ### Key response fields:
+
+        A successful response returns:
+
+        - `success`: Boolean indicating the operation completed successfully
+
+        - `error`: Null on success, error message on failure
+
+
+        ### Usage guidelines:
+
+        - Archiving a contract configuration during a grace period will result in the invoice not being sent to the customer
+
+        - Automatically disables both spend-based and credit-based threshold recharge configurations for contracts using the archived billing provider
+
+        - You can archive multiple configurations for a single customer in a single request, but any validation failures for an individual configuration will prevent the entire operation from succeeding'
       operationId: archiveCustomerBillingProviderConfigurations-v1
       summary: Archive billing provider configurations for a customer
       tags:
@@ -619,7 +711,19 @@ paths:
       x-mint:
         groups:
         - ff:revenue-rec-configurations-enabled
-      description: "Create a revenue system configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to use for revenue workflows. The configuration formats are distinct for each downstream provider.\n\n### Use this endpoint to:\n- Add the initial configuration to an existing customer. Once created, the revenue system configuration can then be associated to the customer's contract.\n- Add a new configuration to an existing customer.\n\n### Key response fields: \nReturns the inserted configuration objects, including the id of the revenue system configuration(s). These ids can be used to associate a revenue system to a contract.\n"
+      description: 'Create a revenue system configuration for a customer. Once created, these configurations are available to associate to a contract and dictates which downstream system to use for revenue workflows. The configuration formats are distinct for each downstream provider.
+
+
+        ### Use this endpoint to:
+
+        - Add the initial configuration to an existing customer. Once created, the revenue system configuration can then be associated to the customer''s contract.
+
+        - Add a new configuration to an existing customer.
+
+
+        ### Key response fields:
+
+        Returns the inserted configuration objects, including the id of the revenue system configuration(s). These ids can be used to associate a revenue system to a contract.'
       operationId: setCustomerRevenueSystemConfigurations-v1
       summary: Set revenue system configurations for a customer
       tags:
@@ -698,9 +802,7 @@ paths:
 
         - `customer_id`: The customer ID the configurations belong to
 
-        - `customer_revenue_system_configuration_ids`: The archived configuration IDs
-
-        '
+        - `customer_revenue_system_configuration_ids`: The archived configuration IDs'
       operationId: archiveCustomerRevenueSystemConfigurations-v1
       summary: Archive revenue system configurations for a customer
       tags:
@@ -742,7 +844,42 @@ paths:
                 $ref: '#/components/schemas/Error'
   /v1/dashboards/getEmbeddableUrl:
     post:
-      description: "Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome's billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.\n\n### Use this endpoint to:\n- Embed billing dashboards directly in your customer portal or admin interface\n- Provide self-service access to invoices, usage data, and credit balances\n- Build white-labeled billing experiences with minimal development effort\n\n### Key response fields:\n- A secure, time-limited URL that can be embedded in an iframe\n- The URL includes authentication tokens and configuration parameters\n- URLs are customer-specific and respect your security settings\n\n### Usage guidelines:\n- Dashboard types: Choose from `invoices`, `usage`, or `commits_and_credits`\n- Customization options:\n    - `dashboard_options`: Configure whether you want invoices to show zero usage line items\n    - `color_overrides`: Match your brand's color palette\n    - `bm_group_key_overrides`: Customize how dimensions are displayed (for the usage embeddable dashboard)\n- Iframe implementation: Embed the returned URL directly in an iframe element\n- Responsive design: Dashboards automatically adapt to container dimensions\n"
+      description: 'Generate secure, embeddable dashboard URLs that allow you to seamlessly integrate Metronome''s billing visualizations directly into your application. This endpoint creates authenticated iframe-ready URLs for customer-specific dashboards, providing a white-labeled billing experience without building custom UI.
+
+
+        ### Use this endpoint to:
+
+        - Embed billing dashboards directly in your customer portal or admin interface
+
+        - Provide self-service access to invoices, usage data, and credit balances
+
+        - Build white-labeled billing experiences with minimal development effort
+
+
+        ### Key response fields:
+
+        - A secure, time-limited URL that can be embedded in an iframe
+
+        - The URL includes authentication tokens and configuration parameters
+
+        - URLs are customer-specific and respect your security settings
+
+
+        ### Usage guidelines:
+
+        - Dashboard types: Choose from `invoices`, `usage`, or `commits_and_credits`
+
+        - Customization options:
+
+        - `dashboard_options`: Configure whether you want invoices to show zero usage line items
+
+        - `color_overrides`: Match your brand''s color palette
+
+        - `bm_group_key_overrides`: Customize how dimensions are displayed (for the usage embeddable dashboard)
+
+        - Iframe implementation: Embed the returned URL directly in an iframe element
+
+        - Responsive design: Dashboards automatically adapt to container dimensions'
       operationId: embeddableDashboard-v1
       summary: Get an embeddable customer dashboard
       tags:
@@ -795,56 +932,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    BillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - tackle
-      - aws_sns
-    CustomerRevenueSystemConfigurationInput:
-      x-mint:
-        groups:
-        - ff:revenue-rec-configurations-enabled
+    Id:
+      required:
+      - id
       type: object
       properties:
-        provider:
-          $ref: '#/components/schemas/RevenueSystemProviderType'
-          description: The revenue system provider (e.g. netsuite).
-        customer_id:
+        id:
           type: string
           format: uuid
-        configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the revenue system. The structure of this object is specific to the provider.
-          example:
-          - netsuite_customer_id: '12345'
-        delivery_method_id:
-          type: string
-          format: uuid
-          description: Optional ID of the delivery method to use for this customer configuration, if multiple delivery methods are configured for the same provider.
-      required:
-      - provider
-      - customer_id
-      - configuration
-    CustomerRevenueSystemArchivePayload:
-      type: object
-      required:
-      - customer_revenue_system_configuration_ids
-      - customer_id
-      properties:
-        customer_revenue_system_configuration_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Array of revenue system configuration IDs to archive
-        customer_id:
-          type: string
-          format: uuid
-          description: The customer ID the revenue system configurations belong to
     Customer:
       required:
       - external_id
@@ -870,200 +973,6 @@ components:
         custom_fields:
           x-cf-entity: customer
           $ref: '#/components/schemas/CustomField'
-    RevenueSystemDeliveryMethodType:
-      description: How revenue recognition records should be delivered to the revenue system.
-      x-mint:
-        groups:
-        - ff:revenue-rec-configurations-enabled
-      type: string
-      enum:
-      - direct_to_billing_provider
-    CustomerDetail:
-      required:
-      - external_id
-      - id
-      - name
-      - created_at
-      - updated_at
-      - customer_config
-      - ingest_aliases
-      - custom_fields
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: the Metronome ID of the customer
-        external_id:
-          type: string
-          description: (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest alias) that can be used in usage events
-        ingest_aliases:
-          type: array
-          description: aliases for this customer that can be used instead of the Metronome customer ID in usage events
-          items:
-            type: string
-        name:
-          type: string
-        customer_config:
-          $ref: '#/components/schemas/CustomerConfig'
-        custom_fields:
-          x-cf-entity: customer
-          $ref: '#/components/schemas/CustomField'
-        created_at:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the customer was created.
-        archived_at:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the customer was archived. Null if the customer is active.
-          nullable: true
-        updated_at:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the customer was last updated.
-        current_billable_status:
-          x-mint:
-            groups:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:9c7e2b27-9b4c-4b76-9df7-f9cb05665a6a
-            - client_id:8e3a848a-4566-4cfb-be49-64d80118a7fc
-          required:
-          - value
-          type: object
-          description: This field's availability is dependent on your client's configuration.
-          properties:
-            value:
-              $ref: '#/components/schemas/BillableStatus'
-            effective_at:
-              type: string
-              format: date-time
-              nullable: true
-    CustomerBillingProviderConfigurationOutput:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the created configuration
-        billing_provider:
-          type: string
-          $ref: '#/components/schemas/BillingProviderType'
-          description: The billing provider set for this configuration.
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer this configuration is associated with.
-        configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the billing provider. The structure of this object is specific to the billing provider and delivery method combination.
-        delivery_method_id:
-          type: string
-          format: uuid
-          description: ID of the delivery method used for this customer configuration.
-        tax_provider:
-          $ref: '#/components/schemas/TaxProviderType'
-          description: The tax provider set for this configuration.
-    CustomerRevenueSystemConfiguration:
-      x-mint:
-        groups:
-        - ff:revenue-rec-configurations-enabled
-      type: object
-      required:
-      - id
-      - customer_id
-      - delivery_method_id
-      - provider
-      - configuration
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of this configuration; can be provided when associating to a contract.
-        customer_id:
-          type: string
-          format: uuid
-        delivery_method_id:
-          type: string
-          format: uuid
-          description: ID of the delivery method used for this customer configuration.
-        provider:
-          $ref: '#/components/schemas/RevenueSystemProviderType'
-          description: The revenue system provider (e.g. netsuite).
-        configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the revenue system. The structure of this object is specific to the provider.
-        delivery_method:
-          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
-          description: The method to use for delivering data to the revenue system.
-        delivery_method_configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the delivery method. The structure of this object is specific to the delivery method.
-        archived_at:
-          type: string
-          format: date-time
-          nullable: true
-    CustomerBillingProviderConfiguration:
-      type: object
-      required:
-      - id
-      - billing_provider
-      - customer_id
-      - configuration
-      - delivery_method_id
-      - delivery_method
-      - delivery_method_configuration
-      - archived_at
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of this configuration; can be provided as the billing_provider_configuration_id when creating a contract.
-        billing_provider:
-          $ref: '#/components/schemas/BillingProviderType'
-          description: The billing provider set for this configuration.
-        customer_id:
-          type: string
-          format: uuid
-        configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the billing provider. The structure of this object is specific to the billing provider.
-        delivery_method_id:
-          type: string
-          format: uuid
-          description: ID of the delivery method to use for this customer.
-        delivery_method:
-          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
-          description: The method to use for delivering invoices to this customer.
-        delivery_method_configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the delivery method. The structure of this object is specific to the delivery method.
-        archived_at:
-          type: string
-          format: date-time
-          nullable: true
-    RevenueSystemProviderType:
-      x-mint:
-        groups:
-        - ff:revenue-rec-configurations-enabled
-      type: string
-      enum:
-      - netsuite
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
     CustomerBillingProviderConfigurationCreateCustomerInput:
       type: object
       properties:
@@ -1097,209 +1006,6 @@ components:
           description: The method to use for delivering invoices to this customer. If not provided, the `delivery_method_id` must be provided.
       required:
       - billing_provider
-    ContractsBillingProviderType:
-      type: string
-      enum:
-      - aws_marketplace
-      - azure_marketplace
-      - gcp_marketplace
-      - stripe
-      - netsuite
-    BillableStatus:
-      type: string
-      enum:
-      - billable
-      - unbillable
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    Id:
-      required:
-      - id
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-    LegacyCreateCustomerPayload:
-      required:
-      - name
-      type: object
-      properties:
-        ingest_aliases:
-          type: array
-          description: Aliases that can be used to refer to this customer in usage events
-          items:
-            type: string
-            minLength: 1
-            maxLength: 128
-          maxItems: 2000
-        external_id:
-          type: string
-          minLength: 1
-          maxLength: 128
-          description: (deprecated, use ingest_aliases instead) an alias that can be used to refer to this customer in usage events
-        name:
-          type: string
-          description: This will be truncated to 160 characters if the provided name is longer.
-        customer_billing_provider_configurations:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerBillingProviderConfigurationCreateCustomerInput'
-        customer_revenue_system_configurations:
-          x-mint:
-            groups:
-            - ff:revenue-rec-configurations-enabled
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerRevenueSystemConfigurationCreateCustomerInput'
-        custom_fields:
-          x-cf-entity: customer
-          $ref: '#/components/schemas/CustomField'
-    CustomerBillingProviderConfigurationInput:
-      type: object
-      properties:
-        billing_provider:
-          $ref: '#/components/schemas/BillingProviderType'
-          description: The billing provider set for this configuration.
-        customer_id:
-          type: string
-          format: uuid
-        tax_provider:
-          x-mint:
-            metadata:
-              tag: Beta
-          $ref: '#/components/schemas/TaxProviderType'
-          description: Specifies which tax provider Metronome should use for tax calculation when billing through Stripe. This is only supported for Stripe billing provider configurations with auto_charge_payment_intent or manual_charge_payment_intent collection methods.
-        configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the billing provider. The structure of this object is specific to the billing provider and delivery method combination. Defaults to an empty object, however, for most billing provider + delivery method combinations, it will not be a valid configuration.  For AWS marketplace configurations, the aws_is_subscription_product flag can be used to indicate a product with usage-based pricing.  More information can be found [here](https://docs.metronome.com/invoice-customers/solutions/marketplaces/invoice-aws/#provision-aws-marketplace-customers-in-metronome).
-          example:
-          - aws_customer_id: cust_1234
-            aws_product_code: my_product
-            aws_region: us-west-1
-          - azure_subscription_id: my_subscription
-          - gcp_entitlement_id: my_entitlement
-            gcp_service_name: my_service
-          - stripe_collection_method: charge_automatically
-            leave_stripe_invoices_in_draft: true
-          - netsuite_customer_id: '12345'
-        delivery_method_id:
-          type: string
-          format: uuid
-          description: ID of the delivery method to use for this customer. If not provided, the `delivery_method` must be provided.
-        delivery_method:
-          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
-          description: The method to use for delivering invoices to this customer. If not provided, the `delivery_method_id` must be provided.
-      required:
-      - billing_provider
-      - customer_id
-    SetCustomerBillableStatusPayload:
-      type: object
-      required:
-      - customer_id
-      - billable_status
-      - effective_at
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-        billable_status:
-          $ref: '#/components/schemas/BillableStatus'
-        effective_at:
-          type: string
-          format: date-time
-          description: For usage invoices, any invoices where the service periods starts on or after this date will be included. For all other invoice types, only invoices where the issue_date falls on or after this date will be included.
-    BillingProviderType:
-      type: string
-      enum:
-      - aws_marketplace
-      - stripe
-      - netsuite
-      - custom
-      - azure_marketplace
-      - quickbooks_online
-      - workday
-      - gcp_marketplace
-      - metronome
-      x-mint-enum:
-        netsuite:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        custom:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        workday:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        gcp_marketplace:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-    SetCustomerNamePayload:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-          description: The new name for the customer. This will be truncated to 160 characters if the provided name is longer.
-    CustomerBillingProviderArchivePayload:
-      type: object
-      required:
-      - customer_billing_provider_configuration_ids
-      - customer_id
-      properties:
-        customer_billing_provider_configuration_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Array of billing provider configuration IDs to archive
-        customer_id:
-          type: string
-          format: uuid
-          description: The customer ID the billing provider configurations belong to
-    SetIngestAliasesPayload:
-      required:
-      - ingest_aliases
-      type: object
-      properties:
-        ingest_aliases:
-          type: array
-          items:
-            type: string
-            minLength: 1
-            maxLength: 128
-          maxItems: 2000
-    CustomerRevenueSystemConfigurationCreateCustomerInput:
-      x-mint:
-        groups:
-        - ff:revenue-rec-configurations-enabled
-      type: object
-      properties:
-        provider:
-          $ref: '#/components/schemas/RevenueSystemProviderType'
-          description: The revenue system provider set for this configuration.
-        configuration:
-          type: object
-          additionalProperties: true
-          description: Configuration for the revenue system provider. The structure of this object is specific to the revenue system provider. For NetSuite, this should contain `netsuite_customer_id`.
-        delivery_method_id:
-          type: string
-          format: uuid
-          description: ID of the delivery method to use for this customer. If not provided, the `delivery_method` must be provided.
-        delivery_method:
-          $ref: '#/components/schemas/RevenueSystemDeliveryMethodType'
-          description: The method to use for delivering invoices to this customer. If not provided, the `delivery_method_id` must be provided.
-      required:
-      - provider
-    TaxProviderType:
-      type: string
-      enum:
-      - anrok
-      - avalara
-      - stripe
     EmbeddableDashboardPayload:
       required:
       - customer_id
@@ -1383,34 +1089,481 @@ components:
                 type: object
                 additionalProperties: true
                 description: '<key, value> pairs of the billable metric group key values and their display names. e.g. {"a": "Asia", "b": "Euro"}'
+    CustomerConfigPayload:
+      type: object
+      properties:
+        salesforce_account_id:
+          type:
+          - string
+          - 'null'
+          description: The Salesforce account ID for the customer
+        leave_stripe_invoices_in_draft:
+          type:
+          - boolean
+          - 'null'
+          description: Leave in draft or set to auto-advance on invoices sent to Stripe. Falls back to the client-level config if unset, which defaults to true if unset.
+    TaxProviderType:
+      type: string
+      enum:
+      - anrok
+      - avalara
+      - stripe
+    BillableStatus:
+      type: string
+      enum:
+      - billable
+      - unbillable
+    CustomerRevenueSystemArchivePayload:
+      type: object
+      required:
+      - customer_revenue_system_configuration_ids
+      - customer_id
+      properties:
+        customer_revenue_system_configuration_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Array of revenue system configuration IDs to archive
+        customer_id:
+          type: string
+          format: uuid
+          description: The customer ID the revenue system configurations belong to
+    RevenueSystemDeliveryMethodType:
+      description: How revenue recognition records should be delivered to the revenue system.
+      x-mint:
+        groups:
+        - ff:revenue-rec-configurations-enabled
+      type: string
+      enum:
+      - direct_to_billing_provider
+    CustomerRevenueSystemConfigurationInput:
+      x-mint:
+        groups:
+        - ff:revenue-rec-configurations-enabled
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/RevenueSystemProviderType'
+          description: The revenue system provider (e.g. netsuite).
+        customer_id:
+          type: string
+          format: uuid
+        configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the revenue system. The structure of this object is specific to the provider.
+          example:
+          - netsuite_customer_id: '12345'
+        delivery_method_id:
+          type: string
+          format: uuid
+          description: Optional ID of the delivery method to use for this customer configuration, if multiple delivery methods are configured for the same provider.
+      required:
+      - provider
+      - customer_id
+      - configuration
+    SetIngestAliasesPayload:
+      required:
+      - ingest_aliases
+      type: object
+      properties:
+        ingest_aliases:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 128
+          maxItems: 2000
+    CustomerRevenueSystemConfigurationCreateCustomerInput:
+      x-mint:
+        groups:
+        - ff:revenue-rec-configurations-enabled
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/RevenueSystemProviderType'
+          description: The revenue system provider set for this configuration.
+        configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the revenue system provider. The structure of this object is specific to the revenue system provider. For NetSuite, this should contain `netsuite_customer_id`.
+        delivery_method_id:
+          type: string
+          format: uuid
+          description: ID of the delivery method to use for this customer. If not provided, the `delivery_method` must be provided.
+        delivery_method:
+          $ref: '#/components/schemas/RevenueSystemDeliveryMethodType'
+          description: The method to use for delivering invoices to this customer. If not provided, the `delivery_method_id` must be provided.
+      required:
+      - provider
     CustomerConfig:
       required:
       - salesforce_account_id
       type: object
       properties:
         salesforce_account_id:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The Salesforce account ID for the customer
-          nullable: true
-    CustomerConfigPayload:
+    Error:
+      required:
+      - message
       type: object
       properties:
-        salesforce_account_id:
+        message:
           type: string
-          description: The Salesforce account ID for the customer
-          nullable: true
-        leave_stripe_invoices_in_draft:
-          type: boolean
-          description: Leave in draft or set to auto-advance on invoices sent to Stripe. Falls back to the client-level config if unset, which defaults to true if unset.
-          nullable: true
-  responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    ContractsBillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - azure_marketplace
+      - gcp_marketplace
+      - stripe
+      - netsuite
+    CustomerBillingProviderConfigurationInput:
+      type: object
+      properties:
+        billing_provider:
+          $ref: '#/components/schemas/BillingProviderType'
+          description: The billing provider set for this configuration.
+        customer_id:
+          type: string
+          format: uuid
+        tax_provider:
+          x-mint:
+            metadata:
+              tag: Beta
+          $ref: '#/components/schemas/TaxProviderType'
+          description: Specifies which tax provider Metronome should use for tax calculation when billing through Stripe. This is only supported for Stripe billing provider configurations with auto_charge_payment_intent or manual_charge_payment_intent collection methods.
+        configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the billing provider. The structure of this object is specific to the billing provider and delivery method combination. Defaults to an empty object, however, for most billing provider + delivery method combinations, it will not be a valid configuration.  For AWS marketplace configurations, the aws_is_subscription_product flag can be used to indicate a product with usage-based pricing.  More information can be found [here](https://docs.metronome.com/invoice-customers/solutions/marketplaces/invoice-aws/#provision-aws-marketplace-customers-in-metronome).
+          example:
+          - aws_customer_id: cust_1234
+            aws_product_code: my_product
+            aws_region: us-west-1
+          - azure_subscription_id: my_subscription
+          - gcp_entitlement_id: my_entitlement
+            gcp_service_name: my_service
+          - stripe_collection_method: charge_automatically
+            leave_stripe_invoices_in_draft: true
+          - netsuite_customer_id: '12345'
+        delivery_method_id:
+          type: string
+          format: uuid
+          description: ID of the delivery method to use for this customer. If not provided, the `delivery_method` must be provided.
+        delivery_method:
+          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
+          description: The method to use for delivering invoices to this customer. If not provided, the `delivery_method_id` must be provided.
+      required:
+      - billing_provider
+      - customer_id
+    CustomerDetail:
+      required:
+      - external_id
+      - id
+      - name
+      - created_at
+      - updated_at
+      - customer_config
+      - ingest_aliases
+      - custom_fields
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: the Metronome ID of the customer
+        external_id:
+          type: string
+          description: (deprecated, use ingest_aliases instead) the first ID (Metronome or ingest alias) that can be used in usage events
+        ingest_aliases:
+          type: array
+          description: aliases for this customer that can be used instead of the Metronome customer ID in usage events
+          items:
+            type: string
+        name:
+          type: string
+        customer_config:
+          $ref: '#/components/schemas/CustomerConfig'
+        custom_fields:
+          x-cf-entity: customer
+          $ref: '#/components/schemas/CustomField'
+        created_at:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the customer was created.
+        archived_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: RFC 3339 timestamp indicating when the customer was archived. Null if the customer is active.
+        updated_at:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the customer was last updated.
+        current_billable_status:
+          x-mint:
+            groups:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:9c7e2b27-9b4c-4b76-9df7-f9cb05665a6a
+            - client_id:8e3a848a-4566-4cfb-be49-64d80118a7fc
+          required:
+          - value
+          type: object
+          description: This field's availability is dependent on your client's configuration.
+          properties:
+            value:
+              $ref: '#/components/schemas/BillableStatus'
+            effective_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    SetCustomerNamePayload:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: The new name for the customer. This will be truncated to 160 characters if the provided name is longer.
+    CustomerBillingProviderConfigurationOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the created configuration
+        billing_provider:
+          type: string
+          $ref: '#/components/schemas/BillingProviderType'
+          description: The billing provider set for this configuration.
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer this configuration is associated with.
+        configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the billing provider. The structure of this object is specific to the billing provider and delivery method combination.
+        delivery_method_id:
+          type: string
+          format: uuid
+          description: ID of the delivery method used for this customer configuration.
+        tax_provider:
+          $ref: '#/components/schemas/TaxProviderType'
+          description: The tax provider set for this configuration.
+    RevenueSystemProviderType:
+      x-mint:
+        groups:
+        - ff:revenue-rec-configurations-enabled
+      type: string
+      enum:
+      - netsuite
+    CustomerRevenueSystemConfiguration:
+      x-mint:
+        groups:
+        - ff:revenue-rec-configurations-enabled
+      type: object
+      required:
+      - id
+      - customer_id
+      - delivery_method_id
+      - provider
+      - configuration
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of this configuration; can be provided when associating to a contract.
+        customer_id:
+          type: string
+          format: uuid
+        delivery_method_id:
+          type: string
+          format: uuid
+          description: ID of the delivery method used for this customer configuration.
+        provider:
+          $ref: '#/components/schemas/RevenueSystemProviderType'
+          description: The revenue system provider (e.g. netsuite).
+        configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the revenue system. The structure of this object is specific to the provider.
+        delivery_method:
+          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
+          description: The method to use for delivering data to the revenue system.
+        delivery_method_configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the delivery method. The structure of this object is specific to the delivery method.
+        archived_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    CustomerBillingProviderConfiguration:
+      type: object
+      required:
+      - id
+      - billing_provider
+      - customer_id
+      - configuration
+      - delivery_method_id
+      - delivery_method
+      - delivery_method_configuration
+      - archived_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of this configuration; can be provided as the billing_provider_configuration_id when creating a contract.
+        billing_provider:
+          $ref: '#/components/schemas/BillingProviderType'
+          description: The billing provider set for this configuration.
+        customer_id:
+          type: string
+          format: uuid
+        configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the billing provider. The structure of this object is specific to the billing provider.
+        delivery_method_id:
+          type: string
+          format: uuid
+          description: ID of the delivery method to use for this customer.
+        delivery_method:
+          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
+          description: The method to use for delivering invoices to this customer.
+        delivery_method_configuration:
+          type: object
+          additionalProperties: true
+          description: Configuration for the delivery method. The structure of this object is specific to the delivery method.
+        archived_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    SetCustomerBillableStatusPayload:
+      type: object
+      required:
+      - customer_id
+      - billable_status
+      - effective_at
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        billable_status:
+          $ref: '#/components/schemas/BillableStatus'
+        effective_at:
+          type: string
+          format: date-time
+          description: For usage invoices, any invoices where the service periods starts on or after this date will be included. For all other invoice types, only invoices where the issue_date falls on or after this date will be included.
+    LegacyCreateCustomerPayload:
+      required:
+      - name
+      type: object
+      properties:
+        ingest_aliases:
+          type: array
+          description: Aliases that can be used to refer to this customer in usage events
+          items:
+            type: string
+            minLength: 1
+            maxLength: 128
+          maxItems: 2000
+        external_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: (deprecated, use ingest_aliases instead) an alias that can be used to refer to this customer in usage events
+        name:
+          type: string
+          description: This will be truncated to 160 characters if the provided name is longer.
+        customer_billing_provider_configurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerBillingProviderConfigurationCreateCustomerInput'
+        customer_revenue_system_configurations:
+          x-mint:
+            groups:
+            - ff:revenue-rec-configurations-enabled
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerRevenueSystemConfigurationCreateCustomerInput'
+        custom_fields:
+          x-cf-entity: customer
+          $ref: '#/components/schemas/CustomField'
+    BillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - tackle
+      - aws_sns
+    BillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - stripe
+      - netsuite
+      - custom
+      - azure_marketplace
+      - quickbooks_online
+      - workday
+      - gcp_marketplace
+      - metronome
+      x-mint-enum:
+        netsuite:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        custom:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        workday:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        gcp_marketplace:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+    CustomerBillingProviderArchivePayload:
+      type: object
+      required:
+      - customer_billing_provider_configuration_ids
+      - customer_id
+      properties:
+        customer_billing_provider_configuration_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Array of billing provider configuration IDs to archive
+        customer_id:
+          type: string
+          format: uuid
+          description: The customer ID the billing provider configurations belong to
   parameters:
+    PageLimit:
+      name: limit
+      in: query
+      description: Max number of results that should be returned
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
     NextPage:
       name: next_page
       in: query
@@ -1426,15 +1579,6 @@ components:
         type: string
         format: uuid
       example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
-    PageLimit:
-      name: limit
-      in: query
-      description: Max number of results that should be returned
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
   securitySchemes:
     bearerAuth:
       type: http

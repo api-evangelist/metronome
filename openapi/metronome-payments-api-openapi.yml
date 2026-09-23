@@ -1,8 +1,7 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Metronome Alerts Payments API
+  title: Metronome Payments API
   version: 1.0.0
-  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
 servers:
 - url: https://api.metronome.com
   description: Production server
@@ -16,7 +15,18 @@ paths:
       x-mint:
         metadata:
           tag: Beta
-      description: "Trigger a new attempt by canceling any existing attempts for this invoice and creating a new Payment. This will trigger another attempt to charge the Customer's configured Payment Gateway. \nPayment can only be attempted if all of the following are true:\n  - The Metronome Invoice is finalized\n  - PLG Invoicing is configured for the Customer\n  - You cannot attempt payments for invoices that have already been `paid` or `voided`.\n\nAttempting to payment on an ineligible Invoice or Customer will result in a `400` response.\n"
+      description: 'Trigger a new attempt by canceling any existing attempts for this invoice and creating a new Payment. This will trigger another attempt to charge the Customer''s configured Payment Gateway.
+
+        Payment can only be attempted if all of the following are true:
+
+        - The Metronome Invoice is finalized
+
+        - PLG Invoicing is configured for the Customer
+
+        - You cannot attempt payments for invoices that have already been `paid` or `voided`.
+
+
+        Attempting to payment on an ineligible Invoice or Customer will result in a `400` response.'
       operationId: attemptPayment-v1
       summary: Attempt payment for an invoice
       tags:
@@ -64,9 +74,7 @@ paths:
       x-mint:
         metadata:
           tag: Beta
-      description: 'Cancel an existing payment attempt for an invoice.
-
-        '
+      description: Cancel an existing payment attempt for an invoice.
       operationId: cancelPayment-v1
       summary: Cancel a payment for an invoice
       tags:
@@ -120,9 +128,7 @@ paths:
       x-mint:
         metadata:
           tag: Beta
-      description: 'Fetch all payment attempts for the given invoice.
-
-        '
+      description: Fetch all payment attempts for the given invoice.
       operationId: listPayments-v1
       summary: List payments for an invoice
       tags:
@@ -178,8 +184,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/Payment'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
         '400':
           description: Bad request
           content:
@@ -190,46 +197,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    PaymentStatus:
-      type: string
-      enum:
-      - pending
-      - requires_intervention
-      - paid
-      - canceled
-    RevenueSystemPayment:
-      type: object
-      required:
-      - revenue_system_provider
-      - sync_status
-      properties:
-        revenue_system_provider:
-          type: string
-        revenue_system_external_payment_id:
-          type: string
-        sync_status:
-          type: string
-        error_message:
-          type: string
-          description: The error message from the revenue system, if available.
     StripePaymentGateway:
       type: object
       required:
@@ -258,6 +225,24 @@ components:
                   type: string
                 decline_code:
                   type: string
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
     Payment:
       type: object
       required:
@@ -301,6 +286,28 @@ components:
           type: string
           format: date-time
           example: '2022-02-01T00:00:00Z'
+    RevenueSystemPayment:
+      type: object
+      required:
+      - revenue_system_provider
+      - sync_status
+      properties:
+        revenue_system_provider:
+          type: string
+        revenue_system_external_payment_id:
+          type: string
+        sync_status:
+          type: string
+        error_message:
+          type: string
+          description: The error message from the revenue system, if available.
+    PaymentStatus:
+      type: string
+      enum:
+      - pending
+      - requires_intervention
+      - paid
+      - canceled
   responses:
     NotFound:
       description: The specified resource was not found

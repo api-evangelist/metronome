@@ -1,8 +1,7 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Metronome Alerts Notifications API
+  title: Metronome Notifications API
   version: 1.0.0
-  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
 servers:
 - url: https://api.metronome.com
   description: Production server
@@ -13,9 +12,7 @@ tags:
 paths:
   /v2/notifications/create:
     post:
-      description: 'Create an offset lifecycle event notification configuration. The lifecycle event type is inferred from the policy.type field.
-
-        '
+      description: Create an offset lifecycle event notification configuration. The lifecycle event type is inferred from the policy.type field.
       summary: Create an offset lifecycle event notification configuration
       operationId: createNotificationConfig-v2
       tags:
@@ -145,9 +142,7 @@ paths:
                     type: string
   /v2/notifications/offset/list:
     post:
-      description: 'List offset lifecycle event notification configurations. These are user-created notifications that trigger at a specified time offset relative to lifecycle events. Returns a maximum of 400 results per request.
-
-        '
+      description: List offset lifecycle event notification configurations. These are user-created notifications that trigger at a specified time offset relative to lifecycle events. Returns a maximum of 400 results per request.
       summary: List offset lifecycle event notification configurations
       operationId: listOffsetNotificationConfigs-v2
       tags:
@@ -178,8 +173,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/LifecycleEventOffsetNotificationConfig'
                   cursor:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
@@ -214,8 +210,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/LifecycleEventSystemNotificationConfig'
                   cursor:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - type: SYSTEM_LIFECYCLE_EVENT
@@ -285,9 +282,7 @@ paths:
                     type: string
   /v2/notifications/archive:
     post:
-      description: 'Archive an offset lifecycle event notification configuration. Archived notifications are not processed.
-
-        '
+      description: Archive an offset lifecycle event notification configuration. Archived notifications are not processed.
       summary: Archive an offset lifecycle event notification configuration
       operationId: archiveNotificationConfig-v2
       tags:
@@ -358,15 +353,6 @@ paths:
                     type: string
 components:
   schemas:
-    GetNotificationConfigPayload:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the notification configuration to retrieve
     EditNotificationConfigPayload:
       type: object
       required:
@@ -407,46 +393,14 @@ components:
 
             '
           example: P1D
-    UniquenessKey:
-      type: string
-      minLength: 1
-      maxLength: 128
-      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
-    CreateNotificationConfigPayload:
+    LifecycleEventSystemPolicy:
       type: object
       required:
-      - name
-      - policy
+      - type
       properties:
-        name:
+        type:
           type: string
-          description: 'The name for this offset notification configuration.
-
-            '
-        policy:
-          description: 'The offset lifecycle event policy that defines when and how this notification should be triggered. The lifecycle event type is inferred from the policy.type field.
-
-            '
-          $ref: '#/components/schemas/LifecycleEventOffsetPolicy'
-        uniqueness_key:
-          $ref: '#/components/schemas/UniquenessKey'
-          description: 'Optional uniqueness key to prevent duplicate notification configurations.
-
-            '
-    ListOffsetNotificationConfigsPayload:
-      type: object
-      properties:
-        limit:
-          type: number
-        cursor:
-          type: string
-        archive_filter:
-          type: string
-          enum:
-          - ARCHIVED
-          - NOT_ARCHIVED
-          - ALL
-          description: Filter options for the notification configurations. If not provided, defaults to NOT_ARCHIVED.
+          description: The type of lifecycle event (e.g., "contract.create", "contract.start")
     LifecycleEventSystemNotificationConfig:
       type: object
       required:
@@ -461,17 +415,20 @@ components:
           description: Whether or not webhook publishing for this lifecycle event is enabled
         policy:
           $ref: '#/components/schemas/LifecycleEventSystemPolicy'
-    ArchiveNotificationConfigPayload:
+    ListOffsetNotificationConfigsPayload:
       type: object
-      required:
-      - id
       properties:
-        id:
+        limit:
+          type: number
+        cursor:
           type: string
-          format: uuid
-          description: 'The ID of the offset lifecycle event notification configuration to archive.
-
-            '
+        archive_filter:
+          type: string
+          enum:
+          - ARCHIVED
+          - NOT_ARCHIVED
+          - ALL
+          description: Filter options for the notification configurations. If not provided, defaults to NOT_ARCHIVED.
     LifecycleEventOffsetNotificationConfig:
       type: object
       required:
@@ -513,18 +470,57 @@ components:
           type: string
           description: Who created this notification configuration
         archived_at:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
           description: When this notification configuration was archived
-    LifecycleEventSystemPolicy:
+    UniquenessKey:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
+    ArchiveNotificationConfigPayload:
       type: object
       required:
-      - type
+      - id
       properties:
-        type:
+        id:
           type: string
-          description: The type of lifecycle event (e.g., "contract.create", "contract.start")
+          format: uuid
+          description: 'The ID of the offset lifecycle event notification configuration to archive.
+
+            '
+    GetNotificationConfigPayload:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the notification configuration to retrieve
+    CreateNotificationConfigPayload:
+      type: object
+      required:
+      - name
+      - policy
+      properties:
+        name:
+          type: string
+          description: 'The name for this offset notification configuration.
+
+            '
+        policy:
+          description: 'The offset lifecycle event policy that defines when and how this notification should be triggered. The lifecycle event type is inferred from the policy.type field.
+
+            '
+          $ref: '#/components/schemas/LifecycleEventOffsetPolicy'
+        uniqueness_key:
+          $ref: '#/components/schemas/UniquenessKey'
+          description: 'Optional uniqueness key to prevent duplicate notification configurations.
+
+            '
   securitySchemes:
     bearerAuth:
       type: http

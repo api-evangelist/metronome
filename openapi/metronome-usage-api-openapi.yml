@@ -1,8 +1,8 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Metronome Alerts Usage API
+  title: Metronome Usage API
   version: 1.0.0
-  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+  description: Usage events are the basis for billable metrics. Use these endpoints to send usage events to Metronome and retrieve aggregated event data.
 servers:
 - url: https://api.metronome.com
   description: Production server
@@ -10,11 +10,103 @@ security:
 - bearerAuth: []
 tags:
 - name: Usage
-  description: '[Usage events](https://docs.metronome.com/connecting-metronome/send-usage-data/) are the basis for billable metrics. Use these endpoints to send usage events to Metronome and retrieve aggregated event data.'
+  description: Usage events are the basis for billable metrics. Use these endpoints to send usage events to Metronome and retrieve aggregated event data.
 paths:
   /v1/ingest:
     post:
-      description: "The ingest endpoint is the primary method for sending usage events to Metronome, serving as the foundation for all billing calculations in your usage-based pricing model. This high-throughput endpoint is designed for real-time streaming ingestion, supports backdating 34 days, and is built to handle mission-critical usage data with enterprise-grade reliability. Metronome supports 100,000 events per second without requiring pre-aggregation or rollups and can scale up from there. See the [Send usage events](/guides/events/send-usage-events) guide to learn more about usage events.\n\n### Use this endpoint to:\nCreate a customer usage pipeline into Metronome that drives billable metrics, credit drawdown, and invoicing. Track customer behavior, resource consumption, and feature usage\n\n### What happens when you send events:\n- Events are validated and processed in real-time\n- Events are matched to customers using customer IDs or customer ingest aliases\n- Events are matched to billable metrics and are immediately available for usage and spend calculations\n\n### Usage guidelines:\n- Historical events can be backdated up to 34 days and will immediately impact live customer spend\n- Duplicate events are automatically detected and ignored (34-day deduplication window)\n\n#### Event structure:\nUsage events are simple JSON objects designed for flexibility and ease of integration:\n```json\n{\n  \"transaction_id\": \"2021-01-01T00:00:00Z_cluster42\",\n  \"customer_id\": \"team@example.com\",\n  \"event_type\": \"api_request\",\n  \"timestamp\": \"2021-01-01T00:00:00Z\",\n  \"properties\": {\n    \"endpoint\": \"/v1/users\",\n    \"method\": \"POST\",\n    \"response_time_ms\": 45,\n    \"region\": \"us-west-2\"\n  }\n}\n```\n\nLearn more about [usage event structure definitions](/guides/events/design-usage-events).\n\n#### Transaction ID\n  The transaction_id serves as your idempotency key, ensuring events are processed exactly once. Metronome maintains a 34-day deduplication window - significantly longer than typical 12-hour windows - enabling robust backfill scenarios without duplicate billing.\n  - Best Practices:\n    - Use UUIDs for one-time events: uuid4()\n    - For heartbeat events, use deterministic IDs\n    - Include enough context to avoid collisions across different event sources\n\n#### Customer ID\nIdentifies which customer should be billed for this usage. Supports two identification methods:\n  - Metronome Customer ID: The UUID returned when creating a customer\n  - Ingest Alias: Your system's identifier (email, account number, etc.) \n\nIngest aliases enable seamless integration without requiring ID mapping, and customers can have multiple aliases for flexibility.\n\n#### Event Type:\nCategorizes the event type for billable metric matching. Choose descriptive names that aligns with the product surface area.\n\n#### Properties:\nFlexible metadata also used to match billable metrics or to be used to serve as group keys to create multiple pricing dimensions or breakdown costs by novel properties for end customers or internal finance teams measuring underlying COGs.\n"
+      description: 'The ingest endpoint is the primary method for sending usage events to Metronome, serving as the foundation for all billing calculations in your usage-based pricing model. This high-throughput endpoint is designed for real-time streaming ingestion, supports backdating 34 days, and is built to handle mission-critical usage data with enterprise-grade reliability. Metronome supports 100,000 events per second without requiring pre-aggregation or rollups and can scale up from there. See the Send usage events guide to learn more about usage events.
+
+
+        ### Use this endpoint to:
+
+        Create a customer usage pipeline into Metronome that drives billable metrics, credit drawdown, and invoicing. Track customer behavior, resource consumption, and feature usage
+
+
+        ### What happens when you send events:
+
+        - Events are validated and processed in real-time
+
+        - Events are matched to customers using customer IDs or customer ingest aliases
+
+        - Events are matched to billable metrics and are immediately available for usage and spend calculations
+
+
+        ### Usage guidelines:
+
+        - Historical events can be backdated up to 34 days and will immediately impact live customer spend
+
+        - Duplicate events are automatically detected and ignored (34-day deduplication window)
+
+
+        #### Event structure:
+
+        Usage events are simple JSON objects designed for flexibility and ease of integration:
+
+        ```json
+
+        {
+
+        "transaction_id": "2021-01-01T00:00:00Z_cluster42",
+
+        "customer_id": "team@example.com",
+
+        "event_type": "api_request",
+
+        "timestamp": "2021-01-01T00:00:00Z",
+
+        "properties": {
+
+        "endpoint": "/v1/users",
+
+        "method": "POST",
+
+        "response_time_ms": 45,
+
+        "region": "us-west-2"
+
+        }
+
+        }
+
+        ```
+
+
+        Learn more about usage event structure definitions.
+
+
+        #### Transaction ID
+
+        The transaction_id serves as your idempotency key, ensuring events are processed exactly once. Metronome maintains a 34-day deduplication window - significantly longer than typical 12-hour windows - enabling robust backfill scenarios without duplicate billing.
+
+        - Best Practices:
+
+        - Use UUIDs for one-time events: uuid4()
+
+        - For heartbeat events, use deterministic IDs
+
+        - Include enough context to avoid collisions across different event sources
+
+
+        #### Customer ID
+
+        Identifies which customer should be billed for this usage. Supports two identification methods:
+
+        - Metronome Customer ID: The UUID returned when creating a customer
+
+        - Ingest Alias: Your system''s identifier (email, account number, etc.)
+
+
+        Ingest aliases enable seamless integration without requiring ID mapping, and customers can have multiple aliases for flexibility.
+
+
+        #### Event Type:
+
+        Categorizes the event type for billable metric matching. Choose descriptive names that aligns with the product surface area.
+
+
+        #### Properties:
+
+        Flexible metadata also used to match billable metrics or to be used to serve as group keys to create multiple pricing dimensions or breakdown costs by novel properties for end customers or internal finance teams measuring underlying COGs.'
       operationId: ingest-v1
       summary: Ingest events
       x-nlb-domain-variable: ingestnlbDomain
@@ -85,8 +177,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/SeatsUsageAggregate'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - starting_on: '2023-01-01T00:00:00Z'
@@ -98,7 +191,71 @@ paths:
                 next_page: null
   /v1/usage/groups:
     post:
-      description: "Retrieve granular usage data for a specific customer and billable metric, with the ability to break down usage by custom grouping dimensions. This endpoint enables deep usage analytics by segmenting data across attributes like region, user, model type, or any custom dimension defined in your billable metrics.\n\n### Use this endpoint to:\n- Analyze usage patterns broken down by specific attributes (region, user, department, etc.)\n- Build detailed usage dashboards with dimensional filtering\n- Identify high-usage segments for optimization opportunities\n\n### Request parameters\nUse [`group_key`](#body-group-key) and [`group_filters`](#body-group-filters) to group by one or more dimensions. This is required for compound group keys and recommended for all new integrations:\n```json\n{\n  \"group_key\": [\"region\", \"team\"],\n  \"group_filters\": {\n    \"region\": [\"US-East\", \"US-West\"]\n  }\n}\n```\nImportant: For compound group keys, you must pass the complete set of keys that make up the compound key. Partial key combinations are not supported. For example, if your billable metric has a compound group key [region, team, environment], you must pass all three keys in group_key—you cannot pass just `[region]` or `[region, team]`.\n\n### Key response fields:\nAn array of `PagedUsageAggregate` objects containing:\n- `starting_on` and `ending_before`: Time window boundaries\n- `group`: Object mapping group keys to their values\n  - For simple groups, this will be a map with a single key-value pair (e.g., `{\"region\": \"US-East\"}`)\n  - For compound groups, this will be a map with multiple key-value pairs (e.g., `{\"region\": \"US-East\", \"team\": \"engineering\"}`)\n- `value`: Aggregated usage for this group and time window\n- `next_page`: Pagination cursor for large datasets\n\n### Usage guidelines:\n- Required parameters: Must specify `customer_id`, `billable_metric_id`, and `window_size`\n- Time windows: Set `window_size` to hour, day, or none for different granularities\n- Group filtering: Use `group_key` and `group_filters` to specify groups and group filters\n- Limits: When using compound group keys (2+ keys in `group_key`), the default and max limit is 100\n- Pagination: Use limit and `next_page` for large result sets\n- Null handling: Group values may be null for events missing the group key property\n"
+      description: 'Retrieve granular usage data for a specific customer and billable metric, with the ability to break down usage by custom grouping dimensions. This endpoint enables deep usage analytics by segmenting data across attributes like region, user, model type, or any custom dimension defined in your billable metrics.
+
+
+        ### Use this endpoint to:
+
+        - Analyze usage patterns broken down by specific attributes (region, user, department, etc.)
+
+        - Build detailed usage dashboards with dimensional filtering
+
+        - Identify high-usage segments for optimization opportunities
+
+
+        ### Request parameters
+
+        Use `group_key` and `group_filters` to group by one or more dimensions. This is required for compound group keys and recommended for all new integrations:
+
+        ```json
+
+        {
+
+        "group_key": ["region", "team"],
+
+        "group_filters": {
+
+        "region": ["US-East", "US-West"]
+
+        }
+
+        }
+
+        ```
+
+        Important: For compound group keys, you must pass the complete set of keys that make up the compound key. Partial key combinations are not supported. For example, if your billable metric has a compound group key [region, team, environment], you must pass all three keys in group_key—you cannot pass just `[region]` or `[region, team]`.
+
+
+        ### Key response fields:
+
+        An array of `PagedUsageAggregate` objects containing:
+
+        - `starting_on` and `ending_before`: Time window boundaries
+
+        - `group`: Object mapping group keys to their values
+
+        - For simple groups, this will be a map with a single key-value pair (e.g., `{"region": "US-East"}`)
+
+        - For compound groups, this will be a map with multiple key-value pairs (e.g., `{"region": "US-East", "team": "engineering"}`)
+
+        - `value`: Aggregated usage for this group and time window
+
+        - `next_page`: Pagination cursor for large datasets
+
+
+        ### Usage guidelines:
+
+        - Required parameters: Must specify `customer_id`, `billable_metric_id`, and `window_size`
+
+        - Time windows: Set `window_size` to hour, day, or none for different granularities
+
+        - Group filtering: Use `group_key` and `group_filters` to specify groups and group filters
+
+        - Limits: When using compound group keys (2+ keys in `group_key`), the default and max limit is 100
+
+        - Pagination: Use limit and `next_page` for large result sets
+
+        - Null handling: Group values may be null for events missing the group key property'
       operationId: getPagedUsage-v1
       summary: Get usage data with paginated groupings
       x-slo-tier: 1
@@ -161,8 +318,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/PagedUsageAggregate'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               examples:
                 using_simple_group_key:
                   summary: Response using single-key group_key
@@ -206,7 +364,53 @@ paths:
                     next_page: null
   /v1/usage:
     post:
-      description: "Retrieve aggregated usage data across multiple customers and billable metrics in a single query. This batch endpoint enables you to fetch usage patterns at scale, broken down by time windows, making it ideal for building analytics dashboards, generating reports, and monitoring platform-wide usage trends.\n\n### Use this endpoint to:\n- Generate platform-wide usage reports for internal teams\n- Monitor aggregate usage trends across your entire customer base\n- Create comparative usage analyses between customers or time periods\n- Support capacity planning with historical usage patterns\n\n### Key response fields:\nAn array of `UsageBatchAggregate` objects containing:\n\n- `customer_id`: The customer this usage belongs to\n- `billable_metric_id` and `billable_metric_name`: What was measured\n- `start_timestamp` and `end_timestamp`: Time window for this data point\n- `value`: Aggregated usage amount for the period\n- `groups` (optional): Usage broken down by group keys with values\n- `next_page`: Pagination cursor for large result sets\n\n### Usage guidelines:\n- Time windows: Set `window_size` to `hour`, `day`, or `none` (entire period)\n- Required parameters: Must specify `starting_on`, `ending_before`, and `window_size`\n- Filtering options:\n  - `customer_ids`: Limit to specific customers (omit for all customers)\n  - `billable_metrics`: Limit to specific metrics (omit for all metrics)\n- Pagination: Use `next_page` cursor to retrieve large datasets\n- Null values: Group values may be null when no usage matches that group\n"
+      description: 'Retrieve aggregated usage data across multiple customers and billable metrics in a single query. This batch endpoint enables you to fetch usage patterns at scale, broken down by time windows, making it ideal for building analytics dashboards, generating reports, and monitoring platform-wide usage trends.
+
+
+        ### Use this endpoint to:
+
+        - Generate platform-wide usage reports for internal teams
+
+        - Monitor aggregate usage trends across your entire customer base
+
+        - Create comparative usage analyses between customers or time periods
+
+        - Support capacity planning with historical usage patterns
+
+
+        ### Key response fields:
+
+        An array of `UsageBatchAggregate` objects containing:
+
+
+        - `customer_id`: The customer this usage belongs to
+
+        - `billable_metric_id` and `billable_metric_name`: What was measured
+
+        - `start_timestamp` and `end_timestamp`: Time window for this data point
+
+        - `value`: Aggregated usage amount for the period
+
+        - `groups` (optional): Usage broken down by group keys with values
+
+        - `next_page`: Pagination cursor for large result sets
+
+
+        ### Usage guidelines:
+
+        - Time windows: Set `window_size` to `hour`, `day`, or `none` (entire period)
+
+        - Required parameters: Must specify `starting_on`, `ending_before`, and `window_size`
+
+        - Filtering options:
+
+        - `customer_ids`: Limit to specific customers (omit for all customers)
+
+        - `billable_metrics`: Limit to specific metrics (omit for all metrics)
+
+        - Pagination: Use `next_page` cursor to retrieve large datasets
+
+        - Null values: Group values may be null when no usage matches that group'
       operationId: getUsageBatch-v1
       summary: Get batched usage data
       parameters:
@@ -239,8 +443,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/UsageBatchAggregate'
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - customer_id: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
@@ -258,7 +463,45 @@ paths:
                 next_page: null
   /v1/events/search:
     post:
-      description: "This endpoint retrieves events by transaction ID for events that occurred within the last 34 days. It is specifically designed for sampling-based testing workflows to detect revenue leakage. The Event Search API provides a critical observability tool that validates the integrity of your usage pipeline by allowing you to sample raw events and verify their matching against active billable metrics. \n\nWhy event observability matters for revenue leakage:\nSilent revenue loss occurs when events are dropped, delayed, or fail to match billable metrics due to:\n- Upstream system failures\n- Event format changes\n- Misconfigured billable metrics\n\n### Use this endpoint to:\n- Sample raw events and validate they match the expected billable metrics\n- Build custom leakage detection alerts to prevent silent revenue loss\n- Verify event processing accuracy during system changes or metric updates\n- Debug event matching issues in real-time\n\n### Key response fields:\n- Complete event details including transaction ID, customer ID, and properties\n- Matched Metronome customer (if any)\n- Matched billable metric information (if any)\n- Processing status and duplicate detection flags\n\n### Usage guidelines:\n⚠️ Important: This endpoint is heavily rate limited and designed for sampling workflows only. Do not use this endpoint to check every event in your system. Instead, implement a sampling strategy to randomly validate a subset of events for observability purposes.\n"
+      description: 'This endpoint retrieves events by transaction ID for events that occurred within the last 34 days. It is specifically designed for sampling-based testing workflows to detect revenue leakage. The Event Search API provides a critical observability tool that validates the integrity of your usage pipeline by allowing you to sample raw events and verify their matching against active billable metrics.
+
+
+        Why event observability matters for revenue leakage:
+
+        Silent revenue loss occurs when events are dropped, delayed, or fail to match billable metrics due to:
+
+        - Upstream system failures
+
+        - Event format changes
+
+        - Misconfigured billable metrics
+
+
+        ### Use this endpoint to:
+
+        - Sample raw events and validate they match the expected billable metrics
+
+        - Build custom leakage detection alerts to prevent silent revenue loss
+
+        - Verify event processing accuracy during system changes or metric updates
+
+        - Debug event matching issues in real-time
+
+
+        ### Key response fields:
+
+        - Complete event details including transaction ID, customer ID, and properties
+
+        - Matched Metronome customer (if any)
+
+        - Matched billable metric information (if any)
+
+        - Processing status and duplicate detection flags
+
+
+        ### Usage guidelines:
+
+        ⚠️ Important: This endpoint is heavily rate limited and designed for sampling workflows only. Do not use this endpoint to check every event in your system. Instead, implement a sampling strategy to randomly validate a subset of events for observability purposes.'
       operationId: searchEvents-v1
       summary: Search events
       tags:
@@ -386,6 +629,145 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    AggregationTypeForEventsSearch:
+      type: string
+      enum:
+      - count
+      - Count
+      - COUNT
+      - latest
+      - Latest
+      - LATEST
+      - max
+      - Max
+      - MAX
+      - sum
+      - Sum
+      - SUM
+      - unique
+      - Unique
+      - UNIQUE
+      - custom_sql
+      description: Specifies the type of aggregation performed on matching events. Includes "custom_sql" for events search endpoint responses.
+    PagedUsageAggregate:
+      required:
+      - starting_on
+      - ending_before
+      - group_key
+      - group_value
+      - value
+      type: object
+      properties:
+        starting_on:
+          type: string
+          format: date-time
+        ending_before:
+          type: string
+          format: date-time
+        group_key:
+          type:
+          - string
+          - 'null'
+          description: Use `group` instead. The group key for single-key grouping.
+          deprecated: true
+        group_value:
+          type:
+          - string
+          - 'null'
+          description: Use `group` instead. The group value for single-key grouping.
+          deprecated: true
+        group:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Map of group key to their value for this usage aggregate.
+
+            For simple group keys, this should be a single key e.g. `{"region": "US-East"}`
+
+            For compound group keys, this should contain the values of each group key that forms the compound e.g. `{"region": "US-East", "team": "engineering"}`
+
+            '
+        value:
+          type:
+          - number
+          - 'null'
+    PropertyFiltersArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/PropertyFilter'
+      description: A list of filters to match events to this billable metric. Each filter defines a rule on an event property. All rules must pass for the event to match the billable metric.
+    GroupKey:
+      type: array
+      description: 'Group key to group usage by. Supports both simple (single key) and compound (multiple keys) group keys.
+
+
+        For simple group keys, provide a single key e.g. `["region"]`.
+
+        For compound group keys, provide multiple keys e.g. `["region", "team"]`.
+
+
+        For streaming metrics, the keys must be defined as a simple or compound group key on the billable metric.
+
+        For compound group keys, all keys must match an exact compound group key definition — partial matches are not allowed.
+
+
+        Cannot be used together with `group_by`.
+
+        '
+      items:
+        type: string
+        minLength: 1
+      minItems: 1
+      example:
+      - region
+      - team
+    BillableMetricBase:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        group_by:
+          type: array
+          description: (DEPRECATED) use group_keys instead
+          items:
+            type: string
+            description: A list of keys that can be used to additionally segment the values of the billable metric when making usage queries
+        group_keys:
+          $ref: '#/components/schemas/GroupKeysArray'
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+        aggregate:
+          type: string
+          description: (DEPRECATED) use aggregation_type instead
+        aggregate_keys:
+          type: array
+          description: (DEPRECATED) use aggregation_key instead
+          items:
+            type: string
+        filter:
+          type: object
+          description: (DEPRECATED) use property_filters & event_type_filter instead
+          additionalProperties: true
+        aggregation_key:
+          $ref: '#/components/schemas/AggregationKey'
+        event_type_filter:
+          $ref: '#/components/schemas/EventTypeFilter'
+        property_filters:
+          $ref: '#/components/schemas/PropertyFiltersArray'
+        custom_fields:
+          x-cf-entity: billable_metric
+          $ref: '#/components/schemas/CustomField'
+        sql:
+          type: string
+          description: The SQL query associated with the billable metric
+        archived_at:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the billable metric was archived. If not provided, the billable metric is not archived.
     PagedUsageQueryPayload:
       required:
       - billable_metric_id
@@ -442,6 +824,62 @@ components:
         current_period:
           type: boolean
           description: If true, will return the usage for the current billing period. Will return an error if the customer is currently uncontracted or starting_on and ending_before are specified when this is true.
+    EventTypeFilter:
+      type: object
+      properties:
+        in_values:
+          type: array
+          items:
+            type: string
+          description: A list of event types that are explicitly included in the billable metric. If specified, only events of these types will match the billable metric. Must be non-empty if present.
+        not_in_values:
+          type: array
+          items:
+            type: string
+          description: A list of event types that are explicitly excluded from the billable metric. If specified, events of these types will not match the billable metric. Must be non-empty if present.
+      description: An optional filtering rule to match the 'event_type' property of an event.
+    UsageBatchAggregate:
+      required:
+      - customer_id
+      - billable_metric_id
+      - billable_metric_name
+      - start_timestamp
+      - end_timestamp
+      - value
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        billable_metric_id:
+          type: string
+          format: uuid
+        billable_metric_name:
+          type: string
+        start_timestamp:
+          type: string
+          format: date-time
+        end_timestamp:
+          type: string
+          format: date-time
+        value:
+          type:
+          - number
+          - 'null'
+        groups:
+          type: object
+          additionalProperties:
+            type:
+            - number
+            - 'null'
+          description: Values will be either a number or null. Null indicates that there were no matches for the group_by value.
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
     PropertyFilter:
       type: object
       required:
@@ -470,33 +908,28 @@ components:
         items:
           type: string
       description: Property names that are used to group usage costs on an invoice. Each entry represents a set of properties used to slice events into distinct buckets.
-    AggregationTypeForEventsSearch:
-      type: string
-      enum:
-      - count
-      - Count
-      - COUNT
-      - latest
-      - Latest
-      - LATEST
-      - max
-      - Max
-      - MAX
-      - sum
-      - Sum
-      - SUM
-      - unique
-      - Unique
-      - UNIQUE
-      - custom_sql
-      description: Specifies the type of aggregation performed on matching events. Includes "custom_sql" for events search endpoint responses.
-    BillableMetricForEventsSearch:
-      allOf:
-      - $ref: '#/components/schemas/BillableMetricBase'
-      - type: object
-        properties:
-          aggregation_type:
-            $ref: '#/components/schemas/AggregationTypeForEventsSearch'
+    SeatsUsageAggregate:
+      required:
+      - starting_on
+      - ending_before
+      - value
+      type: object
+      properties:
+        starting_on:
+          type: string
+          format: date-time
+        ending_before:
+          type: string
+          format: date-time
+        value:
+          type:
+          - number
+          - 'null'
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
     SeatsUsageQueryPayload:
       required:
       - seat_metric_id
@@ -543,45 +976,6 @@ components:
         current_period:
           type: boolean
           description: If true, will return the usage for the current billing period. Will return an error if the customer is currently uncontracted or starting_on and ending_before are specified when this is true.
-    EventTypeFilter:
-      type: object
-      properties:
-        in_values:
-          type: array
-          items:
-            type: string
-          description: A list of event types that are explicitly included in the billable metric. If specified, only events of these types will match the billable metric. Must be non-empty if present.
-        not_in_values:
-          type: array
-          items:
-            type: string
-          description: A list of event types that are explicitly excluded from the billable metric. If specified, events of these types will not match the billable metric. Must be non-empty if present.
-      description: An optional filtering rule to match the 'event_type' property of an event.
-    GroupKey:
-      type: array
-      description: 'Group key to group usage by. Supports both simple (single key) and compound (multiple keys) group keys.
-
-
-        For simple group keys, provide a single key e.g. `["region"]`.
-
-        For compound group keys, provide multiple keys e.g. `["region", "team"]`.
-
-
-        For streaming metrics, the keys must be defined as a simple or compound group key on the billable metric.
-
-        For compound group keys, all keys must match an exact compound group key definition — partial matches are not allowed.
-
-
-        Cannot be used together with `group_by`.
-
-        '
-      items:
-        type: string
-        minLength: 1
-      minItems: 1
-      example:
-      - region
-      - team
     Event:
       required:
       - customer_id
@@ -606,112 +1000,13 @@ components:
         properties:
           type: object
           additionalProperties: true
-    PagedUsageAggregate:
-      required:
-      - starting_on
-      - ending_before
-      - group_key
-      - group_value
-      - value
-      type: object
-      properties:
-        starting_on:
-          type: string
-          format: date-time
-        ending_before:
-          type: string
-          format: date-time
-        group_key:
-          type: string
-          nullable: true
-          description: Use `group` instead. The group key for single-key grouping.
-          deprecated: true
-        group_value:
-          type: string
-          nullable: true
-          description: Use `group` instead. The group value for single-key grouping.
-          deprecated: true
-        group:
-          type: object
-          additionalProperties:
-            type: string
-          description: 'Map of group key to their value for this usage aggregate.
-
-            For simple group keys, this should be a single key e.g. `{"region": "US-East"}`
-
-            For compound group keys, this should contain the values of each group key that forms the compound e.g. `{"region": "US-East", "team": "engineering"}`
-
-            '
-        value:
-          type: number
-          nullable: true
-    AggregationKey:
-      type: string
-      description: A key that specifies which property of the event is used to aggregate data. This key must be one of the property filter names and is not applicable when the aggregation type is 'count'.
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    BillableMetricBase:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        group_by:
-          type: array
-          description: (DEPRECATED) use group_keys instead
-          items:
-            type: string
-            description: A list of keys that can be used to additionally segment the values of the billable metric when making usage queries
-        group_keys:
-          $ref: '#/components/schemas/GroupKeysArray'
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
-        aggregate:
-          type: string
-          description: (DEPRECATED) use aggregation_type instead
-        aggregate_keys:
-          type: array
-          description: (DEPRECATED) use aggregation_key instead
-          items:
-            type: string
-        filter:
-          type: object
-          description: (DEPRECATED) use property_filters & event_type_filter instead
-          additionalProperties: true
-        aggregation_key:
-          $ref: '#/components/schemas/AggregationKey'
-        event_type_filter:
-          $ref: '#/components/schemas/EventTypeFilter'
-        property_filters:
-          $ref: '#/components/schemas/PropertyFiltersArray'
-        custom_fields:
-          x-cf-entity: billable_metric
-          $ref: '#/components/schemas/CustomField'
-        sql:
-          type: string
-          description: The SQL query associated with the billable metric
-        archived_at:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the billable metric was archived. If not provided, the billable metric is not archived.
-    PropertyFiltersArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/PropertyFilter'
-      description: A list of filters to match events to this billable metric. Each filter defines a rule on an event property. All rules must pass for the event to match the billable metric.
+    BillableMetricForEventsSearch:
+      allOf:
+      - $ref: '#/components/schemas/BillableMetricBase'
+      - type: object
+        properties:
+          aggregation_type:
+            $ref: '#/components/schemas/AggregationTypeForEventsSearch'
     UsageBatchQueryPayload:
       required:
       - window_size
@@ -771,39 +1066,9 @@ components:
         ending_before:
           type: string
           format: date-time
-    UsageBatchAggregate:
-      required:
-      - customer_id
-      - billable_metric_id
-      - billable_metric_name
-      - start_timestamp
-      - end_timestamp
-      - value
-      type: object
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-        billable_metric_id:
-          type: string
-          format: uuid
-        billable_metric_name:
-          type: string
-        start_timestamp:
-          type: string
-          format: date-time
-        end_timestamp:
-          type: string
-          format: date-time
-        value:
-          type: number
-          nullable: true
-        groups:
-          type: object
-          additionalProperties:
-            type: number
-            nullable: true
-          description: Values will be either a number or null. Null indicates that there were no matches for the group_by value.
+    AggregationKey:
+      type: string
+      description: A key that specifies which property of the event is used to aggregate data. This key must be one of the property filter names and is not applicable when the aggregation type is 'count'.
     GroupFilter:
       type: object
       description: 'Object mapping group keys to arrays of values to filter on. Only usage matching these filter values will be returned.
@@ -822,22 +1087,6 @@ components:
         - us-west1
         team:
         - UI
-    SeatsUsageAggregate:
-      required:
-      - starting_on
-      - ending_before
-      - value
-      type: object
-      properties:
-        starting_on:
-          type: string
-          format: date-time
-        ending_before:
-          type: string
-          format: date-time
-        value:
-          type: number
-          nullable: true
   responses:
     NotFound:
       description: The specified resource was not found
@@ -853,14 +1102,6 @@ components:
       required: false
       schema:
         type: string
-    CustomerId:
-      name: customer_id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
     PageLimit:
       name: limit
       in: query
@@ -870,6 +1111,14 @@ components:
         type: integer
         minimum: 1
         maximum: 100
+    CustomerId:
+      name: customer_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
   securitySchemes:
     bearerAuth:
       type: http

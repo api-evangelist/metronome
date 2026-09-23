@@ -1,24 +1,7 @@
 {
   "provider": "metronome",
   "sources": [
-    "metronome-alerts-api-openapi.yml",
-    "metronome-billable-metrics-api-openapi.yml",
-    "metronome-contracts-api-openapi.yml",
-    "metronome-credits-and-commits-api-openapi.yml",
-    "metronome-custom-fields-api-openapi.yml",
-    "metronome-customers-api-openapi.yml",
-    "metronome-integrations-api-openapi.yml",
-    "metronome-invoices-api-openapi.yml",
-    "metronome-named-schedules-api-openapi.yml",
-    "metronome-notifications-api-openapi.yml",
-    "metronome-packages-api-openapi.yml",
-    "metronome-payments-api-openapi.yml",
-    "metronome-products-api-openapi.yml",
-    "metronome-rate-cards-api-openapi.yml",
-    "metronome-security-api-openapi.yml",
-    "metronome-settings-api-openapi.yml",
-    "metronome-threshold-billing-api-openapi.yml",
-    "metronome-usage-api-openapi.yml"
+    "_original/metronome-openapi.json"
   ],
   "outputs": [
     "metronome-alerts-api-openapi.yml",
@@ -43,6 +26,38 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "metronome-openapi.json: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "metronome-openapi.json: tagged paths POST /v1/billable-metrics -> Billable Metrics",
+    "metronome-openapi.json: tagged paths POST /v1/integrations/log -> Integrations",
+    "metronome-openapi.json: tagged paths POST /v1/packages/list -> Packages",
+    "metronome-openapi.json: declared missing tag: Billable Metrics",
+    "metronome-openapi.json: declared missing tag: Integrations",
+    "metronome-openapi.json: declared missing tag: Notifications",
+    "metronome-openapi.json: declared missing tag: Packages",
+    "metronome-openapi.json: declared missing tag: Payments",
+    "metronome-openapi.json: declared missing tag: Threshold billing",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "metronome-alerts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-billable-metrics-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-contracts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-credits-and-commits-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-custom-fields-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-customers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-integrations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-invoices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-named-schedules-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-notifications-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-packages-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-payments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-rate-cards-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-security-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-settings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-threshold-billing-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "metronome-usage-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

@@ -1,24 +1,43 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Metronome Alerts Custom fields API
+  title: Metronome Custom fields API
   version: 1.0.0
-  description: '[Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to create, retrieve, and archive customer alerts. To view sample alert payloads by alert type, navigate [here.](https://docs.metronome.com/manage-product-access/create-manage-alerts/#webhook-notifications)'
+  description: Custom fields enable adding additional data to Metronome entities. Use these endpoints to create, retrieve, update, and delete custom fields.
 servers:
 - url: https://api.metronome.com
   description: Production server
 security:
 - bearerAuth: []
 tags:
-- name: Custom fields
-  description: '[Custom fields](https://docs.metronome.com/integrations/custom-fields/) enable adding additional data to Metronome entities. Use these endpoints to create, retrieve, update, and delete custom fields.'
+- name: Custom Fields
+  description: Custom fields enable adding additional data to Metronome entities. Use these endpoints to create, retrieve, update, and delete custom fields.
 paths:
   /v1/customFields/addKey:
     post:
-      description: "Creates a new custom field key for a given entity (e.g. billable metric, contract, alert).\n\nCustom fields are properties that you can add to Metronome objects to store metadata like foreign keys or other descriptors. This metadata can get transferred to or accessed by other systems to contextualize Metronome data and power business processes. For example, to service workflows like revenue recognition, reconciliation, and invoicing, custom fields help Metronome know the relationship between entities in the platform and third-party systems.\n\n### Use this endpoint to:\n- Create a new custom field key for Customer objects in Metronome. You can then use the Set Custom Field Values endpoint to set the value of this key for a specific customer. \n- Specify whether the key should enforce uniqueness. If the key is set to enforce uniqueness and you attempt to set a custom field value for the key that already exists, it will fail. \n\n### Usage guidelines:\n- Custom fields set on commits, credits, and contracts can be used to scope alert evaluation. For example, you can create a spend threshold alert that only considers spend associated with contracts with custom field key `contract_type` and value `paygo`\n- Custom fields set on products can be used in the Stripe integration to set metadata on invoices.\n- Custom fields for customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are passed down to the invoice.\n"
+      description: 'Creates a new custom field key for a given entity (e.g. billable metric, contract, alert).
+
+
+        Custom fields are properties that you can add to Metronome objects to store metadata like foreign keys or other descriptors. This metadata can get transferred to or accessed by other systems to contextualize Metronome data and power business processes. For example, to service workflows like revenue recognition, reconciliation, and invoicing, custom fields help Metronome know the relationship between entities in the platform and third-party systems.
+
+
+        ### Use this endpoint to:
+
+        - Create a new custom field key for Customer objects in Metronome. You can then use the Set Custom Field Values endpoint to set the value of this key for a specific customer.
+
+        - Specify whether the key should enforce uniqueness. If the key is set to enforce uniqueness and you attempt to set a custom field value for the key that already exists, it will fail.
+
+
+        ### Usage guidelines:
+
+        - Custom fields set on commits, credits, and contracts can be used to scope alert evaluation. For example, you can create a spend threshold alert that only considers spend associated with contracts with custom field key `contract_type` and value `paygo`
+
+        - Custom fields set on products can be used in the Stripe integration to set metadata on invoices.
+
+        - Custom fields for customers, contracts, invoices, products, commits, scheduled charges, and subscriptions are passed down to the invoice.'
       operationId: addCustomFieldKey-v1
       summary: Create a custom field key
       tags:
-      - Custom fields
+      - Custom Fields
       requestBody:
         description: Add a key to the allow list for an entity
         content:
@@ -45,13 +64,11 @@ paths:
           description: Success
   /v1/customFields/removeKey:
     post:
-      description: 'Removes a custom field key from the allowlist for a specific entity type, preventing future use of that key across all instances of the entity. Existing values for this key on entity instances will no longer be accessible once the key is removed.
-
-        '
+      description: Removes a custom field key from the allowlist for a specific entity type, preventing future use of that key across all instances of the entity. Existing values for this key on entity instances will no longer be accessible once the key is removed.
       operationId: disableCustomFieldKey-v1
       summary: Delete a custom field key
       tags:
-      - Custom fields
+      - Custom Fields
       requestBody:
         description: Remove a key from the allow list for an entity
         content:
@@ -74,13 +91,11 @@ paths:
           description: Success
   /v1/customFields/setValues:
     post:
-      description: 'Sets custom field values on a specific Metronome entity instance. Overwrites existing values for matching keys while preserving other fields. All updates are transactional—either all values are set or none are. Custom field values are limited to 200 characters each.
-
-        '
+      description: Sets custom field values on a specific Metronome entity instance. Overwrites existing values for matching keys while preserving other fields. All updates are transactional—either all values are set or none are. Custom field values are limited to 200 characters each.
       operationId: setCustomFields-v1
       summary: Set custom field values
       tags:
-      - Custom fields
+      - Custom Fields
       requestBody:
         description: The custom field values to set
         content:
@@ -109,13 +124,11 @@ paths:
           description: Success
   /v1/customFields/deleteValues:
     post:
-      description: 'Remove specific custom field values from a Metronome entity instance by specifying the field keys to delete. Use this endpoint to clean up unwanted custom field data while preserving other fields on the same entity. Requires the entity type, entity ID, and array of keys to remove.
-
-        '
+      description: Remove specific custom field values from a Metronome entity instance by specifying the field keys to delete. Use this endpoint to clean up unwanted custom field data while preserving other fields on the same entity. Requires the entity type, entity ID, and array of keys to remove.
       operationId: deleteCustomFields-v1
       summary: Delete custom fields
       tags:
-      - Custom fields
+      - Custom Fields
       requestBody:
         description: Delete one or more custom fields
         content:
@@ -146,15 +159,13 @@ paths:
           description: Success
   /v1/customFields/listKeys:
     post:
-      description: 'Retrieve all your active custom field keys, with optional filtering by entity type (customer, contract, product, etc.). Use this endpoint to discover what custom field keys are available before setting values on entities or to audit your custom field configuration across different entity types.
-
-        '
+      description: Retrieve all your active custom field keys, with optional filtering by entity type (customer, contract, product, etc.). Use this endpoint to discover what custom field keys are available before setting values on entities or to audit your custom field configuration across different entity types.
       operationId: listCustomFieldKeys-v1
       summary: List custom field keys
       parameters:
       - $ref: '#/components/parameters/NextPage'
       tags:
-      - Custom fields
+      - Custom Fields
       requestBody:
         content:
           application/json:
@@ -196,8 +207,9 @@ paths:
                         enforce_uniqueness:
                           type: boolean
                   next_page:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
               example:
                 data:
                 - entity: customer
@@ -205,7 +217,20 @@ paths:
                   enforce_uniqueness: true
                 next_page: null
 components:
+  parameters:
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
   schemas:
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
     ManagedEntity:
       type: string
       enum:
@@ -231,19 +256,6 @@ components:
       x-mint-enum:
         professional_service:
         - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-  parameters:
-    NextPage:
-      name: next_page
-      in: query
-      description: Cursor that indicates where the next page of results should start.
-      required: false
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http
