@@ -253,162 +253,29 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    QuantityRounding:
+    QuantityConversion:
       type:
       - object
       - 'null'
-      description: Optional. Only valid for USAGE products. If provided, the quantity will be rounded using the provided rounding method and decimal places. For example, if the method is "round up" and the decimal places is 0, then the quantity will be rounded up to the nearest integer.
+      description: Optional. Only valid for USAGE products. If provided, the quantity will be converted using the provided conversion factor and operation. For example, if the operation is "multiply" and the conversion factor is 100, then the quantity will be multiplied by 100. This can be used in cases where data is sent in one unit and priced in another.  For example, data could be sent in MB and priced in GB. In this case, the conversion factor would be 1024 and the operation would be "divide".
       required:
-      - rounding_method
-      - decimal_places
+      - conversion_factor
+      - operation
       properties:
-        rounding_method:
+        name:
+          type: string
+          description: Optional name for this conversion.
+        conversion_factor:
+          type: number
+          description: The factor to multiply or divide the quantity by.
+        operation:
           type: string
           enum:
-          - round_up
-          - round_down
-          - round_half_up
-          - ROUND_UP
-          - ROUND_DOWN
-          - ROUND_HALF_UP
-        decimal_places:
-          type: number
-          minimum: 0
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-    UpdateProductListItemPayload:
-      type: object
-      required:
-      - product_id
-      - starting_at
-      properties:
-        product_id:
-          type: string
-          format: uuid
-          description: ID of the product to update
-        name:
-          type: string
-          description: displayed on invoices. If not provided, defaults to product's current name.
-        starting_at:
-          type: string
-          format: date-time
-          description: Timestamp representing when the update should go into effect. It must be on an hour boundary (e.g. 1:00, not 1:30).
-        is_refundable:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: boolean
-          description: Defaults to product's current refundability status. This field's availability is dependent on your client's configuration.
-        exclude_free_usage:
-          type: boolean
-          description: Beta feature only available for composite products. If true, products with $0 will not be included when computing composite usage. Defaults to false
-        billable_metric_id:
-          type: string
-          format: uuid
-          description: Available for USAGE products only. If not provided, defaults to product's current billable metric.
-        netsuite_internal_item_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          description: If not provided, defaults to product's current netsuite_internal_item_id. This field's availability is dependent on your client's configuration.
-        netsuite_overage_item_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          description: Available for USAGE and COMPOSITE products only. If not provided, defaults to product's current netsuite_overage_item_id. This field's availability is dependent on your client's configuration.
-        composite_product_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Available for COMPOSITE products only. If not provided, defaults to product's current composite_product_ids.
-        quantity_conversion:
-          $ref: '#/components/schemas/QuantityConversion'
-        quantity_rounding:
-          $ref: '#/components/schemas/QuantityRounding'
-        tags:
-          type: array
-          items:
-            type: string
-          description: If not provided, defaults to product's current tags
-        composite_tags:
-          type: array
-          items:
-            type: string
-          description: Available for COMPOSITE products only. If not provided, defaults to product's current composite_tags.
-        pricing_group_key:
-          $ref: '#/components/schemas/PricingGroupKey'
-        presentation_group_key:
-          $ref: '#/components/schemas/PresentationGroupKey'
-    ProductListItemUpdate:
-      type: object
-      required:
-      - created_at
-      - created_by
-      properties:
-        name:
-          type: string
-        starting_at:
-          type: string
-          format: date-time
-        is_refundable:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        created_by:
-          type: string
-        billable_metric_id:
-          type: string
-          format: uuid
-        quantity_conversion:
-          $ref: '#/components/schemas/QuantityConversion'
-        quantity_rounding:
-          $ref: '#/components/schemas/QuantityRounding'
-        netsuite_internal_item_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          description: This field's availability is dependent on your client's configuration.
-        netsuite_overage_item_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          description: This field's availability is dependent on your client's configuration.
-        composite_product_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-        composite_tags:
-          type: array
-          items:
-            type: string
-        tags:
-          type: array
-          items:
-            type: string
-        exclude_free_usage:
-          type: boolean
-        pricing_group_key:
-          $ref: '#/components/schemas/PricingGroupKey'
-        presentation_group_key:
-          $ref: '#/components/schemas/PresentationGroupKey'
-    PricingGroupKey:
-      type: array
-      items:
-        type: string
-      description: For USAGE products only. If set, pricing for this product will be determined for each pricing_group_key value, as opposed to the product as a whole. The superset of values in the pricing group key and presentation group key must be set as one compound group key on the billable metric.
+          - multiply
+          - divide
+          - MULTIPLY
+          - DIVIDE
+          description: The operation to perform on the quantity
     CreateProductListItemPayload:
       type: object
       required:
@@ -504,6 +371,101 @@ components:
           $ref: '#/components/schemas/QuantityRounding'
         custom_fields:
           $ref: '#/components/schemas/CustomField'
+    UpdateProductListItemPayload:
+      type: object
+      required:
+      - product_id
+      - starting_at
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: ID of the product to update
+        name:
+          type: string
+          description: displayed on invoices. If not provided, defaults to product's current name.
+        starting_at:
+          type: string
+          format: date-time
+          description: Timestamp representing when the update should go into effect. It must be on an hour boundary (e.g. 1:00, not 1:30).
+        is_refundable:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: boolean
+          description: Defaults to product's current refundability status. This field's availability is dependent on your client's configuration.
+        exclude_free_usage:
+          type: boolean
+          description: Beta feature only available for composite products. If true, products with $0 will not be included when computing composite usage. Defaults to false
+        billable_metric_id:
+          type: string
+          format: uuid
+          description: Available for USAGE products only. If not provided, defaults to product's current billable metric.
+        netsuite_internal_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: If not provided, defaults to product's current netsuite_internal_item_id. This field's availability is dependent on your client's configuration.
+        netsuite_overage_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: Available for USAGE and COMPOSITE products only. If not provided, defaults to product's current netsuite_overage_item_id. This field's availability is dependent on your client's configuration.
+        composite_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Available for COMPOSITE products only. If not provided, defaults to product's current composite_product_ids.
+        quantity_conversion:
+          $ref: '#/components/schemas/QuantityConversion'
+        quantity_rounding:
+          $ref: '#/components/schemas/QuantityRounding'
+        tags:
+          type: array
+          items:
+            type: string
+          description: If not provided, defaults to product's current tags
+        composite_tags:
+          type: array
+          items:
+            type: string
+          description: Available for COMPOSITE products only. If not provided, defaults to product's current composite_tags.
+        pricing_group_key:
+          $ref: '#/components/schemas/PricingGroupKey'
+        presentation_group_key:
+          $ref: '#/components/schemas/PresentationGroupKey'
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    QuantityRounding:
+      type:
+      - object
+      - 'null'
+      description: Optional. Only valid for USAGE products. If provided, the quantity will be rounded using the provided rounding method and decimal places. For example, if the method is "round up" and the decimal places is 0, then the quantity will be rounded up to the nearest integer.
+      required:
+      - rounding_method
+      - decimal_places
+      properties:
+        rounding_method:
+          type: string
+          enum:
+          - round_up
+          - round_down
+          - round_half_up
+          - ROUND_UP
+          - ROUND_DOWN
+          - ROUND_HALF_UP
+        decimal_places:
+          type: number
+          minimum: 0
     Error:
       required:
       - message
@@ -511,29 +473,125 @@ components:
       properties:
         message:
           type: string
-    QuantityConversion:
-      type:
-      - object
-      - 'null'
-      description: Optional. Only valid for USAGE products. If provided, the quantity will be converted using the provided conversion factor and operation. For example, if the operation is "multiply" and the conversion factor is 100, then the quantity will be multiplied by 100. This can be used in cases where data is sent in one unit and priced in another.  For example, data could be sent in MB and priced in GB. In this case, the conversion factor would be 1024 and the operation would be "divide".
+    ProductListItem:
+      type: object
       required:
-      - conversion_factor
-      - operation
+      - id
+      - type
+      - initial
+      - current
+      - updates
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - USAGE
+          - SUBSCRIPTION
+          - COMPOSITE
+          - FIXED
+          - PRO_SERVICE
+        archived_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        initial:
+          $ref: '#/components/schemas/ProductListItemState'
+        current:
+          $ref: '#/components/schemas/ProductListItemState'
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductListItemUpdate'
+        custom_fields:
+          x-cf-entity: contract_product
+          $ref: '#/components/schemas/CustomField'
+    ListProductsPayload:
+      type: object
+      properties:
+        archive_filter:
+          type: string
+          enum:
+          - ARCHIVED
+          - NOT_ARCHIVED
+          - ALL
+          description: Filter options for the product list. If not provided, defaults to not archived.
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    ProductListItemUpdate:
+      type: object
+      required:
+      - created_at
+      - created_by
       properties:
         name:
           type: string
-          description: Optional name for this conversion.
-        conversion_factor:
-          type: number
-          description: The factor to multiply or divide the quantity by.
-        operation:
+        starting_at:
           type: string
-          enum:
-          - multiply
-          - divide
-          - MULTIPLY
-          - DIVIDE
-          description: The operation to perform on the quantity
+          format: date-time
+        is_refundable:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+        billable_metric_id:
+          type: string
+          format: uuid
+        quantity_conversion:
+          $ref: '#/components/schemas/QuantityConversion'
+        quantity_rounding:
+          $ref: '#/components/schemas/QuantityRounding'
+        netsuite_internal_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        netsuite_overage_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          description: This field's availability is dependent on your client's configuration.
+        composite_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        composite_tags:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        exclude_free_usage:
+          type: boolean
+        pricing_group_key:
+          $ref: '#/components/schemas/PricingGroupKey'
+        presentation_group_key:
+          $ref: '#/components/schemas/PresentationGroupKey'
+    ArchiveProductListItemPayload:
+      type: object
+      required:
+      - product_id
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: ID of the product to be archived
     ProductListItemState:
       type: object
       required:
@@ -604,74 +662,16 @@ components:
           $ref: '#/components/schemas/PricingGroupKey'
         presentation_group_key:
           $ref: '#/components/schemas/PresentationGroupKey'
-    Id:
-      required:
-      - id
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
+    PricingGroupKey:
+      type: array
+      items:
+        type: string
+      description: For USAGE products only. If set, pricing for this product will be determined for each pricing_group_key value, as opposed to the product as a whole. The superset of values in the pricing group key and presentation group key must be set as one compound group key on the billable metric.
     PresentationGroupKey:
       type: array
       items:
         type: string
       description: For USAGE products only. Groups usage line items on invoices. The superset of values in the pricing group key and presentation group key must be set as one compound group key on the billable metric.
-    ProductListItem:
-      type: object
-      required:
-      - id
-      - type
-      - initial
-      - current
-      - updates
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - USAGE
-          - SUBSCRIPTION
-          - COMPOSITE
-          - FIXED
-          - PRO_SERVICE
-        archived_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        initial:
-          $ref: '#/components/schemas/ProductListItemState'
-        current:
-          $ref: '#/components/schemas/ProductListItemState'
-        updates:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductListItemUpdate'
-        custom_fields:
-          x-cf-entity: contract_product
-          $ref: '#/components/schemas/CustomField'
-    ArchiveProductListItemPayload:
-      type: object
-      required:
-      - product_id
-      properties:
-        product_id:
-          type: string
-          format: uuid
-          description: ID of the product to be archived
-    ListProductsPayload:
-      type: object
-      properties:
-        archive_filter:
-          type: string
-          enum:
-          - ARCHIVED
-          - NOT_ARCHIVED
-          - ALL
-          description: Filter options for the product list. If not provided, defaults to not archived.
   parameters:
     NextPage:
       name: next_page

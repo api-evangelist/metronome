@@ -502,63 +502,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    SetBillingProviderApiKeyPayload:
-      required:
-      - api_key
-      type: object
-      properties:
-        api_key:
-          type: string
-          description: API key to set for the billing provider.
-    SetClientWebhookSecretPayload:
-      required:
-      - webhook_secret
-      type: object
-      properties:
-        webhook_secret:
-          type: string
-          description: The client webhook secret used to verify webhook results
-    GABillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - aws_sns
-    UpdateStripeBillingSettingsPayload:
-      type: object
-      properties:
-        stripe_api_key:
-          type: string
-          description: API key used to call the Stripe APIs
-        anrok_api_key:
-          type:
-          - string
-          - 'null'
-          description: API key used to call the Anrok APIs
-    BillingProviderSettingsType:
-      type: string
-      enum:
-      - stripe
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    GABillingProviderType:
-      type: string
-      enum:
-      - aws_marketplace
-      - azure_marketplace
-      - gcp_marketplace
-    BillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - tackle
-      - aws_sns
     BillingProviderType:
       type: string
       enum:
@@ -580,19 +523,32 @@ components:
         - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
         gcp_marketplace:
         - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-    CreateStripeBillingSettingsPayload:
+    GABillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - aws_sns
+    Error:
+      required:
+      - message
       type: object
       properties:
-        stripe_api_key:
+        message:
           type: string
-          description: API key used to call the Stripe APIs
-        anrok_api_key:
-          type:
-          - string
-          - 'null'
-          description: API key used to call the Anrok APIs
-      required:
-      - stripe_api_key
+    BillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - tackle
+      - aws_sns
+    GABillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - azure_marketplace
+      - gcp_marketplace
     BillingProviderDeliveryMethod:
       type: object
       required:
@@ -615,14 +571,51 @@ components:
           type: object
           additionalProperties: true
           description: Configuration for the delivery method. The structure of this object is specific to the delivery method. Some configuration may be omitted for security reasons.
+    SetClientWebhookSecretPayload:
+      required:
+      - webhook_secret
+      type: object
+      properties:
+        webhook_secret:
+          type: string
+          description: The client webhook secret used to verify webhook results
+    SetBillingProviderApiKeyPayload:
+      required:
+      - api_key
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: API key to set for the billing provider.
+    CreateStripeBillingSettingsPayload:
+      type: object
+      properties:
+        stripe_api_key:
+          type: string
+          description: API key used to call the Stripe APIs
+        anrok_api_key:
+          type:
+          - string
+          - 'null'
+          description: API key used to call the Anrok APIs
+      required:
+      - stripe_api_key
+    BillingProviderSettingsType:
+      type: string
+      enum:
+      - stripe
+    UpdateStripeBillingSettingsPayload:
+      type: object
+      properties:
+        stripe_api_key:
+          type: string
+          description: API key used to call the Stripe APIs
+        anrok_api_key:
+          type:
+          - string
+          - 'null'
+          description: API key used to call the Anrok APIs
   parameters:
-    NextPage:
-      name: next_page
-      in: query
-      description: Cursor that indicates where the next page of results should start.
-      required: false
-      schema:
-        type: string
     BillingProviderSettingsType:
       name: billing_provider_type
       in: path
@@ -631,6 +624,13 @@ components:
       schema:
         $ref: '#/components/schemas/BillingProviderSettingsType'
       example: stripe
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
     PageLimit:
       name: limit
       in: query

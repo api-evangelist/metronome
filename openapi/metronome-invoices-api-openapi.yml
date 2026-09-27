@@ -919,20 +919,15 @@ paths:
               mode: replace
 components:
   schemas:
-    TierMetadata:
-      required:
-      - level
-      - starting_at
+    PostpaidCommit:
       type: object
+      required:
+      - id
+      description: ID of the commit.
       properties:
-        size:
-          type:
-          - string
-          - 'null'
-        level:
-          type: number
-        starting_at:
+        id:
           type: string
+          format: uuid
     PreviewEvent:
       required:
       - event_type
@@ -954,297 +949,6 @@ components:
           description: 'Optional unique identifier for event deduplication. When provided, preview events are automatically deduplicated against historical events from the past 34 days.  Duplicate transaction IDs within the same request will return an error.
 
             '
-    ExternalInvoiceStatus:
-      type: string
-      enum:
-      - DRAFT
-      - FINALIZED
-      - PAID
-      - PARTIALLY_PAID
-      - UNCOLLECTIBLE
-      - VOID
-      - DELETED
-      - PAYMENT_FAILED
-      - INVALID_REQUEST_ERROR
-      - SKIPPED
-      - SENT
-      - QUEUED
-    ResellerType:
-      type: string
-      enum:
-      - AWS
-      - AWS_PRO_SERVICE
-      - GCP
-      - GCP_PRO_SERVICE
-    ExternalInvoice:
-      required:
-      - billing_provider_type
-      type: object
-      properties:
-        billing_provider_type:
-          $ref: '#/components/schemas/BillingProviderType'
-        invoice_id:
-          type: string
-        issued_at_timestamp:
-          type: string
-          format: date-time
-        external_status:
-          $ref: '#/components/schemas/ExternalInvoiceStatus'
-        pdf_url:
-          x-mint:
-            metadata:
-              tag: Beta
-          type: string
-          format: uri
-          description: A URL to the PDF of the invoice, if available from the billing provider.
-        tax:
-          x-mint:
-            metadata:
-              tag: Beta
-          type: object
-          description: Tax details for the invoice, if available from the billing provider.
-          properties:
-            total_tax_amount:
-              type: number
-              description: The total tax amount applied to the invoice.
-            total_taxable_amount:
-              type: number
-              description: The total taxable amount of the invoice.
-            transaction_id:
-              type: string
-              description: The transaction ID associated with the tax calculation.
-        invoiced_total:
-          x-mint:
-            metadata:
-              tag: Beta
-          type: number
-          description: The total amount invoiced, if available from the billing provider.
-        invoiced_sub_total:
-          x-mint:
-            metadata:
-              tag: Beta
-          type: number
-          description: The subtotal amount invoiced, if available from the billing provider.
-        billing_provider_error:
-          type: string
-          description: Error message from the billing provider, if available.
-        external_payment_id:
-          type: string
-          description: The ID of the payment in the external system, if available.
-    MinimumConfig:
-      type: object
-      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-      required:
-      - minimum
-      properties:
-        minimum:
-          type: number
-    PostpaidCommit:
-      type: object
-      required:
-      - id
-      description: ID of the commit.
-      properties:
-        id:
-          type: string
-          format: uuid
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
-    BillableStatus:
-      type: string
-      enum:
-      - billable
-      - unbillable
-    SpendBreakdownInvoicesQueryPayload:
-      required:
-      - starting_on
-      - ending_before
-      type: object
-      additionalProperties: false
-      properties:
-        starting_on:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that start on or after this time.
-        ending_before:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that end on or before this time.
-        skip_zero_qty_line_items:
-          type: boolean
-          description: If set, all zero quantity line items will be filtered out of the response.
-        credit_type_id:
-          type: string
-          format: uuid
-          description: If provided, only invoices with the specified credit type id will be included in the response.
-        sort:
-          type: string
-          description: Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc.
-          enum:
-          - date_asc
-          - date_desc
-          default: date_asc
-        window_size:
-          type: string
-          description: The granularity of the breakdowns to return. Defaults to "day".
-          enum:
-          - day
-          - none
-          - DAY
-          - NONE
-          - Day
-          - None
-        group_keys:
-          type: array
-          description: 'A list of keys that can be used to additionally segment the values of the billable metric when making usage queries. Must be valid keys that are present in the billable metrics or an empty list. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
-
-            '
-          items:
-            type: string
-        group_filters:
-          description: 'An object where the keys are the group keys and the values are arrays of group values. If the values is an empty array, the returned usage data will be aggregated across all values for that key. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
-
-            '
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-        limit:
-          type: integer
-          description: Max number of results that should be returned. For daily and "none" breakdowns, the response can return up to 35 days worth of breakdowns. If there are more results, a cursor to the next page is returned.
-          minimum: 1
-          maximum: 100
-          default: 100
-        next_page:
-          type: string
-          description: Cursor that indicates where the next page of results should start.
-    InvoiceStatus:
-      type: string
-      example: DRAFT, VOID, or FINALIZED
-    Tags:
-      type: array
-      items:
-        type: string
-    RevenueSystemInvoice:
-      required:
-      - revenue_system_provider
-      - sync_status
-      - revenue_system_external_entity_type
-      type: object
-      properties:
-        revenue_system_provider:
-          type: string
-        revenue_system_external_entity_id:
-          type: string
-        sync_status:
-          type: string
-        revenue_system_external_entity_type:
-          type: string
-        error_message:
-          type: string
-          description: The error message from the revenue system, if available.
-    BreakdownInvoice:
-      allOf:
-      - $ref: '#/components/schemas/Invoice'
-      - type: object
-        required:
-        - breakdown_start_timestamp
-        - breakdown_end_timestamp
-        properties:
-          breakdown_start_timestamp:
-            type: string
-            format: date-time
-          breakdown_end_timestamp:
-            type: string
-            format: date-time
-    SpendBreakdownInvoice:
-      required:
-      - id
-      - customer_id
-      - credit_type
-      - line_items
-      - status
-      - type
-      - breakdown_start_timestamp
-      - breakdown_end_timestamp
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        customer_id:
-          type: string
-          format: uuid
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        line_items:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvoiceLineItem'
-        start_timestamp:
-          description: Beginning of the usage period this invoice covers (UTC)
-          type: string
-          format: date-time
-        end_timestamp:
-          description: End of the usage period this invoice covers (UTC)
-          type: string
-          format: date-time
-        issued_at:
-          description: When the invoice was issued (UTC)
-          type: string
-          format: date-time
-        created_at:
-          description: When the invoice was created (UTC). This field is present for correction invoices only.
-          type: string
-          format: date-time
-        status:
-          $ref: '#/components/schemas/InvoiceStatus'
-        type:
-          $ref: '#/components/schemas/InvoiceType'
-        contract_id:
-          type: string
-          format: uuid
-        breakdown_start_timestamp:
-          type: string
-          format: date-time
-        breakdown_end_timestamp:
-          type: string
-          format: date-time
-    AppliedCommitOrCredit:
-      type: object
-      required:
-      - id
-      - type
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - PREPAID
-          - POSTPAID
-          - CREDIT
-    InvoiceType:
-      type: string
-      example: SCHEDULED or USAGE
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
     Rate:
       type: object
       required:
@@ -1345,6 +1049,25 @@ components:
             type: string
         credit_type:
           $ref: '#/components/schemas/CreditType'
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    BreakdownInvoice:
+      allOf:
+      - $ref: '#/components/schemas/Invoice'
+      - type: object
+        required:
+        - breakdown_start_timestamp
+        - breakdown_end_timestamp
+        properties:
+          breakdown_start_timestamp:
+            type: string
+            format: date-time
+          breakdown_end_timestamp:
+            type: string
+            format: date-time
     Tier:
       type: object
       required:
@@ -1354,11 +1077,6 @@ components:
           type: number
         price:
           type: number
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
     InvoiceLineItem:
       required:
       - name
@@ -1550,55 +1268,6 @@ components:
             contract_id:
               type: string
               format: uuid
-    PreviewEventsPayload:
-      type: object
-      required:
-      - events
-      additionalProperties: false
-      properties:
-        events:
-          type: array
-          minItems: 1
-          maxItems: 100
-          items:
-            $ref: '#/components/schemas/PreviewEvent'
-          description: 'Array of usage events to include in the preview calculation. Must contain at least one event in `merge` mode.
-
-            '
-        mode:
-          type: string
-          enum:
-          - replace
-          - merge
-          default: replace
-          description: 'Controls how the provided events are combined with existing usage data. Use `replace` to calculate the preview as if these are the only events for the customer, ignoring all historical usage.  Use `merge` to combine these events with the customer''s existing usage.  Defaults to `replace`.
-
-            '
-        skip_zero_qty_line_items:
-          type: boolean
-          default: false
-          description: When `true`, line items with zero quantity are excluded from the response.
-    BillingProviderType:
-      type: string
-      enum:
-      - aws_marketplace
-      - stripe
-      - netsuite
-      - custom
-      - azure_marketplace
-      - quickbooks_online
-      - workday
-      - gcp_marketplace
-      - metronome
-      x-mint-enum:
-        netsuite:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        custom:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        workday:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        gcp_marketplace:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
     Invoice:
       required:
       - id
@@ -1788,7 +1457,378 @@ components:
               type: string
               format: uuid
           description: Required for account hierarchy usage invoices. An object containing the contract and customer UUIDs that pay for this invoice.
+    ExternalInvoice:
+      required:
+      - billing_provider_type
+      type: object
+      properties:
+        billing_provider_type:
+          $ref: '#/components/schemas/BillingProviderType'
+        invoice_id:
+          type: string
+        issued_at_timestamp:
+          type: string
+          format: date-time
+        external_status:
+          $ref: '#/components/schemas/ExternalInvoiceStatus'
+        pdf_url:
+          x-mint:
+            metadata:
+              tag: Beta
+          type: string
+          format: uri
+          description: A URL to the PDF of the invoice, if available from the billing provider.
+        tax:
+          x-mint:
+            metadata:
+              tag: Beta
+          type: object
+          description: Tax details for the invoice, if available from the billing provider.
+          properties:
+            total_tax_amount:
+              type: number
+              description: The total tax amount applied to the invoice.
+            total_taxable_amount:
+              type: number
+              description: The total taxable amount of the invoice.
+            transaction_id:
+              type: string
+              description: The transaction ID associated with the tax calculation.
+        invoiced_total:
+          x-mint:
+            metadata:
+              tag: Beta
+          type: number
+          description: The total amount invoiced, if available from the billing provider.
+        invoiced_sub_total:
+          x-mint:
+            metadata:
+              tag: Beta
+          type: number
+          description: The subtotal amount invoiced, if available from the billing provider.
+        billing_provider_error:
+          type: string
+          description: Error message from the billing provider, if available.
+        external_payment_id:
+          type: string
+          description: The ID of the payment in the external system, if available.
+    SpendBreakdownInvoice:
+      required:
+      - id
+      - customer_id
+      - credit_type
+      - line_items
+      - status
+      - type
+      - breakdown_start_timestamp
+      - breakdown_end_timestamp
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceLineItem'
+        start_timestamp:
+          description: Beginning of the usage period this invoice covers (UTC)
+          type: string
+          format: date-time
+        end_timestamp:
+          description: End of the usage period this invoice covers (UTC)
+          type: string
+          format: date-time
+        issued_at:
+          description: When the invoice was issued (UTC)
+          type: string
+          format: date-time
+        created_at:
+          description: When the invoice was created (UTC). This field is present for correction invoices only.
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/InvoiceStatus'
+        type:
+          $ref: '#/components/schemas/InvoiceType'
+        contract_id:
+          type: string
+          format: uuid
+        breakdown_start_timestamp:
+          type: string
+          format: date-time
+        breakdown_end_timestamp:
+          type: string
+          format: date-time
+    MinimumConfig:
+      type: object
+      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+      required:
+      - minimum
+      properties:
+        minimum:
+          type: number
+    Tags:
+      type: array
+      items:
+        type: string
+    BillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - stripe
+      - netsuite
+      - custom
+      - azure_marketplace
+      - quickbooks_online
+      - workday
+      - gcp_marketplace
+      - metronome
+      x-mint-enum:
+        netsuite:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        custom:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        workday:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        gcp_marketplace:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+    RevenueSystemInvoice:
+      required:
+      - revenue_system_provider
+      - sync_status
+      - revenue_system_external_entity_type
+      type: object
+      properties:
+        revenue_system_provider:
+          type: string
+        revenue_system_external_entity_id:
+          type: string
+        sync_status:
+          type: string
+        revenue_system_external_entity_type:
+          type: string
+        error_message:
+          type: string
+          description: The error message from the revenue system, if available.
+    InvoiceStatus:
+      type: string
+      example: DRAFT, VOID, or FINALIZED
+    ResellerType:
+      type: string
+      enum:
+      - AWS
+      - AWS_PRO_SERVICE
+      - GCP
+      - GCP_PRO_SERVICE
+    InvoiceType:
+      type: string
+      example: SCHEDULED or USAGE
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    BillableStatus:
+      type: string
+      enum:
+      - billable
+      - unbillable
+    SpendBreakdownInvoicesQueryPayload:
+      required:
+      - starting_on
+      - ending_before
+      type: object
+      additionalProperties: false
+      properties:
+        starting_on:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that start on or after this time.
+        ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that end on or before this time.
+        skip_zero_qty_line_items:
+          type: boolean
+          description: If set, all zero quantity line items will be filtered out of the response.
+        credit_type_id:
+          type: string
+          format: uuid
+          description: If provided, only invoices with the specified credit type id will be included in the response.
+        sort:
+          type: string
+          description: Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc.
+          enum:
+          - date_asc
+          - date_desc
+          default: date_asc
+        window_size:
+          type: string
+          description: The granularity of the breakdowns to return. Defaults to "day".
+          enum:
+          - day
+          - none
+          - DAY
+          - NONE
+          - Day
+          - None
+        group_keys:
+          type: array
+          description: 'A list of keys that can be used to additionally segment the values of the billable metric when making usage queries. Must be valid keys that are present in the billable metrics or an empty list. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
+
+            '
+          items:
+            type: string
+        group_filters:
+          description: 'An object where the keys are the group keys and the values are arrays of group values. If the values is an empty array, the returned usage data will be aggregated across all values for that key. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
+
+            '
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        limit:
+          type: integer
+          description: Max number of results that should be returned. For daily and "none" breakdowns, the response can return up to 35 days worth of breakdowns. If there are more results, a cursor to the next page is returned.
+          minimum: 1
+          maximum: 100
+          default: 100
+        next_page:
+          type: string
+          description: Cursor that indicates where the next page of results should start.
+    PreviewEventsPayload:
+      type: object
+      required:
+      - events
+      additionalProperties: false
+      properties:
+        events:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/PreviewEvent'
+          description: 'Array of usage events to include in the preview calculation. Must contain at least one event in `merge` mode.
+
+            '
+        mode:
+          type: string
+          enum:
+          - replace
+          - merge
+          default: replace
+          description: 'Controls how the provided events are combined with existing usage data. Use `replace` to calculate the preview as if these are the only events for the customer, ignoring all historical usage.  Use `merge` to combine these events with the customer''s existing usage.  Defaults to `replace`.
+
+            '
+        skip_zero_qty_line_items:
+          type: boolean
+          default: false
+          description: When `true`, line items with zero quantity are excluded from the response.
+    AppliedCommitOrCredit:
+      type: object
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - PREPAID
+          - POSTPAID
+          - CREDIT
+    ExternalInvoiceStatus:
+      type: string
+      enum:
+      - DRAFT
+      - FINALIZED
+      - PAID
+      - PARTIALLY_PAID
+      - UNCOLLECTIBLE
+      - VOID
+      - DELETED
+      - PAYMENT_FAILED
+      - INVALID_REQUEST_ERROR
+      - SKIPPED
+      - SENT
+      - QUEUED
+    TierMetadata:
+      required:
+      - level
+      - starting_at
+      type: object
+      properties:
+        size:
+          type:
+          - string
+          - 'null'
+        level:
+          type: number
+        starting_at:
+          type: string
   parameters:
+    SkipZeroQtyLineItems:
+      name: skip_zero_qty_line_items
+      in: query
+      description: If set, all zero quantity line items will be filtered out of the response
+      required: false
+      schema:
+        type: boolean
+    InvoiceType:
+      name: type
+      in: query
+      description: Filter invoices by type. Defaults to returning all invoice types.
+      required: false
+      schema:
+        type: string
+        enum:
+        - USAGE
+        - USAGE_CONSOLIDATED
+        - SCHEDULED
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
+    InvoiceId:
+      name: invoice_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 6a37bb88-8538-48c5-b37b-a41c836328bd
+    InvoiceStatus:
+      name: status
+      in: query
+      description: Invoice status, e.g. DRAFT, FINALIZED, or VOID
+      required: false
+      schema:
+        type: string
     IncludeListPrices:
       name: include_list_prices
       in: query
@@ -1805,13 +1845,6 @@ components:
         type: integer
         minimum: 1
         maximum: 100
-    NextPage:
-      name: next_page
-      in: query
-      description: Cursor that indicates where the next page of results should start.
-      required: false
-      schema:
-        type: string
     InvoiceStatusNonVoid:
       name: status
       in: query
@@ -1819,25 +1852,6 @@ components:
       required: false
       schema:
         type: string
-    InvoiceId:
-      name: invoice_id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: 6a37bb88-8538-48c5-b37b-a41c836328bd
-    InvoiceType:
-      name: type
-      in: query
-      description: Filter invoices by type. Defaults to returning all invoice types.
-      required: false
-      schema:
-        type: string
-        enum:
-        - USAGE
-        - USAGE_CONSOLIDATED
-        - SCHEDULED
     CustomerId:
       name: customer_id
       in: path
@@ -1846,20 +1860,6 @@ components:
         type: string
         format: uuid
       example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
-    InvoiceStatus:
-      name: status
-      in: query
-      description: Invoice status, e.g. DRAFT, FINALIZED, or VOID
-      required: false
-      schema:
-        type: string
-    SkipZeroQtyLineItems:
-      name: skip_zero_qty_line_items
-      in: query
-      description: If set, all zero quantity line items will be filtered out of the response
-      required: false
-      schema:
-        type: boolean
   responses:
     NotFound:
       description: The specified resource was not found

@@ -149,18 +149,6 @@ paths:
                       $ref: '#/components/schemas/Service'
 components:
   schemas:
-    Actor:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-        email:
-          type: string
-        name:
-          type: string
     AuditLog:
       type: object
       required:
@@ -218,7 +206,26 @@ components:
           type: array
           items:
             type: string
+    Actor:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
   parameters:
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
     PageLimit:
       name: limit
       in: query
@@ -228,13 +235,6 @@ components:
         type: integer
         minimum: 1
         maximum: 100
-    NextPage:
-      name: next_page
-      in: query
-      description: Cursor that indicates where the next page of results should start.
-      required: false
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http

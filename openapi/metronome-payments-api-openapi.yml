@@ -197,45 +197,13 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    StripePaymentGateway:
-      type: object
-      required:
-      - type
-      - stripe
-      properties:
-        type:
-          type: string
-          enum:
-          - stripe
-        stripe:
-          type: object
-          required:
-          - payment_intent_id
-          properties:
-            payment_intent_id:
-              type: string
-            payment_method_id:
-              type: string
-            error:
-              type: object
-              properties:
-                type:
-                  type: string
-                code:
-                  type: string
-                decline_code:
-                  type: string
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
+    PaymentStatus:
+      type: string
+      enum:
+      - pending
+      - requires_intervention
+      - paid
+      - canceled
     Error:
       required:
       - message
@@ -286,6 +254,45 @@ components:
           type: string
           format: date-time
           example: '2022-02-01T00:00:00Z'
+    StripePaymentGateway:
+      type: object
+      required:
+      - type
+      - stripe
+      properties:
+        type:
+          type: string
+          enum:
+          - stripe
+        stripe:
+          type: object
+          required:
+          - payment_intent_id
+          properties:
+            payment_intent_id:
+              type: string
+            payment_method_id:
+              type: string
+            error:
+              type: object
+              properties:
+                type:
+                  type: string
+                code:
+                  type: string
+                decline_code:
+                  type: string
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
     RevenueSystemPayment:
       type: object
       required:
@@ -301,13 +308,6 @@ components:
         error_message:
           type: string
           description: The error message from the revenue system, if available.
-    PaymentStatus:
-      type: string
-      enum:
-      - pending
-      - requires_intervention
-      - paid
-      - canceled
   responses:
     NotFound:
       description: The specified resource was not found

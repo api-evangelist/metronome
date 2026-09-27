@@ -402,6 +402,94 @@ paths:
           description: Success
 components:
   schemas:
+    CustomerAlert:
+      required:
+      - customer_status
+      - alert
+      type: object
+      properties:
+        customer_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - ok
+          - in_alarm
+          - evaluating
+          description: The status of the threshold notification. If the notification is archived, null will be returned.
+        triggered_by:
+          type:
+          - string
+          - 'null'
+          description: If present, indicates the reason the threshold notification was triggered.
+        alert:
+          $ref: '#/components/schemas/Alert'
+    GroupKeyFilterType:
+      type: object
+      description: Scopes threshold notification evaluation to a specific presentation group key on individual line items. Only present for spend notifications.
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    GetCustomerAlertPayload:
+      required:
+      - customer_id
+      - alert_id
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the customer
+        alert_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the threshold notification
+        plans_or_contracts:
+          x-mint:
+            groups:
+            - ff:plans-contracts-parallel-alerts
+          type: string
+          enum:
+          - PLANS
+          - CONTRACTS
+          description: When parallel threshold notifications are enabled during migration, this flag denotes whether to fetch notifications for plans or contracts.
+        group_values:
+          type: array
+          description: Only present for `spend_threshold_reached` notifications. Retrieve the notification for a specific group key-value pair.
+          items:
+            $ref: '#/components/schemas/GroupKeyFilterType'
+        seat_filter:
+          type: object
+          description: Only allowed for `low_remaining_seat_balance_reached` notifications. This filters alerts by the seat group key-value pair.
+          required:
+          - seat_group_key
+          - seat_group_value
+          properties:
+            seat_group_key:
+              type: string
+              description: The seat group key (e.g., "seat_id", "user_id")
+            seat_group_value:
+              type: string
+              description: The specific seat identifier to filter by
+    ResetCustomerAlertsPayload:
+      required:
+      - customer_id
+      - alert_id
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the customer
+        alert_id:
+          type: string
+          format: uuid
+          description: The Metronome ID of the threshold notification
     CustomFieldFilterType:
       type: object
       required:
@@ -419,15 +507,94 @@ components:
           type: string
         value:
           type: string
-    GroupValueFilterType:
-      type: object
+    CreateCustomerAlertPayload:
       required:
-      - key
+      - alert_type
+      - name
+      - threshold
+      type: object
       properties:
-        key:
+        alert_type:
           type: string
-        value:
+          enum:
+          - spend_threshold_reached
+          - monthly_invoice_total_spend_threshold_reached
+          - usage_threshold_reached
+          - low_remaining_days_for_commit_segment_reached
+          - low_remaining_commit_balance_reached
+          - low_remaining_commit_percentage_reached
+          - low_remaining_days_for_contract_credit_segment_reached
+          - low_remaining_contract_credit_balance_reached
+          - low_remaining_contract_credit_percentage_reached
+          - low_remaining_contract_credit_and_commit_balance_reached
+          - invoice_total_reached
+          - low_remaining_seat_balance_reached
+          description: Type of the threshold notification
+        name:
           type: string
+          description: Name of the threshold notification
+        uniqueness_key:
+          $ref: '#/components/schemas/UniquenessKey'
+        threshold:
+          type: number
+          description: Threshold value of the notification policy.  Depending upon the notification type, this number may represent a financial amount, the days remaining, or a percentage reached.
+        credit_type_id:
+          type: string
+          format: uuid
+          description: ID of the credit's currency, defaults to USD. If the specific notification type requires a pricing unit/currency, find the ID in the [Metronome app](https://app.metronome.com/offering/pricing-units).
+        customer_id:
+          type: string
+          format: uuid
+          description: If provided, will create this threshold notification for this specific customer. To create a notification for all customers, do not specify a `customer_id`.
+        billable_metric_id:
+          type: string
+          format: uuid
+          description: For threshold notifications of type `usage_threshold_reached`, specifies which billable metric to track the usage for.
+        credit_grant_type_filters:
+          type: array
+          items:
+            type: string
+          description: An array of strings, representing a way to filter the credit grant this threshold notification applies to, by looking at the credit_grant_type field on the credit grant. This field is only defined for CreditPercentage and CreditBalance notifications
+        evaluate_on_create:
+          type: boolean
+          description: If true, the threshold notification will evaluate immediately on customers that already meet the notification threshold. If false, it will only evaluate on future customers that trigger the threshold. Defaults to true.
+        custom_field_filters:
+          type: array
+          description: A list of custom field filters for threshold notification types that support advanced filtering. Only present for contract invoices.
+          items:
+            $ref: '#/components/schemas/CustomFieldFilterType'
+        invoice_types_filter:
+          $ref: '#/components/schemas/InvoiceTypesFilterType'
+        group_values:
+          type: array
+          description: Only present for `spend_threshold_reached` notifications. Scope notification to a specific group key on individual line items.
+          items:
+            $ref: '#/components/schemas/GroupValueFilterType'
+        seat_filter:
+          type: object
+          description: Required for `low_remaining_seat_balance_reached` notifications. The alert is scoped to this seat group key-value pair.
+          required:
+          - seat_group_key
+          properties:
+            seat_group_key:
+              type: string
+              description: The seat group key (e.g., "seat_id", "user_id")
+            seat_group_value:
+              type: string
+              description: Optional seat identifier the alert is scoped to.
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    InvoiceTypesFilterType:
+      type: array
+      description: Only supported for invoice_total_reached threshold notifications. A list of invoice types to evaluate.
+      items:
+        $ref: '#/components/schemas/InvoiceType'
     Alert:
       required:
       - id
@@ -518,22 +685,42 @@ components:
             seat_group_value:
               type: string
               description: The seat group value that the alert is scoped to.
-    CreditType:
+    InvoiceType:
+      type: string
+      example: SCHEDULED or USAGE
+    GroupValueFilterType:
+      type: object
       required:
-      - name
+      - key
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    UniquenessKey:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
+    ArchiveAlertPayload:
+      required:
       - id
       type: object
       properties:
-        name:
-          type: string
         id:
           type: string
           format: uuid
-    InvoiceTypesFilterType:
-      type: array
-      description: Only supported for invoice_total_reached threshold notifications. A list of invoice types to evaluate.
-      items:
-        $ref: '#/components/schemas/InvoiceType'
+          description: The Metronome ID of the threshold notification
+        release_uniqueness_key:
+          type: boolean
+          description: If true, resets the uniqueness key on this threshold notification so it can be re-used
     ListCustomerAlertsPayload:
       required:
       - customer_id
@@ -559,211 +746,17 @@ components:
             - Disabled
             - Archived
           description: Optionally filter by threshold notification status. If absent, only enabled notifications will be returned.
-    CreateCustomerAlertPayload:
+    CreditType:
       required:
-      - alert_type
       - name
-      - threshold
+      - id
       type: object
       properties:
-        alert_type:
-          type: string
-          enum:
-          - spend_threshold_reached
-          - monthly_invoice_total_spend_threshold_reached
-          - usage_threshold_reached
-          - low_remaining_days_for_commit_segment_reached
-          - low_remaining_commit_balance_reached
-          - low_remaining_commit_percentage_reached
-          - low_remaining_days_for_contract_credit_segment_reached
-          - low_remaining_contract_credit_balance_reached
-          - low_remaining_contract_credit_percentage_reached
-          - low_remaining_contract_credit_and_commit_balance_reached
-          - invoice_total_reached
-          - low_remaining_seat_balance_reached
-          description: Type of the threshold notification
         name:
           type: string
-          description: Name of the threshold notification
-        uniqueness_key:
-          $ref: '#/components/schemas/UniquenessKey'
-        threshold:
-          type: number
-          description: Threshold value of the notification policy.  Depending upon the notification type, this number may represent a financial amount, the days remaining, or a percentage reached.
-        credit_type_id:
-          type: string
-          format: uuid
-          description: ID of the credit's currency, defaults to USD. If the specific notification type requires a pricing unit/currency, find the ID in the [Metronome app](https://app.metronome.com/offering/pricing-units).
-        customer_id:
-          type: string
-          format: uuid
-          description: If provided, will create this threshold notification for this specific customer. To create a notification for all customers, do not specify a `customer_id`.
-        billable_metric_id:
-          type: string
-          format: uuid
-          description: For threshold notifications of type `usage_threshold_reached`, specifies which billable metric to track the usage for.
-        credit_grant_type_filters:
-          type: array
-          items:
-            type: string
-          description: An array of strings, representing a way to filter the credit grant this threshold notification applies to, by looking at the credit_grant_type field on the credit grant. This field is only defined for CreditPercentage and CreditBalance notifications
-        evaluate_on_create:
-          type: boolean
-          description: If true, the threshold notification will evaluate immediately on customers that already meet the notification threshold. If false, it will only evaluate on future customers that trigger the threshold. Defaults to true.
-        custom_field_filters:
-          type: array
-          description: A list of custom field filters for threshold notification types that support advanced filtering. Only present for contract invoices.
-          items:
-            $ref: '#/components/schemas/CustomFieldFilterType'
-        invoice_types_filter:
-          $ref: '#/components/schemas/InvoiceTypesFilterType'
-        group_values:
-          type: array
-          description: Only present for `spend_threshold_reached` notifications. Scope notification to a specific group key on individual line items.
-          items:
-            $ref: '#/components/schemas/GroupValueFilterType'
-        seat_filter:
-          type: object
-          description: Required for `low_remaining_seat_balance_reached` notifications. The alert is scoped to this seat group key-value pair.
-          required:
-          - seat_group_key
-          properties:
-            seat_group_key:
-              type: string
-              description: The seat group key (e.g., "seat_id", "user_id")
-            seat_group_value:
-              type: string
-              description: Optional seat identifier the alert is scoped to.
-    InvoiceType:
-      type: string
-      example: SCHEDULED or USAGE
-    ArchiveAlertPayload:
-      required:
-      - id
-      type: object
-      properties:
         id:
           type: string
           format: uuid
-          description: The Metronome ID of the threshold notification
-        release_uniqueness_key:
-          type: boolean
-          description: If true, resets the uniqueness key on this threshold notification so it can be re-used
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    GroupKeyFilterType:
-      type: object
-      description: Scopes threshold notification evaluation to a specific presentation group key on individual line items. Only present for spend notifications.
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-    CustomerAlert:
-      required:
-      - customer_status
-      - alert
-      type: object
-      properties:
-        customer_status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - ok
-          - in_alarm
-          - evaluating
-          description: The status of the threshold notification. If the notification is archived, null will be returned.
-        triggered_by:
-          type:
-          - string
-          - 'null'
-          description: If present, indicates the reason the threshold notification was triggered.
-        alert:
-          $ref: '#/components/schemas/Alert'
-    GetCustomerAlertPayload:
-      required:
-      - customer_id
-      - alert_id
-      type: object
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: The Metronome ID of the customer
-        alert_id:
-          type: string
-          format: uuid
-          description: The Metronome ID of the threshold notification
-        plans_or_contracts:
-          x-mint:
-            groups:
-            - ff:plans-contracts-parallel-alerts
-          type: string
-          enum:
-          - PLANS
-          - CONTRACTS
-          description: When parallel threshold notifications are enabled during migration, this flag denotes whether to fetch notifications for plans or contracts.
-        group_values:
-          type: array
-          description: Only present for `spend_threshold_reached` notifications. Retrieve the notification for a specific group key-value pair.
-          items:
-            $ref: '#/components/schemas/GroupKeyFilterType'
-        seat_filter:
-          type: object
-          description: Only allowed for `low_remaining_seat_balance_reached` notifications. This filters alerts by the seat group key-value pair.
-          required:
-          - seat_group_key
-          - seat_group_value
-          properties:
-            seat_group_key:
-              type: string
-              description: The seat group key (e.g., "seat_id", "user_id")
-            seat_group_value:
-              type: string
-              description: The specific seat identifier to filter by
-    UniquenessKey:
-      type: string
-      minLength: 1
-      maxLength: 128
-      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
-    Id:
-      required:
-      - id
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-    ResetCustomerAlertsPayload:
-      required:
-      - customer_id
-      - alert_id
-      type: object
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: The Metronome ID of the customer
-        alert_id:
-          type: string
-          format: uuid
-          description: The Metronome ID of the threshold notification
-  responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     NextPage:
       name: next_page
@@ -772,6 +765,13 @@ components:
       required: false
       schema:
         type: string
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http
