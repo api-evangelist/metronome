@@ -271,6 +271,37 @@ paths:
           description: Success
 components:
   schemas:
+    GetContractNamedSchedulePayload:
+      type: object
+      required:
+      - customer_id
+      - contract_id
+      - schedule_name
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose named schedule is to be retrieved
+        contract_id:
+          type: string
+          format: uuid
+          description: ID of the contract whose named schedule is to be retrieved
+        schedule_name:
+          type: string
+          description: The identifier for the schedule to be retrieved
+        covering_date:
+          type: string
+          format: date-time
+          description: If provided, at most one schedule segment will be returned (the one that covers this date). If not provided, all segments will be returned.
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: A set of key-value pairs that qualifies which schedule should be applied when looking up a schedule by name.
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:fancy-schedules-enabled
     UpdateRateCardNamedSchedulePayload:
       type: object
       required:
@@ -294,11 +325,10 @@ components:
           format: date-time
         value:
           description: The value to set for the named schedule. The structure of this object is specific to the named schedule.
-    UpdateContractNamedSchedulePayload:
+    UpdateCustomerNamedSchedulePayload:
       type: object
       required:
       - customer_id
-      - contract_id
       - schedule_name
       - starting_at
       - value
@@ -307,10 +337,6 @@ components:
           type: string
           format: uuid
           description: ID of the customer whose named schedule is to be updated
-        contract_id:
-          type: string
-          format: uuid
-          description: ID of the contract whose named schedule is to be updated
         schedule_name:
           type: string
           description: The identifier for the schedule to be updated
@@ -322,34 +348,6 @@ components:
           format: date-time
         value:
           description: The value to set for the named schedule. The structure of this object is specific to the named schedule.
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-          description: A set of key-value pairs that qualifies which schedule should be applied when looking up a schedule by name.
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:fancy-schedules-enabled
-    ListContractsNamedSchedulesPage:
-      type: object
-      x-stainless-skip: true
-      x-mint:
-        groups:
-        - ff:fancy-schedules-enabled
-      required:
-      - data
-      - next_page
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerContractNamedSchedule'
-        next_page:
-          type:
-          - string
-          - 'null'
-          description: Cursor for the next page of results.
     ListContractsNamedSchedulesPayload:
       type: object
       x-stainless-skip: true
@@ -385,29 +383,6 @@ components:
         next_page:
           type: string
           description: Cursor for pagination. Use the value from a previous response's next_page.
-    UpdateCustomerNamedSchedulePayload:
-      type: object
-      required:
-      - customer_id
-      - schedule_name
-      - starting_at
-      - value
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose named schedule is to be updated
-        schedule_name:
-          type: string
-          description: The identifier for the schedule to be updated
-        starting_at:
-          type: string
-          format: date-time
-        ending_before:
-          type: string
-          format: date-time
-        value:
-          description: The value to set for the named schedule. The structure of this object is specific to the named schedule.
     NamedSchedule:
       type: object
       required:
@@ -428,23 +403,25 @@ components:
               ending_before:
                 type: string
                 format: date-time
-    GetCustomerNamedSchedulePayload:
+    ListContractsNamedSchedulesPage:
       type: object
+      x-stainless-skip: true
+      x-mint:
+        groups:
+        - ff:fancy-schedules-enabled
       required:
-      - customer_id
-      - schedule_name
+      - data
+      - next_page
       properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose named schedule is to be retrieved
-        schedule_name:
-          type: string
-          description: The identifier for the schedule to be retrieved
-        covering_date:
-          type: string
-          format: date-time
-          description: If provided, at most one schedule segment will be returned (the one that covers this date). If not provided, all segments will be returned.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerContractNamedSchedule'
+        next_page:
+          type:
+          - string
+          - 'null'
+          description: Cursor for the next page of results.
     CustomerContractNamedSchedule:
       type: object
       x-stainless-skip: true
@@ -483,6 +460,60 @@ components:
               ending_before:
                 type: string
                 format: date-time
+    GetCustomerNamedSchedulePayload:
+      type: object
+      required:
+      - customer_id
+      - schedule_name
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose named schedule is to be retrieved
+        schedule_name:
+          type: string
+          description: The identifier for the schedule to be retrieved
+        covering_date:
+          type: string
+          format: date-time
+          description: If provided, at most one schedule segment will be returned (the one that covers this date). If not provided, all segments will be returned.
+    UpdateContractNamedSchedulePayload:
+      type: object
+      required:
+      - customer_id
+      - contract_id
+      - schedule_name
+      - starting_at
+      - value
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose named schedule is to be updated
+        contract_id:
+          type: string
+          format: uuid
+          description: ID of the contract whose named schedule is to be updated
+        schedule_name:
+          type: string
+          description: The identifier for the schedule to be updated
+        starting_at:
+          type: string
+          format: date-time
+        ending_before:
+          type: string
+          format: date-time
+        value:
+          description: The value to set for the named schedule. The structure of this object is specific to the named schedule.
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: A set of key-value pairs that qualifies which schedule should be applied when looking up a schedule by name.
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:fancy-schedules-enabled
     GetRateCardNamedSchedulePayload:
       type: object
       required:
@@ -500,37 +531,6 @@ components:
           type: string
           format: date-time
           description: If provided, at most one schedule segment will be returned (the one that covers this date). If not provided, all segments will be returned.
-    GetContractNamedSchedulePayload:
-      type: object
-      required:
-      - customer_id
-      - contract_id
-      - schedule_name
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose named schedule is to be retrieved
-        contract_id:
-          type: string
-          format: uuid
-          description: ID of the contract whose named schedule is to be retrieved
-        schedule_name:
-          type: string
-          description: The identifier for the schedule to be retrieved
-        covering_date:
-          type: string
-          format: date-time
-          description: If provided, at most one schedule segment will be returned (the one that covers this date). If not provided, all segments will be returned.
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-          description: A set of key-value pairs that qualifies which schedule should be applied when looking up a schedule by name.
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:fancy-schedules-enabled
   securitySchemes:
     bearerAuth:
       type: http

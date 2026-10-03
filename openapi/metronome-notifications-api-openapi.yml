@@ -353,20 +353,6 @@ paths:
                     type: string
 components:
   schemas:
-    ListOffsetNotificationConfigsPayload:
-      type: object
-      properties:
-        limit:
-          type: number
-        cursor:
-          type: string
-        archive_filter:
-          type: string
-          enum:
-          - ARCHIVED
-          - NOT_ARCHIVED
-          - ALL
-          description: Filter options for the notification configurations. If not provided, defaults to NOT_ARCHIVED.
     LifecycleEventOffsetPolicy:
       type: object
       required:
@@ -384,29 +370,6 @@ components:
 
             '
           example: P1D
-    EditNotificationConfigPayload:
-      type: object
-      required:
-      - policy
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: 'The ID of the notification configuration to edit. Not provided when updating the configuration for system events
-
-            '
-        is_enabled:
-          type: boolean
-          description: 'Set to true to enable webhook messages for the notification indicated in the policy, false to disable.
-
-            Only supported by system lifecycle events.
-
-            '
-        policy:
-          oneOf:
-          - $ref: '#/components/schemas/LifecycleEventOffsetPolicy'
-          - $ref: '#/components/schemas/LifecycleEventSystemPolicy'
-          description: Updated policy configuration. The policy.type must match the existing lifecycle event type.
     LifecycleEventOffsetNotificationConfig:
       type: object
       required:
@@ -453,53 +416,6 @@ components:
           - 'null'
           format: date-time
           description: When this notification configuration was archived
-    LifecycleEventSystemPolicy:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: The type of lifecycle event (e.g., "contract.create", "contract.start")
-    UniquenessKey:
-      type: string
-      minLength: 1
-      maxLength: 128
-      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
-    ArchiveNotificationConfigPayload:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: 'The ID of the offset lifecycle event notification configuration to archive.
-
-            '
-    GetNotificationConfigPayload:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The ID of the notification configuration to retrieve
-    LifecycleEventSystemNotificationConfig:
-      type: object
-      required:
-      - type
-      - policy
-      properties:
-        type:
-          type: string
-          description: Indicates this is a system lifecycle event notification
-        is_enabled:
-          type: boolean
-          description: Whether or not webhook publishing for this lifecycle event is enabled
-        policy:
-          $ref: '#/components/schemas/LifecycleEventSystemPolicy'
     CreateNotificationConfigPayload:
       type: object
       required:
@@ -521,6 +437,90 @@ components:
           description: 'Optional uniqueness key to prevent duplicate notification configurations.
 
             '
+    LifecycleEventSystemPolicy:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: The type of lifecycle event (e.g., "contract.create", "contract.start")
+    ListOffsetNotificationConfigsPayload:
+      type: object
+      properties:
+        limit:
+          type: number
+        cursor:
+          type: string
+        archive_filter:
+          type: string
+          enum:
+          - ARCHIVED
+          - NOT_ARCHIVED
+          - ALL
+          description: Filter options for the notification configurations. If not provided, defaults to NOT_ARCHIVED.
+    EditNotificationConfigPayload:
+      type: object
+      required:
+      - policy
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'The ID of the notification configuration to edit. Not provided when updating the configuration for system events
+
+            '
+        is_enabled:
+          type: boolean
+          description: 'Set to true to enable webhook messages for the notification indicated in the policy, false to disable.
+
+            Only supported by system lifecycle events.
+
+            '
+        policy:
+          oneOf:
+          - $ref: '#/components/schemas/LifecycleEventOffsetPolicy'
+          - $ref: '#/components/schemas/LifecycleEventSystemPolicy'
+          description: Updated policy configuration. The policy.type must match the existing lifecycle event type.
+    UniquenessKey:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
+    ArchiveNotificationConfigPayload:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'The ID of the offset lifecycle event notification configuration to archive.
+
+            '
+    LifecycleEventSystemNotificationConfig:
+      type: object
+      required:
+      - type
+      - policy
+      properties:
+        type:
+          type: string
+          description: Indicates this is a system lifecycle event notification
+        is_enabled:
+          type: boolean
+          description: Whether or not webhook publishing for this lifecycle event is enabled
+        policy:
+          $ref: '#/components/schemas/LifecycleEventSystemPolicy'
+    GetNotificationConfigPayload:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the notification configuration to retrieve
   securitySchemes:
     bearerAuth:
       type: http

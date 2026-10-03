@@ -197,6 +197,32 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    RevenueSystemPayment:
+      type: object
+      required:
+      - revenue_system_provider
+      - sync_status
+      properties:
+        revenue_system_provider:
+          type: string
+        revenue_system_external_payment_id:
+          type: string
+        sync_status:
+          type: string
+        error_message:
+          type: string
+          description: The error message from the revenue system, if available.
     PaymentStatus:
       type: string
       enum:
@@ -204,13 +230,6 @@ components:
       - requires_intervention
       - paid
       - canceled
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
     Payment:
       type: object
       required:
@@ -282,32 +301,13 @@ components:
                   type: string
                 decline_code:
                   type: string
-    CreditType:
+    Error:
       required:
-      - name
-      - id
+      - message
       type: object
       properties:
-        name:
+        message:
           type: string
-        id:
-          type: string
-          format: uuid
-    RevenueSystemPayment:
-      type: object
-      required:
-      - revenue_system_provider
-      - sync_status
-      properties:
-        revenue_system_provider:
-          type: string
-        revenue_system_external_payment_id:
-          type: string
-        sync_status:
-          type: string
-        error_message:
-          type: string
-          description: The error message from the revenue system, if available.
   responses:
     NotFound:
       description: The specified resource was not found

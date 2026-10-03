@@ -629,67 +629,89 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    PagedUsageQueryPayload:
+    SeatsUsageAggregate:
       required:
-      - billable_metric_id
-      - customer_id
-      - window_size
+      - starting_on
+      - ending_before
+      - value
       type: object
       properties:
-        customer_id:
-          type: string
-          format: uuid
-        billable_metric_id:
-          type: string
-          format: uuid
-        window_size:
-          type: string
-          description: A window_size of "day" or "hour" will return the usage for the specified period segmented into daily or hourly aggregates. A window_size of "none" will return a single usage aggregate for the entirety of the specified period.
-          enum:
-          - hour
-          - day
-          - none
-          - HOUR
-          - DAY
-          - NONE
-          - Hour
-          - Day
-          - None
         starting_on:
           type: string
           format: date-time
         ending_before:
           type: string
           format: date-time
-        group_by:
-          type: object
-          description: Use group_key and group_filters instead. Use a single group key to group by. Compound group keys are not supported.
-          deprecated: true
-          required:
-          - key
-          properties:
-            key:
-              type: string
-              description: The name of the group_by key to use
-            values:
-              type: array
-              description: Values of the group_by key to return in the query. Omit this if you'd like all values for the key returned.
-              minItems: 1
-              items:
-                type: string
-                minLength: 1
-        group_key:
-          $ref: '#/components/schemas/GroupKey'
-        group_filters:
-          $ref: '#/components/schemas/GroupFilter'
-        current_period:
-          type: boolean
-          description: If true, will return the usage for the current billing period. Will return an error if the customer is currently uncontracted or starting_on and ending_before are specified when this is true.
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
+        value:
+          type:
+          - number
+          - 'null'
+    GroupKey:
+      type: array
+      description: 'Group key to group usage by. Supports both simple (single key) and compound (multiple keys) group keys.
+
+
+        For simple group keys, provide a single key e.g. `["region"]`.
+
+        For compound group keys, provide multiple keys e.g. `["region", "team"]`.
+
+
+        For streaming metrics, the keys must be defined as a simple or compound group key on the billable metric.
+
+        For compound group keys, all keys must match an exact compound group key definition — partial matches are not allowed.
+
+
+        Cannot be used together with `group_by`.
+
+        '
+      items:
         type: string
+        minLength: 1
+      minItems: 1
+      example:
+      - region
+      - team
+    AggregationTypeForEventsSearch:
+      type: string
+      enum:
+      - count
+      - Count
+      - COUNT
+      - latest
+      - Latest
+      - LATEST
+      - max
+      - Max
+      - MAX
+      - sum
+      - Sum
+      - SUM
+      - unique
+      - Unique
+      - UNIQUE
+      - custom_sql
+      description: Specifies the type of aggregation performed on matching events. Includes "custom_sql" for events search endpoint responses.
+    EventTypeFilter:
+      type: object
+      properties:
+        in_values:
+          type: array
+          items:
+            type: string
+          description: A list of event types that are explicitly included in the billable metric. If specified, only events of these types will match the billable metric. Must be non-empty if present.
+        not_in_values:
+          type: array
+          items:
+            type: string
+          description: A list of event types that are explicitly excluded from the billable metric. If specified, events of these types will not match the billable metric. Must be non-empty if present.
+      description: An optional filtering rule to match the 'event_type' property of an event.
+    BillableMetricForEventsSearch:
+      allOf:
+      - $ref: '#/components/schemas/BillableMetricBase'
+      - type: object
+        properties:
+          aggregation_type:
+            $ref: '#/components/schemas/AggregationTypeForEventsSearch'
     BillableMetricBase:
       required:
       - name
@@ -761,111 +783,24 @@ components:
         properties:
           type: object
           additionalProperties: true
-    SeatsUsageQueryPayload:
-      required:
-      - seat_metric_id
-      - customer_id
-      - window_size
-      - usage_type
+    GroupFilter:
       type: object
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-        seat_metric_id:
-          type: string
-          format: uuid
-        usage_type:
-          type: string
-          description: The type of usage to return, max or latest value.
-          enum:
-          - max
-          - latest
-          - MAX
-          - LATEST
-          - Max
-          - Latest
-        window_size:
-          type: string
-          description: A window_size of "day" or "hour" will return the usage for the specified period segmented into daily or hourly aggregates. A window_size of "none" will return a single usage aggregate for the entirety of the specified period.
-          enum:
-          - hour
-          - day
-          - none
-          - HOUR
-          - DAY
-          - NONE
-          - Hour
-          - Day
-          - None
-        starting_on:
-          type: string
-          format: date-time
-        ending_before:
-          type: string
-          format: date-time
-        current_period:
-          type: boolean
-          description: If true, will return the usage for the current billing period. Will return an error if the customer is currently uncontracted or starting_on and ending_before are specified when this is true.
-    UsageBatchAggregate:
-      required:
-      - customer_id
-      - billable_metric_id
-      - billable_metric_name
-      - start_timestamp
-      - end_timestamp
-      - value
-      type: object
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-        billable_metric_id:
-          type: string
-          format: uuid
-        billable_metric_name:
-          type: string
-        start_timestamp:
-          type: string
-          format: date-time
-        end_timestamp:
-          type: string
-          format: date-time
-        value:
-          type:
-          - number
-          - 'null'
-        groups:
-          type: object
-          additionalProperties:
-            type:
-            - number
-            - 'null'
-          description: Values will be either a number or null. Null indicates that there were no matches for the group_by value.
-    SeatsUsageAggregate:
-      required:
-      - starting_on
-      - ending_before
-      - value
-      type: object
-      properties:
-        starting_on:
-          type: string
-          format: date-time
-        ending_before:
-          type: string
-          format: date-time
-        value:
-          type:
-          - number
-          - 'null'
-    GroupKeysArray:
-      type: array
-      items:
+      description: 'Object mapping group keys to arrays of values to filter on. Only usage matching these filter values will be returned.
+
+        Keys must be present in group_key. Omit a key or use an empty array to include all values for that dimension.
+
+        '
+      additionalProperties:
         type: array
         items:
           type: string
-      description: Property names that are used to group usage costs on an invoice. Each entry represents a set of properties used to slice events into distinct buckets.
+          minLength: 1
+      example:
+        region:
+        - us-east1
+        - us-west1
+        team:
+        - UI
     UsageBatchQueryPayload:
       required:
       - window_size
@@ -925,13 +860,191 @@ components:
         ending_before:
           type: string
           format: date-time
-    BillableMetricForEventsSearch:
-      allOf:
-      - $ref: '#/components/schemas/BillableMetricBase'
-      - type: object
-        properties:
-          aggregation_type:
-            $ref: '#/components/schemas/AggregationTypeForEventsSearch'
+    PropertyFilter:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the event property.
+        exists:
+          type: boolean
+          description: Determines whether the property must exist in the event. If true, only events with this property will pass the filter. If false, only events without this property will pass the filter. If null or omitted, the existence of the property is optional.
+        in_values:
+          type: array
+          items:
+            type: string
+          description: Specifies the allowed values for the property to match an event. An event will pass the filter only if its property value is included in this list. If undefined, all property values will pass the filter. Must be non-empty if present.
+        not_in_values:
+          type: array
+          items:
+            type: string
+          description: Specifies the values that prevent an event from matching the filter. An event will not pass the filter if its property value is included in this list. If null or empty, all property values will pass the filter. Must be non-empty if present.
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    SeatsUsageQueryPayload:
+      required:
+      - seat_metric_id
+      - customer_id
+      - window_size
+      - usage_type
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        seat_metric_id:
+          type: string
+          format: uuid
+        usage_type:
+          type: string
+          description: The type of usage to return, max or latest value.
+          enum:
+          - max
+          - latest
+          - MAX
+          - LATEST
+          - Max
+          - Latest
+        window_size:
+          type: string
+          description: A window_size of "day" or "hour" will return the usage for the specified period segmented into daily or hourly aggregates. A window_size of "none" will return a single usage aggregate for the entirety of the specified period.
+          enum:
+          - hour
+          - day
+          - none
+          - HOUR
+          - DAY
+          - NONE
+          - Hour
+          - Day
+          - None
+        starting_on:
+          type: string
+          format: date-time
+        ending_before:
+          type: string
+          format: date-time
+        current_period:
+          type: boolean
+          description: If true, will return the usage for the current billing period. Will return an error if the customer is currently uncontracted or starting_on and ending_before are specified when this is true.
+    PropertyFiltersArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/PropertyFilter'
+      description: A list of filters to match events to this billable metric. Each filter defines a rule on an event property. All rules must pass for the event to match the billable metric.
+    Error:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+    UsageBatchAggregate:
+      required:
+      - customer_id
+      - billable_metric_id
+      - billable_metric_name
+      - start_timestamp
+      - end_timestamp
+      - value
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        billable_metric_id:
+          type: string
+          format: uuid
+        billable_metric_name:
+          type: string
+        start_timestamp:
+          type: string
+          format: date-time
+        end_timestamp:
+          type: string
+          format: date-time
+        value:
+          type:
+          - number
+          - 'null'
+        groups:
+          type: object
+          additionalProperties:
+            type:
+            - number
+            - 'null'
+          description: Values will be either a number or null. Null indicates that there were no matches for the group_by value.
+    AggregationKey:
+      type: string
+      description: A key that specifies which property of the event is used to aggregate data. This key must be one of the property filter names and is not applicable when the aggregation type is 'count'.
+    PagedUsageQueryPayload:
+      required:
+      - billable_metric_id
+      - customer_id
+      - window_size
+      type: object
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        billable_metric_id:
+          type: string
+          format: uuid
+        window_size:
+          type: string
+          description: A window_size of "day" or "hour" will return the usage for the specified period segmented into daily or hourly aggregates. A window_size of "none" will return a single usage aggregate for the entirety of the specified period.
+          enum:
+          - hour
+          - day
+          - none
+          - HOUR
+          - DAY
+          - NONE
+          - Hour
+          - Day
+          - None
+        starting_on:
+          type: string
+          format: date-time
+        ending_before:
+          type: string
+          format: date-time
+        group_by:
+          type: object
+          description: Use group_key and group_filters instead. Use a single group key to group by. Compound group keys are not supported.
+          deprecated: true
+          required:
+          - key
+          properties:
+            key:
+              type: string
+              description: The name of the group_by key to use
+            values:
+              type: array
+              description: Values of the group_by key to return in the query. Omit this if you'd like all values for the key returned.
+              minItems: 1
+              items:
+                type: string
+                minLength: 1
+        group_key:
+          $ref: '#/components/schemas/GroupKey'
+        group_filters:
+          $ref: '#/components/schemas/GroupFilter'
+        current_period:
+          type: boolean
+          description: If true, will return the usage for the current billing period. Will return an error if the customer is currently uncontracted or starting_on and ending_before are specified when this is true.
+    GroupKeysArray:
+      type: array
+      items:
+        type: array
+        items:
+          type: string
+      description: Property names that are used to group usage costs on an invoice. Each entry represents a set of properties used to slice events into distinct buckets.
     PagedUsageAggregate:
       required:
       - starting_on
@@ -974,127 +1087,15 @@ components:
           type:
           - number
           - 'null'
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    GroupFilter:
-      type: object
-      description: 'Object mapping group keys to arrays of values to filter on. Only usage matching these filter values will be returned.
-
-        Keys must be present in group_key. Omit a key or use an empty array to include all values for that dimension.
-
-        '
-      additionalProperties:
-        type: array
-        items:
-          type: string
-          minLength: 1
-      example:
-        region:
-        - us-east1
-        - us-west1
-        team:
-        - UI
-    PropertyFilter:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the event property.
-        exists:
-          type: boolean
-          description: Determines whether the property must exist in the event. If true, only events with this property will pass the filter. If false, only events without this property will pass the filter. If null or omitted, the existence of the property is optional.
-        in_values:
-          type: array
-          items:
-            type: string
-          description: Specifies the allowed values for the property to match an event. An event will pass the filter only if its property value is included in this list. If undefined, all property values will pass the filter. Must be non-empty if present.
-        not_in_values:
-          type: array
-          items:
-            type: string
-          description: Specifies the values that prevent an event from matching the filter. An event will not pass the filter if its property value is included in this list. If null or empty, all property values will pass the filter. Must be non-empty if present.
-    AggregationTypeForEventsSearch:
-      type: string
-      enum:
-      - count
-      - Count
-      - COUNT
-      - latest
-      - Latest
-      - LATEST
-      - max
-      - Max
-      - MAX
-      - sum
-      - Sum
-      - SUM
-      - unique
-      - Unique
-      - UNIQUE
-      - custom_sql
-      description: Specifies the type of aggregation performed on matching events. Includes "custom_sql" for events search endpoint responses.
-    GroupKey:
-      type: array
-      description: 'Group key to group usage by. Supports both simple (single key) and compound (multiple keys) group keys.
-
-
-        For simple group keys, provide a single key e.g. `["region"]`.
-
-        For compound group keys, provide multiple keys e.g. `["region", "team"]`.
-
-
-        For streaming metrics, the keys must be defined as a simple or compound group key on the billable metric.
-
-        For compound group keys, all keys must match an exact compound group key definition — partial matches are not allowed.
-
-
-        Cannot be used together with `group_by`.
-
-        '
-      items:
-        type: string
-        minLength: 1
-      minItems: 1
-      example:
-      - region
-      - team
-    EventTypeFilter:
-      type: object
-      properties:
-        in_values:
-          type: array
-          items:
-            type: string
-          description: A list of event types that are explicitly included in the billable metric. If specified, only events of these types will match the billable metric. Must be non-empty if present.
-        not_in_values:
-          type: array
-          items:
-            type: string
-          description: A list of event types that are explicitly excluded from the billable metric. If specified, events of these types will not match the billable metric. Must be non-empty if present.
-      description: An optional filtering rule to match the 'event_type' property of an event.
-    PropertyFiltersArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/PropertyFilter'
-      description: A list of filters to match events to this billable metric. Each filter defines a rule on an event property. All rules must pass for the event to match the billable metric.
-    AggregationKey:
-      type: string
-      description: A key that specifies which property of the event is used to aggregate data. This key must be one of the property filter names and is not applicable when the aggregation type is 'count'.
-  responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
+    CustomerId:
+      name: customer_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
     NextPage:
       name: next_page
       in: query
@@ -1111,14 +1112,13 @@ components:
         type: integer
         minimum: 1
         maximum: 100
-    CustomerId:
-      name: customer_id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http

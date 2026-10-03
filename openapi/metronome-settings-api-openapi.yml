@@ -523,32 +523,25 @@ components:
         - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
         gcp_marketplace:
         - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-    GABillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - aws_sns
-    Error:
-      required:
-      - message
+    UpdateStripeBillingSettingsPayload:
       type: object
       properties:
-        message:
+        stripe_api_key:
           type: string
-    BillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - tackle
-      - aws_sns
-    GABillingProviderType:
-      type: string
-      enum:
-      - aws_marketplace
-      - azure_marketplace
-      - gcp_marketplace
+          description: API key used to call the Stripe APIs
+        anrok_api_key:
+          type:
+          - string
+          - 'null'
+          description: API key used to call the Anrok APIs
+    SetClientWebhookSecretPayload:
+      required:
+      - webhook_secret
+      type: object
+      properties:
+        webhook_secret:
+          type: string
+          description: The client webhook secret used to verify webhook results
     BillingProviderDeliveryMethod:
       type: object
       required:
@@ -571,22 +564,6 @@ components:
           type: object
           additionalProperties: true
           description: Configuration for the delivery method. The structure of this object is specific to the delivery method. Some configuration may be omitted for security reasons.
-    SetClientWebhookSecretPayload:
-      required:
-      - webhook_secret
-      type: object
-      properties:
-        webhook_secret:
-          type: string
-          description: The client webhook secret used to verify webhook results
-    SetBillingProviderApiKeyPayload:
-      required:
-      - api_key
-      type: object
-      properties:
-        api_key:
-          type: string
-          description: API key to set for the billing provider.
     CreateStripeBillingSettingsPayload:
       type: object
       properties:
@@ -600,21 +577,51 @@ components:
           description: API key used to call the Anrok APIs
       required:
       - stripe_api_key
+    BillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - tackle
+      - aws_sns
+    GABillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - aws_sns
+    SetBillingProviderApiKeyPayload:
+      required:
+      - api_key
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: API key to set for the billing provider.
     BillingProviderSettingsType:
       type: string
       enum:
       - stripe
-    UpdateStripeBillingSettingsPayload:
+    GABillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - azure_marketplace
+      - gcp_marketplace
+    Error:
+      required:
+      - message
       type: object
       properties:
-        stripe_api_key:
+        message:
           type: string
-          description: API key used to call the Stripe APIs
-        anrok_api_key:
-          type:
-          - string
-          - 'null'
-          description: API key used to call the Anrok APIs
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     BillingProviderSettingsType:
       name: billing_provider_type
@@ -640,13 +647,6 @@ components:
         type: integer
         minimum: 1
         maximum: 100
-  responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http
