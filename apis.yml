@@ -323,6 +323,9 @@ apis:
   - type: GettingStarted
     url: https://docs.metronome.com/
 common:
+  - type: CapabilityMap
+    url: capabilities/metronome-capability-edges.yml
+    name: Metronome Business Capability Map
   - type: AgenticAccess
     url: agentic-access/metronome-agentic-access.yml
   - type: TrustCenter

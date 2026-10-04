@@ -1,0 +1,77 @@
+slug: metronome
+provider: Metronome
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: Invoices
+  spec_file: metronome-invoices-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.9
+  evidence: Invoices reflect how much a customer spent during a period, which is the basis for billing
+    ... voidInvoice-v1 Void an invoice; getInvoicePdf-v1 Get an invoice PDF
+  reason: Generation, retrieval, PDF delivery, voiding and regeneration of customer invoices on a subscription/usage
+    billing platform is squarely Invoicing & Statement Management.
+- tag: Usage
+  spec_file: metronome-usage-api-openapi.yml
+  capability_id: BC-4250.10
+  capability_id_l1: BC-4250
+  capability_name: Usage Metering
+  confidence: 0.9
+  evidence: '''Usage events are the basis for billable metrics. Use these endpoints to send usage events
+    to Metronome and retrieve aggregated event data.''; POST /v1/ingest ingest-v1 ''Ingest events'''
+  reason: Ingestion and aggregation of billable usage events feeding rating and analytics is exactly usage
+    metering.
+- tag: Payments
+  spec_file: metronome-payments-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.88
+  evidence: POST /v1/payments/attempt 'Attempt payment for an invoice'; POST /v1/payments/cancel; schemas
+    Payment, PaymentStatus, StripePaymentGateway
+  reason: Operations authorise, cancel and list payments against invoices via a payment gateway, which
+    is payment collection within the subscription billing lifecycle.
+- tag: Billable Metrics
+  spec_file: metronome-billable-metrics-api-openapi.yml
+  capability_id: BC-4250.10
+  capability_id_l1: BC-4250
+  capability_name: Usage Metering
+  confidence: 0.82
+  evidence: 'POST /v1/billable-metrics createBillableMetric-v1 Create a billable metric ... schemas: AggregationType,
+    AggregationKey, EventTypeFilter, PropertyFilter'
+  reason: Billable metrics define how raw usage events are filtered and aggregated for billing — the configuration
+    layer of usage metering (BC-4250.10) on a usage-based billing platform.
+- tag: Contracts
+  spec_file: metronome-contracts-api-openapi.yml
+  capability_id: BC-4240.20
+  capability_id_l1: BC-4240
+  capability_name: Subscription Contracting
+  confidence: 0.75
+  evidence: A contract defines a customer\u2019s products, pricing, discounts, commitments, and more ...
+    amendContract-v1 Amend a contract; getSubscriptionSeatsHistory-v1 Get subscription seats history
+  reason: Creation, amendment and end-dating of customer subscription contracts with rate schedules and
+    seat/quantity history is subscription contracting; some overlap with subscription modification keeps
+    confidence below 0.8.
+- tag: Rate cards
+  spec_file: metronome-rate-cards-api-openapi.yml
+  capability_id: BC-440.20
+  capability_id_l1: BC-440
+  capability_name: Price List Management
+  confidence: 0.7
+  evidence: '''Rate cards are used to define default pricing for products.''; ''Add a rate'', ''Get a
+    rate schedule''; schemas RateCard, RateSchedule, Tier, MinimumConfig'
+  reason: Rate cards are price books defining default list pricing and rate schedules for products, which
+    is price list maintenance. Could alternatively be read as rating/charging configuration, so confidence
+    is moderate.
