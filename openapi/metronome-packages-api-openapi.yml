@@ -290,503 +290,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    ApplySeatIncreaseConfigForRecurringCommit:
-      type: object
-      required:
-      - is_prorated
-      properties:
-        is_prorated:
-          type: boolean
-          description: Indicates whether a mid-period seat increase should be prorated.
-    SpendThresholdCommit:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/BaseThresholdCommit'
-    SpendThresholdConfiguration:
-      type: object
-      required:
-      - is_enabled
-      - threshold_amount
-      - commit
-      - payment_gate_config
-      properties:
-        is_enabled:
-          type: boolean
-          description: When set to false, the contract will not be evaluated against the threshold_amount. Toggling to true will result an immediate evaluation, regardless of prior state.
-        threshold_amount:
-          description: Specify the threshold amount for the contract. Each time the contract's usage hits this amount, a threshold charge will be initiated.
-          type: number
-        commit:
-          $ref: '#/components/schemas/SpendThresholdCommit'
-        payment_gate_config:
-          $ref: '#/components/schemas/PaymentGateConfig'
-        discount_configuration:
-          x-mint:
-            groups:
-            - ff:threshold-billing-discounts
-          $ref: '#/components/schemas/DiscountConfiguration'
-    OverrideTier:
-      type: object
-      required:
-      - multiplier
-      properties:
-        size:
-          type: number
-        multiplier:
-          type: number
-    ScheduledChargesOnUsageInvoices:
-      type: string
-      description: Determines which scheduled and commit charges to consolidate onto the Contract's usage invoice. The charge's `timestamp` must match the usage invoice's `ending_before` date for consolidation to occur. This field cannot be modified after a Contract has been created. If this field is omitted, charges will appear on a separate invoice from usage charges.
-      enum:
-      - ALL
-    Package:
-      type: object
-      required:
-      - id
-      - commits
-      - overrides
-      - scheduled_charges
-      - created_at
-      - created_by
-      - usage_statement_schedule
-      properties:
-        id:
-          type: string
-          format: uuid
-        uniqueness_key:
-          $ref: '#/components/schemas/UniquenessKey'
-        name:
-          type: string
-        rate_card_id:
-          type: string
-          format: uuid
-        aliases:
-          type: array
-          items:
-            $ref: '#/components/schemas/PackageAlias'
-        duration:
-          $ref: '#/components/schemas/RelativeDate'
-        commits:
-          type: array
-          items:
-            $ref: '#/components/schemas/CommitTemplate'
-        credits:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreditTemplate'
-        overrides:
-          type: array
-          items:
-            $ref: '#/components/schemas/OverrideTemplate'
-        scheduled_charges:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScheduledChargeTemplate'
-        scheduled_charges_on_usage_invoices:
-          $ref: '#/components/schemas/ScheduledChargesOnUsageInvoices'
-        created_at:
-          type: string
-          format: date-time
-        created_by:
-          type: string
-        net_payment_terms_days:
-          type: number
-        usage_statement_schedule:
-          $ref: '#/components/schemas/UsageStatementScheduleTemplate'
-        multiplier_override_prioritization:
-          type: string
-          enum:
-          - LOWEST_MULTIPLIER
-          - EXPLICIT
-          description: Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list prices automatically. EXPLICIT prioritization requires specifying priorities for each multiplier; the one with the lowest priority value will be prioritized first.
-        billing_provider:
-          $ref: '#/components/schemas/BillingProviderType'
-        delivery_method:
-          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
-        recurring_commits:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecurringCommitTemplate'
-        recurring_credits:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecurringCreditTemplate'
-        spend_threshold_configuration:
-          $ref: '#/components/schemas/SpendThresholdConfiguration'
-        prepaid_balance_threshold_configuration:
-          $ref: '#/components/schemas/PrepaidBalanceThresholdConfiguration'
-        subscriptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubscriptionTemplate'
-        contract_name:
-          type: string
-          description: The name to use for contracts created from this package.
-        archived_at:
-          type: string
-          format: date-time
-    UniquenessKey:
-      type: string
-      minLength: 1
-      maxLength: 128
-      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
-    PackageAlias:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-        starting_at:
-          type: string
-          format: date-time
-        ending_before:
-          type: string
-          format: date-time
-    PrepaidBalanceThresholdConfiguration:
-      type: object
-      required:
-      - is_enabled
-      - threshold_amount
-      - recharge_to_amount
-      - commit
-      - payment_gate_config
-      properties:
-        is_enabled:
-          type: boolean
-          description: When set to false, the contract will not be evaluated against the threshold_amount. Toggling to true will result an immediate evaluation, regardless of prior state.
-        threshold_amount:
-          description: Specify the threshold amount for the contract. Each time the contract's prepaid balance lowers to this amount, a threshold charge will be initiated.
-          type: number
-        recharge_to_amount:
-          description: Specify the amount the balance should be recharged to.
-          type: number
-        custom_credit_type_id:
-          description: If provided, the threshold, recharge-to amount, and the resulting threshold commit amount will be in terms of this credit type instead of the fiat currency.
-          type: string
-          format: uuid
-        commit:
-          $ref: '#/components/schemas/PrepaidBalanceThresholdCommit'
-        payment_gate_config:
-          $ref: '#/components/schemas/PaymentGateConfig'
-        discount_configuration:
-          x-mint:
-            groups:
-            - ff:threshold-billing-discounts
-          $ref: '#/components/schemas/DiscountConfiguration'
-    CreditTemplate:
-      type: object
-      required:
-      - id
-      - type
-      - product
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        description:
-          type: string
-        priority:
-          type: number
-        custom_fields:
-          x-cf-entity: package_credit
-          $ref: '#/components/schemas/CustomField'
-        product:
-          type: object
-          required:
-          - id
-          - name
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-        applicable_product_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-        applicable_product_tags:
-          type: array
-          items:
-            type: string
-        specifiers:
-          type: array
-          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown.
-          items:
-            $ref: '#/components/schemas/CommitSpecifier'
-        access_schedule:
-          $ref: '#/components/schemas/RelativeScheduleDuration'
-        rate_type:
-          type: string
-          enum:
-          - COMMIT_RATE
-          - LIST_RATE
-    ExcludeSpecifier:
-      type: object
-      properties:
-        product_tags:
-          type: array
-          items:
-            type: string
-          description: If provided, the specifier will not apply to products with all the specified tags.
-    BaseThresholdCommit:
-      type: object
-      required:
-      - product_id
-      properties:
-        product_id:
-          type: string
-          description: The commit product that will be used to generate the line item for commit payment.
-        name:
-          type: string
-          description: Specify the name of the line item for the threshold charge. If left blank, it will default to the commit product name.
-        description:
-          type: string
-        priority:
-          type: number
-          description: The priority of the commit, used to determine drawdown order. Lower priority commits are consumed first. Defaults to 100 if not specified.
-    SubscriptionRate:
-      type: object
-      required:
-      - billing_frequency
-      - product
-      properties:
-        billing_frequency:
-          type: string
-          enum:
-          - MONTHLY
-          - QUARTERLY
-          - ANNUAL
-          - WEEKLY
-          - monthly
-          - quarterly
-          - annual
-          - weekly
-        product:
-          type: object
-          required:
-          - id
-          - name
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-    CommitSpecifier:
-      type: object
-      properties:
-        product_id:
-          type: string
-          format: uuid
-          description: If provided, the specifier will only apply to the product with the specified ID.
-        product_tags:
-          type: array
-          items:
-            type: string
-          description: If provided, the specifier will only apply to products with all the specified tags.
-        pricing_group_values:
-          type: object
-          additionalProperties:
-            type: string
-        presentation_group_values:
-          type: object
-          additionalProperties:
-            type: string
-        exclude:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:exclude-specifiers-ga
-          type: array
-          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
-          items:
-            $ref: '#/components/schemas/ExcludeSpecifier'
-    SubscriptionTemplate:
-      type: object
-      required:
-      - subscription_rate
-      - collection_schedule
-      - proration
-      properties:
-        id:
-          type: string
-          format: uuid
-        custom_fields:
-          x-cf-entity: package_subscription
-          $ref: '#/components/schemas/CustomField'
-        subscription_rate:
-          $ref: '#/components/schemas/SubscriptionRate'
-        name:
-          type: string
-        description:
-          type: string
-        collection_schedule:
-          type: string
-          enum:
-          - ADVANCE
-          - ARREARS
-          - advance
-          - arrears
-        proration:
-          $ref: '#/components/schemas/SubscriptionProration'
-        initial_quantity:
-          type: number
-        quantity_management_mode:
-          type: string
-          enum:
-          - SEAT_BASED
-          - seat_based
-          - QUANTITY_ONLY
-          - quantity_only
-          description: 'Determines how the subscription''s quantity is controlled. Defaults to QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified directly on the subscription. `initial_quantity` must be provided with this option. Compatible with recurring commits/credits that use POOLED allocation. **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add user_123) to increment and decrement a subscription quantity, rather than directly providing the quantity. You must use a SEAT_BASED subscription to use a linked recurring credit with an allocation per seat. `seat_config` must be provided with this option.'
-        seat_config:
-          $ref: '#/components/schemas/SubscriptionSeatConfig'
-        starting_at_offset:
-          $ref: '#/components/schemas/RelativeDate'
-        duration:
-          $ref: '#/components/schemas/RelativeDate'
-        fiat_credit_type_id:
-          type: string
-          format: uuid
-    RelativeSchedulePointInTime:
-      type: object
-      required:
-      - credit_type
-      - schedule_items
-      properties:
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - unit_price
-            - quantity
-            - date_offset
-            properties:
-              id:
-                type: string
-                format: uuid
-              unit_price:
-                type: number
-              quantity:
-                type: number
-              date_offset:
-                $ref: '#/components/schemas/RelativeDate'
-    OverrideTemplate:
-      type: object
-      required:
-      - id
-      - starting_at_offset
-      - override_specifiers
-      properties:
-        id:
-          type: string
-          format: uuid
-        product:
-          type: object
-          required:
-          - id
-          - name
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
-        applicable_product_tags:
-          type: array
-          items:
-            type: string
-        override_specifiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OverrideSpecifierTemplate'
-        starting_at_offset:
-          $ref: '#/components/schemas/RelativeDate'
-        duration:
-          $ref: '#/components/schemas/RelativeDate'
-        entitled:
-          type: boolean
-        type:
-          type: string
-          enum:
-          - OVERWRITE
-          - MULTIPLIER
-          - TIERED
-        priority:
-          type: number
-        multiplier:
-          type: number
-        overwrite_rate:
-          $ref: '#/components/schemas/OverwriteRate'
-        override_tiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OverrideTier'
-        is_commit_specific:
-          type: boolean
-        target:
-          type: string
-          enum:
-          - COMMIT_RATE
-          - LIST_RATE
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-    OverrideSpecifierTemplate:
-      type: object
-      properties:
-        product_id:
-          type: string
-          format: uuid
-        product_tags:
-          type: array
-          items:
-            type: string
-        pricing_group_values:
-          type: object
-          additionalProperties:
-            type: string
-        presentation_group_values:
-          type: object
-          additionalProperties:
-            type:
-            - string
-            - 'null'
-        commit_template_ids:
-          type: array
-          items:
-            type: string
-        recurring_commit_template_ids:
-          type: array
-          items:
-            type: string
-        billing_frequency:
-          type: string
-          enum:
-          - MONTHLY
-          - QUARTERLY
-          - ANNUAL
-          - WEEKLY
-        exclude:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:exclude-specifiers-ga
-          type: array
-          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
-          items:
-            $ref: '#/components/schemas/ExcludeSpecifier'
     OverwriteRate:
       type: object
       required:
@@ -873,59 +376,153 @@ components:
           description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
         credit_type:
           $ref: '#/components/schemas/CreditType'
-    DiscountConfiguration:
+    RelativeSchedulePointInTime:
       type: object
       required:
-      - payment_fraction
+      - credit_type
+      - schedule_items
       properties:
-        payment_fraction:
-          type: number
-          description: The fraction of the original amount that the customer pays after applying the discount. For example, 0.85 means the customer pays 85% of the original amount (a 15% discount).
-    SubscriptionProration:
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - unit_price
+            - quantity
+            - date_offset
+            properties:
+              id:
+                type: string
+                format: uuid
+              unit_price:
+                type: number
+              quantity:
+                type: number
+              date_offset:
+                $ref: '#/components/schemas/RelativeDate'
+    RelativeScheduleDuration:
       type: object
       required:
-      - is_prorated
-      - invoice_behavior
+      - credit_type
+      - schedule_items
       properties:
-        is_prorated:
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - starting_at_offset
+            - duration
+            - amount
+            properties:
+              id:
+                type: string
+                format: uuid
+              starting_at_offset:
+                $ref: '#/components/schemas/RelativeDate'
+              duration:
+                $ref: '#/components/schemas/RelativeDate'
+              amount:
+                type: number
+    SpendThresholdConfiguration:
+      type: object
+      required:
+      - is_enabled
+      - threshold_amount
+      - commit
+      - payment_gate_config
+      properties:
+        is_enabled:
           type: boolean
-        invoice_behavior:
+          description: When set to false, the contract will not be evaluated against the threshold_amount. Toggling to true will result an immediate evaluation, regardless of prior state.
+        threshold_amount:
+          description: Specify the threshold amount for the contract. Each time the contract's usage hits this amount, a threshold charge will be initiated.
+          type: number
+        commit:
+          $ref: '#/components/schemas/SpendThresholdCommit'
+        payment_gate_config:
+          $ref: '#/components/schemas/PaymentGateConfig'
+        discount_configuration:
+          x-mint:
+            groups:
+            - ff:threshold-billing-discounts
+          $ref: '#/components/schemas/DiscountConfiguration'
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
           type: string
-          enum:
-          - BILL_IMMEDIATELY
-          - BILL_ON_NEXT_COLLECTION_DATE
-          - bill_immediately
-          - bill_on_next_collection_date
-    BillingProviderType:
+          format: uuid
+    CommitSpecifier:
+      type: object
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: If provided, the specifier will only apply to the product with the specified ID.
+        product_tags:
+          type: array
+          items:
+            type: string
+          description: If provided, the specifier will only apply to products with all the specified tags.
+        pricing_group_values:
+          type: object
+          additionalProperties:
+            type: string
+        presentation_group_values:
+          type: object
+          additionalProperties:
+            type: string
+        exclude:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:exclude-specifiers-ga
+          type: array
+          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
+          items:
+            $ref: '#/components/schemas/ExcludeSpecifier'
+    RecurringCommitTemplate:
+      allOf:
+      - $ref: '#/components/schemas/RecurringCreditTemplate'
+      - type: object
+        properties:
+          invoice_amount:
+            type: object
+            required:
+            - unit_price
+            - quantity
+            - credit_type_id
+            properties:
+              unit_price:
+                type: number
+              quantity:
+                type: number
+              credit_type_id:
+                type: string
+                format: uuid
+            description: The amount the customer should be billed for the commit.
+    UniquenessKey:
       type: string
-      enum:
-      - aws_marketplace
-      - stripe
-      - netsuite
-      - custom
-      - azure_marketplace
-      - quickbooks_online
-      - workday
-      - gcp_marketplace
-      - metronome
-      x-mint-enum:
-        netsuite:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        custom:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        workday:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        gcp_marketplace:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-    Tier:
+      minLength: 1
+      maxLength: 128
+      description: Prevents the creation of duplicates. If a request to create a record is made with a previously used uniqueness key, a new record will not be created and the request will fail with a 409 error.
+    SubscriptionSeatConfig:
       type: object
       required:
-      - price
+      - seat_group_key
       properties:
-        size:
-          type: number
-        price:
-          type: number
+        seat_group_key:
+          type: string
+          description: The property name, sent on usage events, that identifies the seat ID associated with the usage event.  For example, the property name might be seat_id or user_id. The property must be set as a group key on billable metrics and a presentation/pricing group key on contract products.  This allows linked recurring credits with an allocation per seat to be consumed by only one seat's usage.
     RecurringCreditTemplate:
       type: object
       required:
@@ -1033,46 +630,30 @@ components:
         subscription_config:
           description: Attach a subscription to the recurring commit/credit.
           $ref: '#/components/schemas/RecurringCommitSubscriptionConfigTemplate'
-    RecurringCommitSubscriptionConfigTemplate:
+    SubscriptionProration:
       type: object
       required:
-      - allocation
-      - apply_seat_increase_config
-      - subscription_template_id
+      - is_prorated
+      - invoice_behavior
       properties:
-        allocation:
-          $ref: '#/components/schemas/SubscriptionConfigAllocation'
-        apply_seat_increase_config:
-          $ref: '#/components/schemas/ApplySeatIncreaseConfigForRecurringCommit'
-        subscription_template_id:
+        is_prorated:
+          type: boolean
+        invoice_behavior:
           type: string
-          format: uuid
-    SubscriptionSeatConfig:
+          enum:
+          - BILL_IMMEDIATELY
+          - BILL_ON_NEXT_COLLECTION_DATE
+          - bill_immediately
+          - bill_on_next_collection_date
+    Tier:
       type: object
       required:
-      - seat_group_key
+      - price
       properties:
-        seat_group_key:
-          type: string
-          description: The property name, sent on usage events, that identifies the seat ID associated with the usage event.  For example, the property name might be seat_id or user_id. The property must be set as a group key on billable metrics and a presentation/pricing group key on contract products.  This allows linked recurring credits with an allocation per seat to be consumed by only one seat's usage.
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
+        size:
+          type: number
+        price:
+          type: number
     CommitTemplate:
       type: object
       required:
@@ -1145,6 +726,343 @@ components:
           description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown.
           items:
             $ref: '#/components/schemas/CommitSpecifier'
+    UsageStatementScheduleTemplate:
+      type: object
+      required:
+      - frequency
+      properties:
+        frequency:
+          type: string
+          enum:
+          - MONTHLY
+          - QUARTERLY
+          - ANNUAL
+          - WEEKLY
+        day:
+          type: string
+          enum:
+          - FIRST_OF_MONTH
+          - CONTRACT_START
+    BillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - tackle
+      - aws_sns
+    ExcludeSpecifier:
+      type: object
+      properties:
+        product_tags:
+          type: array
+          items:
+            type: string
+          description: If provided, the specifier will not apply to products with all the specified tags.
+    PrepaidBalanceThresholdConfiguration:
+      type: object
+      required:
+      - is_enabled
+      - threshold_amount
+      - recharge_to_amount
+      - commit
+      - payment_gate_config
+      properties:
+        is_enabled:
+          type: boolean
+          description: When set to false, the contract will not be evaluated against the threshold_amount. Toggling to true will result an immediate evaluation, regardless of prior state.
+        threshold_amount:
+          description: Specify the threshold amount for the contract. Each time the contract's prepaid balance lowers to this amount, a threshold charge will be initiated.
+          type: number
+        recharge_to_amount:
+          description: Specify the amount the balance should be recharged to.
+          type: number
+        custom_credit_type_id:
+          description: If provided, the threshold, recharge-to amount, and the resulting threshold commit amount will be in terms of this credit type instead of the fiat currency.
+          type: string
+          format: uuid
+        commit:
+          $ref: '#/components/schemas/PrepaidBalanceThresholdCommit'
+        payment_gate_config:
+          $ref: '#/components/schemas/PaymentGateConfig'
+        discount_configuration:
+          x-mint:
+            groups:
+            - ff:threshold-billing-discounts
+          $ref: '#/components/schemas/DiscountConfiguration'
+    OverrideTemplate:
+      type: object
+      required:
+      - id
+      - starting_at_offset
+      - override_specifiers
+      properties:
+        id:
+          type: string
+          format: uuid
+        product:
+          type: object
+          required:
+          - id
+          - name
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+        applicable_product_tags:
+          type: array
+          items:
+            type: string
+        override_specifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverrideSpecifierTemplate'
+        starting_at_offset:
+          $ref: '#/components/schemas/RelativeDate'
+        duration:
+          $ref: '#/components/schemas/RelativeDate'
+        entitled:
+          type: boolean
+        type:
+          type: string
+          enum:
+          - OVERWRITE
+          - MULTIPLIER
+          - TIERED
+        priority:
+          type: number
+        multiplier:
+          type: number
+        overwrite_rate:
+          $ref: '#/components/schemas/OverwriteRate'
+        override_tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverrideTier'
+        is_commit_specific:
+          type: boolean
+        target:
+          type: string
+          enum:
+          - COMMIT_RATE
+          - LIST_RATE
+    BaseThresholdCommit:
+      type: object
+      required:
+      - product_id
+      properties:
+        product_id:
+          type: string
+          description: The commit product that will be used to generate the line item for commit payment.
+        name:
+          type: string
+          description: Specify the name of the line item for the threshold charge. If left blank, it will default to the commit product name.
+        description:
+          type: string
+        priority:
+          type: number
+          description: The priority of the commit, used to determine drawdown order. Lower priority commits are consumed first. Defaults to 100 if not specified.
+    OverrideSpecifierTemplate:
+      type: object
+      properties:
+        product_id:
+          type: string
+          format: uuid
+        product_tags:
+          type: array
+          items:
+            type: string
+        pricing_group_values:
+          type: object
+          additionalProperties:
+            type: string
+        presentation_group_values:
+          type: object
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+        commit_template_ids:
+          type: array
+          items:
+            type: string
+        recurring_commit_template_ids:
+          type: array
+          items:
+            type: string
+        billing_frequency:
+          type: string
+          enum:
+          - MONTHLY
+          - QUARTERLY
+          - ANNUAL
+          - WEEKLY
+        exclude:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:exclude-specifiers-ga
+          type: array
+          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
+          items:
+            $ref: '#/components/schemas/ExcludeSpecifier'
+    BillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - stripe
+      - netsuite
+      - custom
+      - azure_marketplace
+      - quickbooks_online
+      - workday
+      - gcp_marketplace
+      - metronome
+      x-mint-enum:
+        netsuite:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        custom:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        workday:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        gcp_marketplace:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+    ApplySeatIncreaseConfigForRecurringCommit:
+      type: object
+      required:
+      - is_prorated
+      properties:
+        is_prorated:
+          type: boolean
+          description: Indicates whether a mid-period seat increase should be prorated.
+    SpendThresholdCommit:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseThresholdCommit'
+    OverrideTier:
+      type: object
+      required:
+      - multiplier
+      properties:
+        size:
+          type: number
+        multiplier:
+          type: number
+    CommitSpecifierInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: If provided, the specifier will only apply to the product with the specified ID.
+        product_tags:
+          type: array
+          items:
+            type: string
+          description: If provided, the specifier will only apply to products with all the specified tags.
+        pricing_group_values:
+          type: object
+          additionalProperties:
+            type: string
+          description: If provided, the specifier will apply to product usage with these set of pricing group values.
+        presentation_group_values:
+          type: object
+          additionalProperties:
+            type: string
+          description: If provided, the specifier will apply to product usage with these set of presentation group values.
+        exclude:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:exclude-specifiers-ga
+          type: array
+          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
+          items:
+            $ref: '#/components/schemas/ExcludeSpecifier'
+    SubscriptionConfigAllocation:
+      type: string
+      enum:
+      - INDIVIDUAL
+      - POOLED
+    ScheduledChargesOnUsageInvoices:
+      type: string
+      description: Determines which scheduled and commit charges to consolidate onto the Contract's usage invoice. The charge's `timestamp` must match the usage invoice's `ending_before` date for consolidation to occur. This field cannot be modified after a Contract has been created. If this field is omitted, charges will appear on a separate invoice from usage charges.
+      enum:
+      - ALL
+    CreditTemplate:
+      type: object
+      required:
+      - id
+      - type
+      - product
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        priority:
+          type: number
+        custom_fields:
+          x-cf-entity: package_credit
+          $ref: '#/components/schemas/CustomField'
+        product:
+          type: object
+          required:
+          - id
+          - name
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+        applicable_product_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        applicable_product_tags:
+          type: array
+          items:
+            type: string
+        specifiers:
+          type: array
+          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown.
+          items:
+            $ref: '#/components/schemas/CommitSpecifier'
+        access_schedule:
+          $ref: '#/components/schemas/RelativeScheduleDuration'
+        rate_type:
+          type: string
+          enum:
+          - COMMIT_RATE
+          - LIST_RATE
+    MinimumConfig:
+      type: object
+      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+      required:
+      - minimum
+      properties:
+        minimum:
+          type: number
+    RecurringCommitSubscriptionConfigTemplate:
+      type: object
+      required:
+      - allocation
+      - apply_seat_increase_config
+      - subscription_template_id
+      properties:
+        allocation:
+          $ref: '#/components/schemas/SubscriptionConfigAllocation'
+        apply_seat_increase_config:
+          $ref: '#/components/schemas/ApplySeatIncreaseConfigForRecurringCommit'
+        subscription_template_id:
+          type: string
+          format: uuid
     PaymentGateConfig:
       type: object
       required:
@@ -1194,14 +1112,72 @@ components:
             tax_name:
               type: string
               description: Name of the tax to be applied. This may be used in an invoice line item description.
-    MinimumConfig:
+    SubscriptionRate:
       type: object
-      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
       required:
-      - minimum
+      - billing_frequency
+      - product
       properties:
-        minimum:
+        billing_frequency:
+          type: string
+          enum:
+          - MONTHLY
+          - QUARTERLY
+          - ANNUAL
+          - WEEKLY
+          - monthly
+          - quarterly
+          - annual
+          - weekly
+        product:
+          type: object
+          required:
+          - id
+          - name
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+    PrepaidBalanceThresholdCommit:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseThresholdCommit'
+      - type: object
+        properties:
+          applicable_product_ids:
+            type: array
+            items:
+              type: string
+              format: uuid
+            description: Which products the threshold commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
+          applicable_product_tags:
+            type: array
+            items:
+              type: string
+            description: Which tags the threshold commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
+          specifiers:
+            x-mint:
+              groups:
+              - ff:commit-specifiers
+            type: array
+            description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`.
+            items:
+              $ref: '#/components/schemas/CommitSpecifierInput'
+    DiscountConfiguration:
+      type: object
+      required:
+      - payment_fraction
+      properties:
+        payment_fraction:
           type: number
+          description: The fraction of the original amount that the customer pays after applying the discount. For example, 0.85 means the customer pays 85% of the original amount (a 15% discount).
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
     RelativeDate:
       type: object
       required:
@@ -1217,68 +1193,53 @@ components:
           - WEEKS
           - MONTHS
           - YEARS
-    Id:
-      required:
-      - id
+    SubscriptionTemplate:
       type: object
+      required:
+      - subscription_rate
+      - collection_schedule
+      - proration
       properties:
         id:
           type: string
           format: uuid
-    RecurringCommitTemplate:
-      allOf:
-      - $ref: '#/components/schemas/RecurringCreditTemplate'
-      - type: object
-        properties:
-          invoice_amount:
-            type: object
-            required:
-            - unit_price
-            - quantity
-            - credit_type_id
-            properties:
-              unit_price:
-                type: number
-              quantity:
-                type: number
-              credit_type_id:
-                type: string
-                format: uuid
-            description: The amount the customer should be billed for the commit.
-    RelativeScheduleDuration:
-      type: object
-      required:
-      - credit_type
-      - schedule_items
-      properties:
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - starting_at_offset
-            - duration
-            - amount
-            properties:
-              id:
-                type: string
-                format: uuid
-              starting_at_offset:
-                $ref: '#/components/schemas/RelativeDate'
-              duration:
-                $ref: '#/components/schemas/RelativeDate'
-              amount:
-                type: number
-    BillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - tackle
-      - aws_sns
+        custom_fields:
+          x-cf-entity: package_subscription
+          $ref: '#/components/schemas/CustomField'
+        subscription_rate:
+          $ref: '#/components/schemas/SubscriptionRate'
+        name:
+          type: string
+        description:
+          type: string
+        collection_schedule:
+          type: string
+          enum:
+          - ADVANCE
+          - ARREARS
+          - advance
+          - arrears
+        proration:
+          $ref: '#/components/schemas/SubscriptionProration'
+        initial_quantity:
+          type: number
+        quantity_management_mode:
+          type: string
+          enum:
+          - SEAT_BASED
+          - seat_based
+          - QUANTITY_ONLY
+          - quantity_only
+          description: 'Determines how the subscription''s quantity is controlled. Defaults to QUANTITY_ONLY. **QUANTITY_ONLY**: The subscription quantity is specified directly on the subscription. `initial_quantity` must be provided with this option. Compatible with recurring commits/credits that use POOLED allocation. **SEAT_BASED**: Use when you want to pass specific seat identifiers (e.g. add user_123) to increment and decrement a subscription quantity, rather than directly providing the quantity. You must use a SEAT_BASED subscription to use a linked recurring credit with an allocation per seat. `seat_config` must be provided with this option.'
+        seat_config:
+          $ref: '#/components/schemas/SubscriptionSeatConfig'
+        starting_at_offset:
+          $ref: '#/components/schemas/RelativeDate'
+        duration:
+          $ref: '#/components/schemas/RelativeDate'
+        fiat_credit_type_id:
+          type: string
+          format: uuid
     ScheduledChargeTemplate:
       type: object
       required:
@@ -1309,84 +1270,123 @@ components:
           type: string
         description:
           type: string
-    PrepaidBalanceThresholdCommit:
+    Error:
+      required:
+      - message
       type: object
-      allOf:
-      - $ref: '#/components/schemas/BaseThresholdCommit'
-      - type: object
-        properties:
-          applicable_product_ids:
-            type: array
-            items:
-              type: string
-              format: uuid
-            description: Which products the threshold commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
-          applicable_product_tags:
-            type: array
-            items:
-              type: string
-            description: Which tags the threshold commit applies to. If applicable_product_ids, applicable_product_tags or specifiers are not provided, the commit applies to all products.
-          specifiers:
-            x-mint:
-              groups:
-              - ff:commit-specifiers
-            type: array
-            description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`.
-            items:
-              $ref: '#/components/schemas/CommitSpecifierInput'
-    UsageStatementScheduleTemplate:
+      properties:
+        message:
+          type: string
+    Package:
       type: object
       required:
-      - frequency
+      - id
+      - commits
+      - overrides
+      - scheduled_charges
+      - created_at
+      - created_by
+      - usage_statement_schedule
       properties:
-        frequency:
-          type: string
-          enum:
-          - MONTHLY
-          - QUARTERLY
-          - ANNUAL
-          - WEEKLY
-        day:
-          type: string
-          enum:
-          - FIRST_OF_MONTH
-          - CONTRACT_START
-    SubscriptionConfigAllocation:
-      type: string
-      enum:
-      - INDIVIDUAL
-      - POOLED
-    CommitSpecifierInput:
-      type: object
-      properties:
-        product_id:
+        id:
           type: string
           format: uuid
-          description: If provided, the specifier will only apply to the product with the specified ID.
-        product_tags:
+        uniqueness_key:
+          $ref: '#/components/schemas/UniquenessKey'
+        name:
+          type: string
+        rate_card_id:
+          type: string
+          format: uuid
+        aliases:
           type: array
           items:
-            type: string
-          description: If provided, the specifier will only apply to products with all the specified tags.
-        pricing_group_values:
-          type: object
-          additionalProperties:
-            type: string
-          description: If provided, the specifier will apply to product usage with these set of pricing group values.
-        presentation_group_values:
-          type: object
-          additionalProperties:
-            type: string
-          description: If provided, the specifier will apply to product usage with these set of presentation group values.
-        exclude:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:exclude-specifiers-ga
+            $ref: '#/components/schemas/PackageAlias'
+        duration:
+          $ref: '#/components/schemas/RelativeDate'
+        commits:
           type: array
-          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
           items:
-            $ref: '#/components/schemas/ExcludeSpecifier'
+            $ref: '#/components/schemas/CommitTemplate'
+        credits:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditTemplate'
+        overrides:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverrideTemplate'
+        scheduled_charges:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduledChargeTemplate'
+        scheduled_charges_on_usage_invoices:
+          $ref: '#/components/schemas/ScheduledChargesOnUsageInvoices'
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+        net_payment_terms_days:
+          type: number
+        usage_statement_schedule:
+          $ref: '#/components/schemas/UsageStatementScheduleTemplate'
+        multiplier_override_prioritization:
+          type: string
+          enum:
+          - LOWEST_MULTIPLIER
+          - EXPLICIT
+          description: Defaults to LOWEST_MULTIPLIER, which applies the greatest discount to list prices automatically. EXPLICIT prioritization requires specifying priorities for each multiplier; the one with the lowest priority value will be prioritized first.
+        billing_provider:
+          $ref: '#/components/schemas/BillingProviderType'
+        delivery_method:
+          $ref: '#/components/schemas/BillingProviderDeliveryMethodType'
+        recurring_commits:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringCommitTemplate'
+        recurring_credits:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringCreditTemplate'
+        spend_threshold_configuration:
+          $ref: '#/components/schemas/SpendThresholdConfiguration'
+        prepaid_balance_threshold_configuration:
+          $ref: '#/components/schemas/PrepaidBalanceThresholdConfiguration'
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionTemplate'
+        contract_name:
+          type: string
+          description: The name to use for contracts created from this package.
+        archived_at:
+          type: string
+          format: date-time
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    PackageAlias:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        starting_at:
+          type: string
+          format: date-time
+        ending_before:
+          type: string
+          format: date-time
   parameters:
     NextPage:
       name: next_page

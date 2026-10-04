@@ -501,7 +501,49 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
+  parameters:
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
+    PageLimit:
+      name: limit
+      in: query
+      description: Max number of results that should be returned
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+    BillingProviderSettingsType:
+      name: billing_provider_type
+      in: path
+      description: The billing provider (currently only Stripe is supported).
+      required: true
+      schema:
+        $ref: '#/components/schemas/BillingProviderSettingsType'
+      example: stripe
   schemas:
+    UpdateStripeBillingSettingsPayload:
+      type: object
+      properties:
+        stripe_api_key:
+          type: string
+          description: API key used to call the Stripe APIs
+        anrok_api_key:
+          type:
+          - string
+          - 'null'
+          description: API key used to call the Anrok APIs
+    GABillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - aws_sns
     BillingProviderType:
       type: string
       enum:
@@ -523,7 +565,7 @@ components:
         - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
         gcp_marketplace:
         - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-    UpdateStripeBillingSettingsPayload:
+    CreateStripeBillingSettingsPayload:
       type: object
       properties:
         stripe_api_key:
@@ -534,14 +576,21 @@ components:
           - string
           - 'null'
           description: API key used to call the Anrok APIs
-    SetClientWebhookSecretPayload:
       required:
-      - webhook_secret
-      type: object
-      properties:
-        webhook_secret:
-          type: string
-          description: The client webhook secret used to verify webhook results
+      - stripe_api_key
+    GABillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - azure_marketplace
+      - gcp_marketplace
+    BillingProviderDeliveryMethodType:
+      type: string
+      enum:
+      - direct_to_billing_provider
+      - aws_sqs
+      - tackle
+      - aws_sns
     BillingProviderDeliveryMethod:
       type: object
       required:
@@ -564,32 +613,13 @@ components:
           type: object
           additionalProperties: true
           description: Configuration for the delivery method. The structure of this object is specific to the delivery method. Some configuration may be omitted for security reasons.
-    CreateStripeBillingSettingsPayload:
+    Error:
+      required:
+      - message
       type: object
       properties:
-        stripe_api_key:
+        message:
           type: string
-          description: API key used to call the Stripe APIs
-        anrok_api_key:
-          type:
-          - string
-          - 'null'
-          description: API key used to call the Anrok APIs
-      required:
-      - stripe_api_key
-    BillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - tackle
-      - aws_sns
-    GABillingProviderDeliveryMethodType:
-      type: string
-      enum:
-      - direct_to_billing_provider
-      - aws_sqs
-      - aws_sns
     SetBillingProviderApiKeyPayload:
       required:
       - api_key
@@ -602,19 +632,14 @@ components:
       type: string
       enum:
       - stripe
-    GABillingProviderType:
-      type: string
-      enum:
-      - aws_marketplace
-      - azure_marketplace
-      - gcp_marketplace
-    Error:
+    SetClientWebhookSecretPayload:
       required:
-      - message
+      - webhook_secret
       type: object
       properties:
-        message:
+        webhook_secret:
           type: string
+          description: The client webhook secret used to verify webhook results
   responses:
     NotFound:
       description: The specified resource was not found
@@ -622,31 +647,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    BillingProviderSettingsType:
-      name: billing_provider_type
-      in: path
-      description: The billing provider (currently only Stripe is supported).
-      required: true
-      schema:
-        $ref: '#/components/schemas/BillingProviderSettingsType'
-      example: stripe
-    NextPage:
-      name: next_page
-      in: query
-      description: Cursor that indicates where the next page of results should start.
-      required: false
-      schema:
-        type: string
-    PageLimit:
-      name: limit
-      in: query
-      description: Max number of results that should be returned
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
   securitySchemes:
     bearerAuth:
       type: http

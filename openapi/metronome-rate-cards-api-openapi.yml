@@ -575,7 +575,188 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    RateSelector:
+    UpdateRateCardPayload:
+      type: object
+      required:
+      - rate_card_id
+      properties:
+        rate_card_id:
+          type: string
+          format: uuid
+          description: ID of the rate card to update
+        name:
+          type: string
+          description: Used only in UI/API. It is not exposed to end customers.
+        description:
+          type: string
+        aliases:
+          type: array
+          items:
+            $ref: '#/components/schemas/RateCardAlias'
+          description: Reference this alias when creating a contract. If the same alias is assigned to multiple rate cards, it will reference the rate card to which it was most recently assigned. It is not exposed to end customers.
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    MoveRateCardProductsPayload:
+      type: object
+      required:
+      - rate_card_id
+      - product_moves
+      properties:
+        rate_card_id:
+          type: string
+          format: uuid
+          description: ID of the rate card to update
+        product_moves:
+          type: array
+          items:
+            type: object
+            required:
+            - product_id
+            - position
+            properties:
+              product_id:
+                type: string
+                format: uuid
+                description: ID of the product to move
+              position:
+                type: number
+                description: 0-based index of the new position of the product
+                minimum: 0
+    RateWithCommitRate:
+      type: object
+      required:
+      - rate_type
+      properties:
+        rate_type:
+          type: string
+          enum:
+          - FLAT
+          - flat
+          - PERCENTAGE
+          - percentage
+          - SUBSCRIPTION
+          - subscription
+          - CUSTOM
+          - custom
+          - TIERED
+          - tiered
+          - TIERED_PERCENTAGE
+          - tiered_percentage
+          x-mint-enum:
+            CUSTOM:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            custom:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            SUBSCRIPTION:
+            - ff:legacy-subscriptions-enabled
+            subscription:
+            - ff:legacy-subscriptions-enabled
+            TIERED_PERCENTAGE:
+            - ff:support-charge-ga
+            tiered_percentage:
+            - ff:support-charge-ga
+          x-mint:
+            groups:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+        price:
+          type: number
+          description: Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+        custom_rate:
+          x-mint:
+            groups:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+          type: object
+          additionalProperties: true
+          description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
+        quantity:
+          type: number
+          x-mint:
+            groups:
+            - ff:legacy-subscriptions-enabled
+          description: Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+        is_prorated:
+          type: boolean
+          x-mint:
+            groups:
+            - ff:legacy-subscriptions-enabled
+          description: Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be set to true.
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tier'
+          description: Only set for TIERED rate_type.
+        pricing_group_values:
+          type: object
+          description: if pricing groups are used, this will contain the values used to calculate the price
+          additionalProperties:
+            type: string
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        commit_rate:
+          $ref: '#/components/schemas/CommitRate'
+    GetRateSchedulePayload:
+      type: object
+      required:
+      - rate_card_id
+      - starting_at
+      properties:
+        rate_card_id:
+          type: string
+          format: uuid
+          description: ID of the rate card to get the schedule for
+        starting_at:
+          type: string
+          format: date-time
+          description: inclusive starting point for the rates schedule
+        ending_before:
+          type: string
+          format: date-time
+          description: optional exclusive end date for the rates schedule. When not specified rates will show all future schedule segments.
+        selectors:
+          description: List of rate selectors, rates matching ANY of the selector will be included in the response Passing no selectors will result in all rates being returned.
+          type: array
+          items:
+            $ref: '#/components/schemas/RateSelector'
+    Tier:
+      type: object
+      required:
+      - price
+      properties:
+        size:
+          type: number
+        price:
+          type: number
+    RateSelectorWithProductTags:
       type: object
       properties:
         billing_frequency:
@@ -598,6 +779,11 @@ components:
           description: Rates matching the product id will be included in the response.
           type: string
           format: uuid
+        product_tags:
+          description: List of product tags, rates matching any of the tags will be included in the response.
+          type: array
+          items:
+            type: string
         pricing_group_values:
           description: List of pricing group key value pairs, rates matching all of the key / value pairs will be included in the response.
           type: object
@@ -608,38 +794,21 @@ components:
           type: object
           additionalProperties:
             type: string
-    UpdateRateCardPayload:
+    SetRateCardProductsOrderPayload:
       type: object
       required:
       - rate_card_id
+      - product_order
       properties:
         rate_card_id:
           type: string
           format: uuid
           description: ID of the rate card to update
-        name:
-          type: string
-          description: Used only in UI/API. It is not exposed to end customers.
-        description:
-          type: string
-        aliases:
+        product_order:
           type: array
           items:
-            $ref: '#/components/schemas/RateCardAlias'
-          description: Reference this alias when creating a contract. If the same alias is assigned to multiple rate cards, it will reference the rate card to which it was most recently assigned. It is not exposed to end customers.
-    RateCardAlias:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-        starting_at:
-          type: string
-          format: date-time
-        ending_before:
-          type: string
-          format: date-time
+            type: string
+            format: uuid
     RateCard:
       type: object
       required:
@@ -673,6 +842,262 @@ components:
         custom_fields:
           x-cf-entity: rate_card
           $ref: '#/components/schemas/CustomField'
+    CreateRateCardPayload:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Used only in UI/API. It is not exposed to end customers.
+        description:
+          type: string
+        fiat_credit_type_id:
+          type: string
+          format: uuid
+          example: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
+          description: The Metronome ID of the credit type to associate with the rate card, defaults to USD (cents) if not passed.
+        credit_type_conversions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditTypeConversionInput'
+          description: Required when using custom pricing units in rates.
+        aliases:
+          type: array
+          items:
+            $ref: '#/components/schemas/RateCardAlias'
+          description: Reference this alias when creating a contract. If the same alias is assigned to multiple rate cards, it will reference the rate card to which it was most recently assigned. It is not exposed to end customers.
+        custom_fields:
+          $ref: '#/components/schemas/CustomField'
+    MinimumConfig:
+      type: object
+      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+      required:
+      - minimum
+      properties:
+        minimum:
+          type: number
+    GetRatesPayload:
+      type: object
+      required:
+      - rate_card_id
+      - at
+      properties:
+        rate_card_id:
+          type: string
+          format: uuid
+          description: ID of the rate card to get the schedule for
+        at:
+          type: string
+          format: date-time
+          description: inclusive starting point for the rates schedule
+        selectors:
+          description: List of rate selectors, rates matching ANY of the selector will be included in the response Passing no selectors will result in all rates being returned.
+          type: array
+          items:
+            $ref: '#/components/schemas/RateSelectorWithProductTags'
+    RateSelector:
+      type: object
+      properties:
+        billing_frequency:
+          description: Subscription rates matching the billing frequency will be included in the response.
+          type: string
+          enum:
+          - MONTHLY
+          - Monthly
+          - monthly
+          - QUARTERLY
+          - Quarterly
+          - quarterly
+          - ANNUAL
+          - Annual
+          - annual
+          - WEEKLY
+          - Weekly
+          - weekly
+        product_id:
+          description: Rates matching the product id will be included in the response.
+          type: string
+          format: uuid
+        pricing_group_values:
+          description: List of pricing group key value pairs, rates matching all of the key / value pairs will be included in the response.
+          type: object
+          additionalProperties:
+            type: string
+        partial_pricing_group_values:
+          description: List of pricing group key value pairs, rates containing the matching key / value pairs will be included in the response.
+          type: object
+          additionalProperties:
+            type: string
+    CommitRate:
+      type: object
+      description: A distinct rate on the rate card. You can choose to use this rate rather than list rate when consuming a credit or commit.
+      required:
+      - rate_type
+      properties:
+        rate_type:
+          type: string
+          enum:
+          - FLAT
+          - flat
+          - PERCENTAGE
+          - percentage
+          - SUBSCRIPTION
+          - subscription
+          - TIERED
+          - tiered
+          - TIERED_PERCENTAGE
+          - tiered_percentage
+          - CUSTOM
+          - custom
+          x-mint-enum:
+            CUSTOM:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            custom:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            SUBSCRIPTION:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+            subscription:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+            percentage:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+            PERCENTAGE:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+            TIERED_PERCENTAGE:
+            - ff:support-charge-ga
+            tiered_percentage:
+            - ff:support-charge-ga
+        price:
+          type: number
+          description: Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tier'
+          description: Only set for TIERED rate_type.
+        minimum_config:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:support-charge-ga
+          $ref: '#/components/schemas/MinimumConfig'
+    Rate:
+      type: object
+      required:
+      - rate_type
+      properties:
+        rate_type:
+          type: string
+          enum:
+          - FLAT
+          - flat
+          - PERCENTAGE
+          - percentage
+          - SUBSCRIPTION
+          - subscription
+          - CUSTOM
+          - custom
+          - TIERED
+          - tiered
+          - TIERED_PERCENTAGE
+          - tiered_percentage
+          x-mint-enum:
+            CUSTOM:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            custom:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            SUBSCRIPTION:
+            - ff:legacy-subscriptions-enabled
+            subscription:
+            - ff:legacy-subscriptions-enabled
+            TIERED_PERCENTAGE:
+            - ff:support-charge-ga
+            tiered_percentage:
+            - ff:support-charge-ga
+          x-mint:
+            groups:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+        price:
+          type: number
+          description: Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+        custom_rate:
+          x-mint:
+            groups:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+          type: object
+          additionalProperties: true
+          description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
+        quantity:
+          type: number
+          x-mint:
+            groups:
+            - ff:legacy-subscriptions-enabled
+          description: Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+        is_prorated:
+          type: boolean
+          x-mint:
+            groups:
+            - ff:legacy-subscriptions-enabled
+          description: Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be set to true.
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tier'
+          description: Only set for TIERED rate_type.
+        minimum_config:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:support-charge-ga
+          $ref: '#/components/schemas/MinimumConfig'
+        pricing_group_values:
+          type: object
+          description: if pricing groups are used, this will contain the values used to calculate the price
+          additionalProperties:
+            type: string
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
     RatePayload:
       type: object
       required:
@@ -792,71 +1217,6 @@ components:
           description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
         commit_rate:
           $ref: '#/components/schemas/CommitRate'
-    RateSelectorWithProductTags:
-      type: object
-      properties:
-        billing_frequency:
-          description: Subscription rates matching the billing frequency will be included in the response.
-          type: string
-          enum:
-          - MONTHLY
-          - Monthly
-          - monthly
-          - QUARTERLY
-          - Quarterly
-          - quarterly
-          - ANNUAL
-          - Annual
-          - annual
-          - WEEKLY
-          - Weekly
-          - weekly
-        product_id:
-          description: Rates matching the product id will be included in the response.
-          type: string
-          format: uuid
-        product_tags:
-          description: List of product tags, rates matching any of the tags will be included in the response.
-          type: array
-          items:
-            type: string
-        pricing_group_values:
-          description: List of pricing group key value pairs, rates matching all of the key / value pairs will be included in the response.
-          type: object
-          additionalProperties:
-            type: string
-        partial_pricing_group_values:
-          description: List of pricing group key value pairs, rates containing the matching key / value pairs will be included in the response.
-          type: object
-          additionalProperties:
-            type: string
-    CreateRateCardPayload:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Used only in UI/API. It is not exposed to end customers.
-        description:
-          type: string
-        fiat_credit_type_id:
-          type: string
-          format: uuid
-          example: 2714e483-4ff1-48e4-9e25-ac732e8f24f2
-          description: The Metronome ID of the credit type to associate with the rate card, defaults to USD (cents) if not passed.
-        credit_type_conversions:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreditTypeConversionInput'
-          description: Required when using custom pricing units in rates.
-        aliases:
-          type: array
-          items:
-            $ref: '#/components/schemas/RateCardAlias'
-          description: Reference this alias when creating a contract. If the same alias is assigned to multiple rate cards, it will reference the rate card to which it was most recently assigned. It is not exposed to end customers.
-        custom_fields:
-          $ref: '#/components/schemas/CustomField'
     CreditTypeConversion:
       required:
       - fiat_per_custom_credit
@@ -867,22 +1227,26 @@ components:
           type: string
         custom_credit_type:
           $ref: '#/components/schemas/CreditType'
-    CustomField:
+    Error:
+      required:
+      - message
       type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-    CreditTypeConversionInput:
+      properties:
+        message:
+          type: string
+    RateCardAlias:
       type: object
       required:
-      - custom_credit_type_id
-      - fiat_per_custom_credit
+      - name
       properties:
-        custom_credit_type_id:
+        name:
           type: string
-          format: uuid
-        fiat_per_custom_credit:
-          type: number
+        starting_at:
+          type: string
+          format: date-time
+        ending_before:
+          type: string
+          format: date-time
     AddRatePayload:
       type: object
       required:
@@ -1013,79 +1377,28 @@ components:
           description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
         commit_rate:
           $ref: '#/components/schemas/CommitRate'
-    Tier:
-      type: object
+    CreditType:
       required:
-      - price
-      properties:
-        size:
-          type: number
-        price:
-          type: number
-    CommitRate:
+      - name
+      - id
       type: object
-      description: A distinct rate on the rate card. You can choose to use this rate rather than list rate when consuming a credit or commit.
-      required:
-      - rate_type
       properties:
-        rate_type:
+        name:
           type: string
-          enum:
-          - FLAT
-          - flat
-          - PERCENTAGE
-          - percentage
-          - SUBSCRIPTION
-          - subscription
-          - TIERED
-          - tiered
-          - TIERED_PERCENTAGE
-          - tiered_percentage
-          - CUSTOM
-          - custom
-          x-mint-enum:
-            CUSTOM:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            custom:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            SUBSCRIPTION:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-            subscription:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-            percentage:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-            PERCENTAGE:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-            TIERED_PERCENTAGE:
-            - ff:support-charge-ga
-            tiered_percentage:
-            - ff:support-charge-ga
-        price:
+        id:
+          type: string
+          format: uuid
+    CreditTypeConversionInput:
+      type: object
+      required:
+      - custom_credit_type_id
+      - fiat_per_custom_credit
+      properties:
+        custom_credit_type_id:
+          type: string
+          format: uuid
+        fiat_per_custom_credit:
           type: number
-          description: Commit rate price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-        tiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tier'
-          description: Only set for TIERED rate_type.
-        minimum_config:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:support-charge-ga
-          $ref: '#/components/schemas/MinimumConfig'
     RateSchedule:
       type: object
       required:
@@ -1131,319 +1444,6 @@ components:
           - QUARTERLY
           - ANNUAL
           - WEEKLY
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
-    Id:
-      required:
-      - id
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-    MinimumConfig:
-      type: object
-      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-      required:
-      - minimum
-      properties:
-        minimum:
-          type: number
-    Rate:
-      type: object
-      required:
-      - rate_type
-      properties:
-        rate_type:
-          type: string
-          enum:
-          - FLAT
-          - flat
-          - PERCENTAGE
-          - percentage
-          - SUBSCRIPTION
-          - subscription
-          - CUSTOM
-          - custom
-          - TIERED
-          - tiered
-          - TIERED_PERCENTAGE
-          - tiered_percentage
-          x-mint-enum:
-            CUSTOM:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            custom:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            SUBSCRIPTION:
-            - ff:legacy-subscriptions-enabled
-            subscription:
-            - ff:legacy-subscriptions-enabled
-            TIERED_PERCENTAGE:
-            - ff:support-charge-ga
-            tiered_percentage:
-            - ff:support-charge-ga
-          x-mint:
-            groups:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-        price:
-          type: number
-          description: Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-        custom_rate:
-          x-mint:
-            groups:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-          type: object
-          additionalProperties: true
-          description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
-        quantity:
-          type: number
-          x-mint:
-            groups:
-            - ff:legacy-subscriptions-enabled
-          description: Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-        is_prorated:
-          type: boolean
-          x-mint:
-            groups:
-            - ff:legacy-subscriptions-enabled
-          description: Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be set to true.
-        tiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tier'
-          description: Only set for TIERED rate_type.
-        minimum_config:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:support-charge-ga
-          $ref: '#/components/schemas/MinimumConfig'
-        pricing_group_values:
-          type: object
-          description: if pricing groups are used, this will contain the values used to calculate the price
-          additionalProperties:
-            type: string
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-    SetRateCardProductsOrderPayload:
-      type: object
-      required:
-      - rate_card_id
-      - product_order
-      properties:
-        rate_card_id:
-          type: string
-          format: uuid
-          description: ID of the rate card to update
-        product_order:
-          type: array
-          items:
-            type: string
-            format: uuid
-    MoveRateCardProductsPayload:
-      type: object
-      required:
-      - rate_card_id
-      - product_moves
-      properties:
-        rate_card_id:
-          type: string
-          format: uuid
-          description: ID of the rate card to update
-        product_moves:
-          type: array
-          items:
-            type: object
-            required:
-            - product_id
-            - position
-            properties:
-              product_id:
-                type: string
-                format: uuid
-                description: ID of the product to move
-              position:
-                type: number
-                description: 0-based index of the new position of the product
-                minimum: 0
-    GetRatesPayload:
-      type: object
-      required:
-      - rate_card_id
-      - at
-      properties:
-        rate_card_id:
-          type: string
-          format: uuid
-          description: ID of the rate card to get the schedule for
-        at:
-          type: string
-          format: date-time
-          description: inclusive starting point for the rates schedule
-        selectors:
-          description: List of rate selectors, rates matching ANY of the selector will be included in the response Passing no selectors will result in all rates being returned.
-          type: array
-          items:
-            $ref: '#/components/schemas/RateSelectorWithProductTags'
-    GetRateSchedulePayload:
-      type: object
-      required:
-      - rate_card_id
-      - starting_at
-      properties:
-        rate_card_id:
-          type: string
-          format: uuid
-          description: ID of the rate card to get the schedule for
-        starting_at:
-          type: string
-          format: date-time
-          description: inclusive starting point for the rates schedule
-        ending_before:
-          type: string
-          format: date-time
-          description: optional exclusive end date for the rates schedule. When not specified rates will show all future schedule segments.
-        selectors:
-          description: List of rate selectors, rates matching ANY of the selector will be included in the response Passing no selectors will result in all rates being returned.
-          type: array
-          items:
-            $ref: '#/components/schemas/RateSelector'
-    RateWithCommitRate:
-      type: object
-      required:
-      - rate_type
-      properties:
-        rate_type:
-          type: string
-          enum:
-          - FLAT
-          - flat
-          - PERCENTAGE
-          - percentage
-          - SUBSCRIPTION
-          - subscription
-          - CUSTOM
-          - custom
-          - TIERED
-          - tiered
-          - TIERED_PERCENTAGE
-          - tiered_percentage
-          x-mint-enum:
-            CUSTOM:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            custom:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            SUBSCRIPTION:
-            - ff:legacy-subscriptions-enabled
-            subscription:
-            - ff:legacy-subscriptions-enabled
-            TIERED_PERCENTAGE:
-            - ff:support-charge-ga
-            tiered_percentage:
-            - ff:support-charge-ga
-          x-mint:
-            groups:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-        price:
-          type: number
-          description: Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-        custom_rate:
-          x-mint:
-            groups:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-          type: object
-          additionalProperties: true
-          description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
-        quantity:
-          type: number
-          x-mint:
-            groups:
-            - ff:legacy-subscriptions-enabled
-          description: Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-        is_prorated:
-          type: boolean
-          x-mint:
-            groups:
-            - ff:legacy-subscriptions-enabled
-          description: Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be set to true.
-        tiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tier'
-          description: Only set for TIERED rate_type.
-        pricing_group_values:
-          type: object
-          description: if pricing groups are used, this will contain the values used to calculate the price
-          additionalProperties:
-            type: string
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        commit_rate:
-          $ref: '#/components/schemas/CommitRate'
   parameters:
     NextPage:
       name: next_page

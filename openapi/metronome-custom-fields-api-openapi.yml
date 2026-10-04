@@ -217,14 +217,6 @@ paths:
                   enforce_uniqueness: true
                 next_page: null
 components:
-  parameters:
-    NextPage:
-      name: next_page
-      in: query
-      description: Cursor that indicates where the next page of results should start.
-      required: false
-      schema:
-        type: string
   schemas:
     CustomField:
       type: object
@@ -256,6 +248,14 @@ components:
       x-mint-enum:
         professional_service:
         - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+  parameters:
+    NextPage:
+      name: next_page
+      in: query
+      description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

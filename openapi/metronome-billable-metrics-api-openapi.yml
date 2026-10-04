@@ -430,6 +430,14 @@ paths:
                 next_page: null
 components:
   schemas:
+    Id:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
     CreateBillableMetricPayload:
       type: object
       required:
@@ -471,28 +479,6 @@ components:
           type: array
           items:
             type: string
-    Id:
-      required:
-      - id
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-    GroupKeysArray:
-      type: array
-      items:
-        type: array
-        items:
-          type: string
-      description: Property names that are used to group usage costs on an invoice. Each entry represents a set of properties used to slice events into distinct buckets.
-    BillableMetricWithDeprecatedFields:
-      allOf:
-      - $ref: '#/components/schemas/BillableMetricBase'
-      - type: object
-        properties:
-          aggregation_type:
-            $ref: '#/components/schemas/AggregationType'
     EventTypeFilter:
       type: object
       properties:
@@ -507,30 +493,52 @@ components:
             type: string
           description: A list of event types that are explicitly excluded from the billable metric. If specified, events of these types will not match the billable metric. Must be non-empty if present.
       description: An optional filtering rule to match the 'event_type' property of an event.
-    BillableMetricV1:
-      type: object
+    BillableMetricWithDeprecatedFields:
+      allOf:
+      - $ref: '#/components/schemas/BillableMetricBase'
+      - type: object
+        properties:
+          aggregation_type:
+            $ref: '#/components/schemas/AggregationType'
+    BillableMetricBase:
       required:
-      - id
       - name
+      - id
+      type: object
       properties:
+        group_by:
+          type: array
+          description: (DEPRECATED) use group_keys instead
+          items:
+            type: string
+            description: A list of keys that can be used to additionally segment the values of the billable metric when making usage queries
+        group_keys:
+          $ref: '#/components/schemas/GroupKeysArray'
+        name:
+          type: string
         id:
           type: string
           format: uuid
-          description: ID of the billable metric
-        name:
+        aggregate:
           type: string
-          description: The display name of the billable metric.
+          description: (DEPRECATED) use aggregation_type instead
+        aggregate_keys:
+          type: array
+          description: (DEPRECATED) use aggregation_key instead
+          items:
+            type: string
+        filter:
+          type: object
+          description: (DEPRECATED) use property_filters & event_type_filter instead
+          additionalProperties: true
+        aggregation_key:
+          $ref: '#/components/schemas/AggregationKey'
         event_type_filter:
           $ref: '#/components/schemas/EventTypeFilter'
         property_filters:
           $ref: '#/components/schemas/PropertyFiltersArray'
-        aggregation_type:
-          $ref: '#/components/schemas/AggregationType'
-        aggregation_key:
-          $ref: '#/components/schemas/AggregationKey'
-        group_keys:
-          $ref: '#/components/schemas/GroupKeysArray'
         custom_fields:
+          x-cf-entity: billable_metric
           $ref: '#/components/schemas/CustomField'
         sql:
           type: string
@@ -539,6 +547,42 @@ components:
           type: string
           format: date-time
           description: RFC 3339 timestamp indicating when the billable metric was archived. If not provided, the billable metric is not archived.
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
+    AggregationType:
+      type: string
+      enum:
+      - count
+      - Count
+      - COUNT
+      - latest
+      - Latest
+      - LATEST
+      - max
+      - Max
+      - MAX
+      - sum
+      - Sum
+      - SUM
+      - unique
+      - Unique
+      - UNIQUE
+      description: Specifies the type of aggregation performed on matching events.
+    PropertyFiltersArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/PropertyFilter'
+      description: A list of filters to match events to this billable metric. Each filter defines a rule on an event property. All rules must pass for the event to match the billable metric.
+    GroupKeysArray:
+      type: array
+      items:
+        type: array
+        items:
+          type: string
+      description: Property names that are used to group usage costs on an invoice. Each entry represents a set of properties used to slice events into distinct buckets.
     Error:
       required:
       - message
@@ -592,53 +636,30 @@ components:
           items:
             type: string
           description: Specifies the values that prevent an event from matching the filter. An event will not pass the filter if its property value is included in this list. If null or empty, all property values will pass the filter. Must be non-empty if present.
-    AggregationKey:
-      type: string
-      description: A key that specifies which property of the event is used to aggregate data. This key must be one of the property filter names and is not applicable when the aggregation type is 'count'.
-    CustomField:
+    BillableMetricV1:
       type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-    BillableMetricBase:
       required:
-      - name
       - id
-      type: object
+      - name
       properties:
-        group_by:
-          type: array
-          description: (DEPRECATED) use group_keys instead
-          items:
-            type: string
-            description: A list of keys that can be used to additionally segment the values of the billable metric when making usage queries
-        group_keys:
-          $ref: '#/components/schemas/GroupKeysArray'
-        name:
-          type: string
         id:
           type: string
           format: uuid
-        aggregate:
+          description: ID of the billable metric
+        name:
           type: string
-          description: (DEPRECATED) use aggregation_type instead
-        aggregate_keys:
-          type: array
-          description: (DEPRECATED) use aggregation_key instead
-          items:
-            type: string
-        filter:
-          type: object
-          description: (DEPRECATED) use property_filters & event_type_filter instead
-          additionalProperties: true
-        aggregation_key:
-          $ref: '#/components/schemas/AggregationKey'
+          description: The display name of the billable metric.
         event_type_filter:
           $ref: '#/components/schemas/EventTypeFilter'
         property_filters:
           $ref: '#/components/schemas/PropertyFiltersArray'
+        aggregation_type:
+          $ref: '#/components/schemas/AggregationType'
+        aggregation_key:
+          $ref: '#/components/schemas/AggregationKey'
+        group_keys:
+          $ref: '#/components/schemas/GroupKeysArray'
         custom_fields:
-          x-cf-entity: billable_metric
           $ref: '#/components/schemas/CustomField'
         sql:
           type: string
@@ -647,46 +668,10 @@ components:
           type: string
           format: date-time
           description: RFC 3339 timestamp indicating when the billable metric was archived. If not provided, the billable metric is not archived.
-    AggregationType:
+    AggregationKey:
       type: string
-      enum:
-      - count
-      - Count
-      - COUNT
-      - latest
-      - Latest
-      - LATEST
-      - max
-      - Max
-      - MAX
-      - sum
-      - Sum
-      - SUM
-      - unique
-      - Unique
-      - UNIQUE
-      description: Specifies the type of aggregation performed on matching events.
-    PropertyFiltersArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/PropertyFilter'
-      description: A list of filters to match events to this billable metric. Each filter defines a rule on an event property. All rules must pass for the event to match the billable metric.
-  responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+      description: A key that specifies which property of the event is used to aggregate data. This key must be one of the property filter names and is not applicable when the aggregation type is 'count'.
   parameters:
-    CustomerId:
-      name: customer_id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
     NextPage:
       name: next_page
       in: query
@@ -694,14 +679,6 @@ components:
       required: false
       schema:
         type: string
-    BillableMetricId:
-      name: billable_metric_id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: 13117714-3f05-48e5-a6e9-a66093f13b4d
     PageLimit:
       name: limit
       in: query
@@ -711,6 +688,29 @@ components:
         type: integer
         minimum: 1
         maximum: 100
+    BillableMetricId:
+      name: billable_metric_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 13117714-3f05-48e5-a6e9-a66093f13b4d
+    CustomerId:
+      name: customer_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http
