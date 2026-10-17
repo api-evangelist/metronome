@@ -1556,19 +1556,19 @@ paths:
                     type: string
 components:
   schemas:
-    PrepaidCommitRolloverLedgerEntry:
+    CreditCreditedLedgerEntry:
       type: object
       required:
       - type
       - timestamp
       - amount
-      - new_contract_id
+      - invoice_id
       - segment_id
       properties:
         type:
           type: string
           enum:
-          - PREPAID_COMMIT_ROLLOVER
+          - CREDIT_CREDITED
         timestamp:
           type: string
           format: date-time
@@ -1577,42 +1577,215 @@ components:
         segment_id:
           type: string
           format: uuid
-        new_contract_id:
+        invoice_id:
           type: string
           format: uuid
-    CommitHierarchyChildAccessAll:
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    CreditCanceledLedgerEntry:
       type: object
       required:
       - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
       properties:
         type:
           type: string
           enum:
-          - ALL
-          - all
-    BalanceFilter:
+          - CREDIT_CANCELED
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    DisableCommitTrueupPayload:
+      type: object
+      required:
+      - customer_id
+      - commit_id
+      - contract_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose commit is to be updated
+        commit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to update
+        contract_id:
+          type: string
+          format: uuid
+          description: ID of the contract that the commit is on
+        amendment_id:
+          type: string
+          format: uuid
+          description: If applicable, the amendment ID that the commit is on
+    UpdateCommitEndDatePayload:
+      type: object
+      required:
+      - customer_id
+      - commit_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose commit is to be updated
+        commit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to update. Only supports "PREPAID" commits.
+        access_ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when access to the commit will end and it will no longer be possible to draw it down (exclusive). If not provided, the access will not be updated.
+        invoices_ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the commit will stop being invoiced (exclusive). If not provided, the invoice schedule will not be updated.
+    SchedulePointInTime:
       type: object
       properties:
-        balance_types:
-          type: array
-          description: The balance type to filter by.
-          items:
-            type: string
-            enum:
-            - PREPAID_COMMIT
-            - POSTPAID_COMMIT
-            - CREDIT
-        ids:
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        schedule_items:
           type: array
           items:
-            type: string
-            format: uuid
-          description: Specific IDs to compute balance across.
-        custom_fields:
+            type: object
+            required:
+            - id
+            - amount
+            - unit_price
+            - quantity
+            - timestamp
+            properties:
+              id:
+                type: string
+                format: uuid
+              invoice_id:
+                type:
+                - string
+                - 'null'
+                format: uuid
+              amount:
+                type: number
+              unit_price:
+                type: number
+              quantity:
+                type: number
+              timestamp:
+                type: string
+                format: date-time
+        do_not_invoice:
+          type: boolean
+          description: This field is only applicable to commit invoice schedules. If true, this schedule will not generate an invoice.
+          default: false
+    UpdateInvoiceScheduleInput:
+      type: object
+      properties:
+        add_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - timestamp
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              amount:
+                type: number
+              quantity:
+                type: number
+              unit_price:
+                type: number
+        update_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                type: string
+                format: uuid
+              timestamp:
+                type: string
+                format: date-time
+              amount:
+                type: number
+              quantity:
+                type: number
+              unit_price:
+                type: number
+        remove_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                type: string
+                format: uuid
+    AddManualBalanceLedgerEntryPayload:
+      type: object
+      required:
+      - customer_id
+      - id
+      - segment_id
+      - amount
+      - reason
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose balance is to be updated.
+        contract_id:
+          type: string
+          format: uuid
+          description: ID of the contract to update. Leave blank to update a customer level balance.
+        id:
+          type: string
+          format: uuid
+          description: ID of the balance (commit or credit) to update.
+        segment_id:
+          type: string
+          format: uuid
+          description: ID of the segment to update.
+        amount:
+          type: number
+          description: Amount to add to the segment. A negative number will draw down from the balance.
+        per_group_amounts:
           type: object
-          description: Custom fields to compute balance across. Must match all custom fields
           additionalProperties:
-            type: string
+            type: number
+          description: If using individually configured commits/credits attached to seat managed subscriptions, the amount to add for each seat. Must sum to total amount.
+        reason:
+          type: string
+          description: Reason for the manual adjustment. This will be displayed in the ledger.
+        timestamp:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when the manual adjustment takes place. If not provided, it will default to the start of the segment.
     Id:
       required:
       - id
@@ -1621,28 +1794,11 @@ components:
         id:
           type: string
           format: uuid
-    CommitLedger:
-      oneOf:
-      - $ref: '#/components/schemas/PrepaidCommitSegmentStartLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitAutomatedInvoiceDeductionLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitRolloverLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitExpirationLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitCanceledLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/PrepaidCommitCreditedLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/PrepaidCommitSeatBasedAdjustmentLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitInitialBalanceLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitAutomatedInvoiceDeductionLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitRolloverLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitTrueupLedgerEntry'
-      - $ref: '#/components/schemas/PrepaidCommitManualLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitManualLedgerEntry'
-      - $ref: '#/components/schemas/PostpaidCommitExpirationLedgerEntry'
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
     SchedulePointInTimeInput:
       type: object
       description: Must provide either schedule_items or recurring_schedule.
@@ -1713,89 +1869,284 @@ components:
           type: boolean
           description: This field is only applicable to commit invoice schedules. If true, this schedule will not generate an invoice.
           default: false
-    CommitSpecifier:
-      type: object
-      properties:
-        product_id:
-          type: string
-          format: uuid
-          description: If provided, the specifier will only apply to the product with the specified ID.
-        product_tags:
-          type: array
-          items:
-            type: string
-          description: If provided, the specifier will only apply to products with all the specified tags.
-        pricing_group_values:
-          type: object
-          additionalProperties:
-            type: string
-        presentation_group_values:
-          type: object
-          additionalProperties:
-            type: string
-        exclude:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:exclude-specifiers-ga
-          type: array
-          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
-          items:
-            $ref: '#/components/schemas/ExcludeSpecifier'
-    SeatBalanceCreditLedger:
+    SubscriptionConfigAllocation:
+      type: string
+      enum:
+      - INDIVIDUAL
+      - POOLED
+    SeatBalanceCommitLedgerEntryType:
+      type: string
+      enum:
+      - PREPAID_COMMIT_SEGMENT_START
+      - PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
+      - PREPAID_COMMIT_ROLLOVER
+      - PREPAID_COMMIT_EXPIRATION
+      - PREPAID_COMMIT_CANCELED
+      - PREPAID_COMMIT_CREDITED
+      - PREPAID_COMMIT_MANUAL
+      - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
+    PrepaidCommitCreditedLedgerEntry:
       type: object
       required:
       - type
-      - amount
       - timestamp
+      - amount
+      - invoice_id
+      - segment_id
       properties:
         type:
-          $ref: '#/components/schemas/SeatBalanceCreditLedgerEntryType'
-          description: Credit ledger type
-        amount:
-          type: number
-          description: Amount of the ledger entry
+          type: string
+          enum:
+          - PREPAID_COMMIT_CREDITED
         timestamp:
           type: string
           format: date-time
-          description: The datetime when the ledger is created
-    SchedulePointInTime:
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    PostpaidCommitTrueupLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      properties:
+        type:
+          type: string
+          enum:
+          - POSTPAID_COMMIT_TRUEUP
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    UpdateAccessScheduleInput:
       type: object
       properties:
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        schedule_items:
+        add_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - amount
+            - starting_at
+            - ending_before
+            properties:
+              amount:
+                type: number
+              starting_at:
+                type: string
+                format: date-time
+              ending_before:
+                type: string
+                format: date-time
+        update_schedule_items:
           type: array
           items:
             type: object
             required:
             - id
-            - amount
-            - unit_price
-            - quantity
-            - timestamp
             properties:
               id:
                 type: string
                 format: uuid
-              invoice_id:
-                type:
-                - string
-                - 'null'
-                format: uuid
               amount:
                 type: number
-              unit_price:
-                type: number
-              quantity:
-                type: number
-              timestamp:
+              starting_at:
                 type: string
                 format: date-time
-        do_not_invoice:
-          type: boolean
-          description: This field is only applicable to commit invoice schedules. If true, this schedule will not generate an invoice.
-          default: false
+              ending_before:
+                type: string
+                format: date-time
+        remove_schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            properties:
+              id:
+                type: string
+                format: uuid
+    PrepaidCommitManualLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - reason
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_MANUAL
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        reason:
+          type: string
+    PrepaidCommitCanceledLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_CANCELED
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    ExternalPaymentGateThresholdCommitPayload:
+      type: object
+      required:
+      - workflow_id
+      - outcome
+      properties:
+        workflow_id:
+          type: string
+          format: uuid
+          description: ID of the workflow to continue
+        outcome:
+          type: string
+          enum:
+          - paid
+          - PAID
+          - failed
+          - FAILED
+          description: The outcome of the external payment gate
+    ScheduleDurationInput:
+      type: object
+      required:
+      - schedule_items
+      properties:
+        credit_type_id:
+          type: string
+          format: uuid
+          description: Defaults to USD (cents) if not passed
+        schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - amount
+            - starting_at
+            - ending_before
+            properties:
+              amount:
+                type: number
+              starting_at:
+                type: string
+                format: date-time
+                description: RFC 3339 timestamp (inclusive)
+              ending_before:
+                type: string
+                format: date-time
+                description: RFC 3339 timestamp (exclusive)
+    EditCreditPayload:
+      type: object
+      required:
+      - customer_id
+      - credit_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose credit is being edited
+        credit_id:
+          type: string
+          format: uuid
+          description: ID of the credit to edit
+        name:
+          type: string
+          description: Updated name for the credit
+        description:
+          type: string
+          description: Updated description for the credit
+        access_schedule:
+          $ref: '#/components/schemas/UpdateAccessScheduleInput'
+        applicable_product_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uuid
+          description: Which products the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
+        applicable_product_tags:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Which tags the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
+        specifiers:
+          type:
+          - array
+          - 'null'
+          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`. Instead, to target usage by product or product tag, pass those values in the body of `specifiers`.
+          items:
+            $ref: '#/components/schemas/CommitSpecifierInput'
+        product_id:
+          type: string
+          format: uuid
+        priority:
+          type:
+          - number
+          - 'null'
+          description: If multiple commits are applicable, the one with the lower priority will apply first.
+        rate_type:
+          type: string
+          enum:
+          - LIST_RATE
+          - list_rate
+          - COMMIT_RATE
+          - commit_rate
+          description: If provided, updates the credit to use the specified rate type for current and future invoices. Previously finalized invoices will need to be voided and regenerated to reflect the rate type change.
+        hierarchy_configuration:
+          $ref: '#/components/schemas/CommitHierarchyConfiguration'
+          description: Optional configuration for credit hierarchy access control
     Credit:
       type: object
       required:
@@ -1917,178 +2268,6 @@ components:
             contract_id:
               type: string
               format: uuid
-    AddManualBalanceLedgerEntryPayload:
-      type: object
-      required:
-      - customer_id
-      - id
-      - segment_id
-      - amount
-      - reason
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose balance is to be updated.
-        contract_id:
-          type: string
-          format: uuid
-          description: ID of the contract to update. Leave blank to update a customer level balance.
-        id:
-          type: string
-          format: uuid
-          description: ID of the balance (commit or credit) to update.
-        segment_id:
-          type: string
-          format: uuid
-          description: ID of the segment to update.
-        amount:
-          type: number
-          description: Amount to add to the segment. A negative number will draw down from the balance.
-        per_group_amounts:
-          type: object
-          additionalProperties:
-            type: number
-          description: If using individually configured commits/credits attached to seat managed subscriptions, the amount to add for each seat. Must sum to total amount.
-        reason:
-          type: string
-          description: Reason for the manual adjustment. This will be displayed in the ledger.
-        timestamp:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the manual adjustment takes place. If not provided, it will default to the start of the segment.
-    CreditManualLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - reason
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_MANUAL
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        reason:
-          type: string
-    CreditExpirationLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_EXPIRATION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-    PostpaidCommitManualLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - reason
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_MANUAL
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        reason:
-          type: string
-    BalanceForCommitsAndCredits:
-      type: number
-      description: The current balance of the credit or commit. This balance reflects the amount of credit or commit that the customer has access to use at this moment - thus, expired and upcoming credit or commit segments contribute 0 to the balance. The balance will match the sum of all ledger entries with the exception of the case where the sum of negative manual ledger entries exceeds the positive amount remaining on the credit or commit - in that case, the balance will be 0. All manual ledger entries associated with active credit or commit segments are included in the balance, including future-dated manual ledger entries.
-    CreditAutomatedInvoiceDeductionLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_AUTOMATED_INVOICE_DEDUCTION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    CreditSegmentStartLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_SEGMENT_START
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-    RecurringScheduleFrequency:
-      type: string
-      enum:
-      - MONTHLY
-      - monthly
-      - QUARTERLY
-      - quarterly
-      - SEMI_ANNUAL
-      - semi_annual
-      - ANNUAL
-      - annual
-    CommitHierarchyConfiguration:
-      type: object
-      required:
-      - child_access
-      properties:
-        child_access:
-          oneOf:
-          - $ref: '#/components/schemas/CommitHierarchyChildAccessAll'
-          - $ref: '#/components/schemas/CommitHierarchyChildAccessNone'
-          - $ref: '#/components/schemas/CommitHierarchyChildAccessContractIds'
     CreateCustomerCommitPayload:
       type: object
       required:
@@ -2177,36 +2356,11 @@ components:
           $ref: '#/components/schemas/CustomField'
         uniqueness_key:
           $ref: '#/components/schemas/UniquenessKeyForCommitsAndCredits'
-    ArchiveCreditPayload:
-      type: object
-      required:
-      - customer_id
-      - credit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose credit is being archived
-        credit_id:
-          type: string
-          format: uuid
-          description: ID of the credit to archive
-    PostpaidCommitExpirationLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_EXPIRATION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
+    UniquenessKeyForCommitsAndCredits:
+      type: string
+      minLength: 1
+      maxLength: 128
+      description: Prevents the creation of duplicates. If a request to create a commit or credit is made with a uniqueness key that was previously used to create a commit or credit, a new record will not be created and the request will fail with a 409 error.
     CreditRolloverLedgerEntry:
       type: object
       required:
@@ -2231,230 +2385,57 @@ components:
         new_contract_id:
           type: string
           format: uuid
-    PrepaidCommitCreditedLedgerEntry:
-      type: object
+    CreditType:
       required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_CREDITED
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    CommitHierarchyChildAccessContractIds:
-      type: object
-      required:
-      - type
-      - contract_ids
-      properties:
-        type:
-          type: string
-          enum:
-          - CONTRACT_IDS
-          - contract_ids
-        contract_ids:
-          type: array
-          minItems: 1
-          items:
-            type: string
-            format: uuid
-    PostpaidCommitTrueupLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_TRUEUP
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    SeatBalanceByCreditType:
-      type: object
-      required:
-      - credit_type_id
-      - balance
-      - starting_balance
-      properties:
-        credit_type_id:
-          type: string
-          format: uuid
-        balance:
-          type: number
-          description: The total balance across all commits and credits for this seat, of this credit type.
-        starting_balance:
-          type: number
-          description: The total initial balances of all commits and credits for this seat, of this credit type.
-    ExcludeSpecifier:
-      type: object
-      properties:
-        product_tags:
-          type: array
-          items:
-            type: string
-          description: If provided, the specifier will not apply to products with all the specified tags.
-    SeatCommitBalance:
-      type: object
-      required:
+      - name
       - id
-      - balance
-      - start_date
+      type: object
       properties:
+        name:
+          type: string
         id:
           type: string
           format: uuid
-          description: The commit or credit ID
-        balance:
-          type: number
-          description: The current balance for this commit for this specific seat
-        start_date:
-          type: string
-          format: date-time
-          description: The datetime when the commit becomes active
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: The datetime when the commit expires
-        ledger_entries:
+    BalanceFilter:
+      type: object
+      properties:
+        balance_types:
+          type: array
+          description: The balance type to filter by.
+          items:
+            type: string
+            enum:
+            - PREPAID_COMMIT
+            - POSTPAID_COMMIT
+            - CREDIT
+        ids:
           type: array
           items:
-            $ref: '#/components/schemas/SeatBalanceCommitLedger'
-          description: Transaction history for this commit for this seat (only included if include_ledgers=true)
-    PrepaidCommitSeatBasedAdjustmentLedgerEntry:
+            type: string
+            format: uuid
+          description: Specific IDs to compute balance across.
+        custom_fields:
+          type: object
+          description: Custom fields to compute balance across. Must match all custom fields
+          additionalProperties:
+            type: string
+    SeatBalanceCommitLedger:
       type: object
       required:
       - type
-      - timestamp
       - amount
-      - segment_id
+      - timestamp
       properties:
         type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
+          $ref: '#/components/schemas/SeatBalanceCommitLedgerEntryType'
+          description: Commit ledger type
+        amount:
+          type: number
+          description: Amount of the ledger entry
         timestamp:
           type: string
           format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-    UpdateAccessScheduleInput:
-      type: object
-      properties:
-        add_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - amount
-            - starting_at
-            - ending_before
-            properties:
-              amount:
-                type: number
-              starting_at:
-                type: string
-                format: date-time
-              ending_before:
-                type: string
-                format: date-time
-        update_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                format: uuid
-              amount:
-                type: number
-              starting_at:
-                type: string
-                format: date-time
-              ending_before:
-                type: string
-                format: date-time
-        remove_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                format: uuid
-    PostpaidCommitAutomatedInvoiceDeductionLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
+          description: The datetime when the ledger is created
     PostpaidCommitInitialBalanceLedgerEntry:
       type: object
       required:
@@ -2471,42 +2452,77 @@ components:
           format: date-time
         amount:
           type: number
-    ApplySeatIncreaseConfigForRecurringCommit:
+    CreditSegmentStartLedgerEntry:
       type: object
       required:
-      - is_prorated
+      - type
+      - timestamp
+      - amount
+      - segment_id
       properties:
-        is_prorated:
-          type: boolean
-          description: Indicates whether a mid-period seat increase should be prorated.
-    ScheduleDuration:
+        type:
+          type: string
+          enum:
+          - CREDIT_SEGMENT_START
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    PostpaidCommitRolloverLedgerEntry:
       type: object
       required:
-      - schedule_items
+      - type
+      - timestamp
+      - amount
+      - new_contract_id
+      - segment_id
       properties:
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - amount
-            - starting_at
-            - ending_before
-            properties:
-              id:
-                type: string
-                format: uuid
-              amount:
-                type: number
-              starting_at:
-                type: string
-                format: date-time
-              ending_before:
-                type: string
-                format: date-time
+        type:
+          type: string
+          enum:
+          - POSTPAID_COMMIT_ROLLOVER
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        new_contract_id:
+          type: string
+          format: uuid
+    SeatBalanceCreditLedgerEntryType:
+      type: string
+      enum:
+      - CREDIT_SEGMENT_START
+      - CREDIT_AUTOMATED_INVOICE_DEDUCTION
+      - CREDIT_EXPIRATION
+      - CREDIT_CANCELED
+      - CREDIT_CREDITED
+      - CREDIT_MANUAL
+      - CREDIT_SEAT_BASED_ADJUSTMENT
+      - CREDIT_ROLLOVER
+    CreditLedger:
+      oneOf:
+      - $ref: '#/components/schemas/CreditSegmentStartLedgerEntry'
+      - $ref: '#/components/schemas/CreditAutomatedInvoiceDeductionLedgerEntry'
+      - $ref: '#/components/schemas/CreditExpirationLedgerEntry'
+      - $ref: '#/components/schemas/CreditCanceledLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/CreditCreditedLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/CreditManualLedgerEntry'
+      - $ref: '#/components/schemas/CreditSeatBasedAdjustmentLedgerEntry'
+      - $ref: '#/components/schemas/CreditRolloverLedgerEntry'
     CommitSpecifierInput:
       type: object
       properties:
@@ -2538,93 +2554,78 @@ components:
           description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
           items:
             $ref: '#/components/schemas/ExcludeSpecifier'
-    ArchiveCommitPayload:
-      type: object
-      required:
-      - customer_id
-      - commit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose commit is being archived
-        commit_id:
-          type: string
-          format: uuid
-          description: ID of the commit to archive
-    SubscriptionConfigAllocation:
-      type: string
-      enum:
-      - INDIVIDUAL
-      - POOLED
-    ExternalPaymentGateThresholdCommitPayload:
-      type: object
-      required:
-      - workflow_id
-      - outcome
-      properties:
-        workflow_id:
-          type: string
-          format: uuid
-          description: ID of the workflow to continue
-        outcome:
-          type: string
-          enum:
-          - paid
-          - PAID
-          - failed
-          - FAILED
-          description: The outcome of the external payment gate
-    PrepaidCommitCanceledLedgerEntry:
+    BalanceForCommitsAndCredits:
+      type: number
+      description: The current balance of the credit or commit. This balance reflects the amount of credit or commit that the customer has access to use at this moment - thus, expired and upcoming credit or commit segments contribute 0 to the balance. The balance will match the sum of all ledger entries with the exception of the case where the sum of negative manual ledger entries exceeds the positive amount remaining on the credit or commit - in that case, the balance will be 0. All manual ledger entries associated with active credit or commit segments are included in the balance, including future-dated manual ledger entries.
+    PostpaidCommitExpirationLedgerEntry:
       type: object
       required:
       - type
       - timestamp
       - amount
-      - invoice_id
-      - segment_id
       properties:
         type:
           type: string
           enum:
-          - PREPAID_COMMIT_CANCELED
+          - POSTPAID_COMMIT_EXPIRATION
         timestamp:
           type: string
           format: date-time
         amount:
           type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    PrepaidCommitSegmentStartLedgerEntry:
+    ScheduleDuration:
       type: object
       required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
+      - schedule_items
       properties:
-        type:
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        schedule_items:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - amount
+            - starting_at
+            - ending_before
+            properties:
+              id:
+                type: string
+                format: uuid
+              amount:
+                type: number
+              starting_at:
+                type: string
+                format: date-time
+              ending_before:
+                type: string
+                format: date-time
+    SeatBalance:
+      type: object
+      required:
+      - seat_id
+      - balances
+      properties:
+        seat_id:
           type: string
-          enum:
-          - PREPAID_COMMIT_SEGMENT_START
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
+          description: The unique identifier for the seat
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeatBalanceByCreditType'
+        commits:
+          type:
+          - array
+          - 'null'
+          description: Array of commits applicable to this seat with their balances
+          items:
+            $ref: '#/components/schemas/SeatCommitBalance'
+        credits:
+          type: array
+          description: Array of credits applicable to this seat with their balances
+          items:
+            $ref: '#/components/schemas/SeatCreditBalance'
     Commit:
       type: object
       required:
@@ -2779,6 +2780,361 @@ components:
             - Rollover commits: when the new contract started
 
             '
+    CommitSpecifier:
+      type: object
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: If provided, the specifier will only apply to the product with the specified ID.
+        product_tags:
+          type: array
+          items:
+            type: string
+          description: If provided, the specifier will only apply to products with all the specified tags.
+        pricing_group_values:
+          type: object
+          additionalProperties:
+            type: string
+        presentation_group_values:
+          type: object
+          additionalProperties:
+            type: string
+        exclude:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:exclude-specifiers-ga
+          type: array
+          description: If provided, the specifier will not apply to product usage that matches the inclusion criteria and any of the excluding values.
+          items:
+            $ref: '#/components/schemas/ExcludeSpecifier'
+    PrepaidCommitRolloverLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - new_contract_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_ROLLOVER
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        new_contract_id:
+          type: string
+          format: uuid
+    CommitLedger:
+      oneOf:
+      - $ref: '#/components/schemas/PrepaidCommitSegmentStartLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitAutomatedInvoiceDeductionLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitRolloverLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitExpirationLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitCanceledLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/PrepaidCommitCreditedLedgerEntry'
+        x-mint:
+          groups:
+          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+      - $ref: '#/components/schemas/PrepaidCommitSeatBasedAdjustmentLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitInitialBalanceLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitAutomatedInvoiceDeductionLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitRolloverLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitTrueupLedgerEntry'
+      - $ref: '#/components/schemas/PrepaidCommitManualLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitManualLedgerEntry'
+      - $ref: '#/components/schemas/PostpaidCommitExpirationLedgerEntry'
+    SeatBalanceByCreditType:
+      type: object
+      required:
+      - credit_type_id
+      - balance
+      - starting_balance
+      properties:
+        credit_type_id:
+          type: string
+          format: uuid
+        balance:
+          type: number
+          description: The total balance across all commits and credits for this seat, of this credit type.
+        starting_balance:
+          type: number
+          description: The total initial balances of all commits and credits for this seat, of this credit type.
+    CreditManualLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - reason
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_MANUAL
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        reason:
+          type: string
+    SeatCommitBalance:
+      type: object
+      required:
+      - id
+      - balance
+      - start_date
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The commit or credit ID
+        balance:
+          type: number
+          description: The current balance for this commit for this specific seat
+        start_date:
+          type: string
+          format: date-time
+          description: The datetime when the commit becomes active
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: The datetime when the commit expires
+        ledger_entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeatBalanceCommitLedger'
+          description: Transaction history for this commit for this seat (only included if include_ledgers=true)
+    CreditSeatBasedAdjustmentLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_SEAT_BASED_ADJUSTMENT
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    CreditExpirationLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_EXPIRATION
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    UpdateCreditEndDatePayload:
+      type: object
+      required:
+      - customer_id
+      - credit_id
+      - access_ending_before
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose credit is to be updated
+        credit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to update
+        access_ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp indicating when access to the credit will end and it will no longer be possible to draw it down (exclusive).
+    CreditAutomatedInvoiceDeductionLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - CREDIT_AUTOMATED_INVOICE_DEDUCTION
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    ArchiveCommitPayload:
+      type: object
+      required:
+      - customer_id
+      - commit_id
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: ID of the customer whose commit is being archived
+        commit_id:
+          type: string
+          format: uuid
+          description: ID of the commit to archive
+    SeatBalanceCreditLedger:
+      type: object
+      required:
+      - type
+      - amount
+      - timestamp
+      properties:
+        type:
+          $ref: '#/components/schemas/SeatBalanceCreditLedgerEntryType'
+          description: Credit ledger type
+        amount:
+          type: number
+          description: Amount of the ledger entry
+        timestamp:
+          type: string
+          format: date-time
+          description: The datetime when the ledger is created
+    PostpaidCommitAutomatedInvoiceDeductionLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - invoice_id
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - POSTPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+        invoice_id:
+          type: string
+          format: uuid
+        contract_id:
+          x-mint:
+            groups:
+            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+          type: string
+          format: uuid
+    CommitHierarchyChildAccessAll:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - ALL
+          - all
+    CommitHierarchyChildAccessContractIds:
+      type: object
+      required:
+      - type
+      - contract_ids
+      properties:
+        type:
+          type: string
+          enum:
+          - CONTRACT_IDS
+          - contract_ids
+        contract_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: uuid
+    PostpaidCommitManualLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - reason
+      properties:
+        type:
+          type: string
+          enum:
+          - POSTPAID_COMMIT_MANUAL
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        reason:
+          type: string
+    PrepaidCommitSegmentStartLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_SEGMENT_START
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
     CreateCustomerCreditPayload:
       type: object
       required:
@@ -2851,213 +3207,14 @@ components:
           - list_rate
         uniqueness_key:
           $ref: '#/components/schemas/UniquenessKeyForCommitsAndCredits'
-    ScheduleDurationInput:
+    ApplySeatIncreaseConfigForRecurringCommit:
       type: object
       required:
-      - schedule_items
+      - is_prorated
       properties:
-        credit_type_id:
-          type: string
-          format: uuid
-          description: Defaults to USD (cents) if not passed
-        schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - amount
-            - starting_at
-            - ending_before
-            properties:
-              amount:
-                type: number
-              starting_at:
-                type: string
-                format: date-time
-                description: RFC 3339 timestamp (inclusive)
-              ending_before:
-                type: string
-                format: date-time
-                description: RFC 3339 timestamp (exclusive)
-    PrepaidCommitManualLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - reason
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_MANUAL
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        reason:
-          type: string
-    PostpaidCommitRolloverLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - new_contract_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - POSTPAID_COMMIT_ROLLOVER
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        new_contract_id:
-          type: string
-          format: uuid
-    PrepaidCommitExpirationLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_EXPIRATION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-    UpdateInvoiceScheduleInput:
-      type: object
-      properties:
-        add_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - timestamp
-            properties:
-              timestamp:
-                type: string
-                format: date-time
-              amount:
-                type: number
-              quantity:
-                type: number
-              unit_price:
-                type: number
-        update_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                format: uuid
-              timestamp:
-                type: string
-                format: date-time
-              amount:
-                type: number
-              quantity:
-                type: number
-              unit_price:
-                type: number
-        remove_schedule_items:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            properties:
-              id:
-                type: string
-                format: uuid
-    CreditLedger:
-      oneOf:
-      - $ref: '#/components/schemas/CreditSegmentStartLedgerEntry'
-      - $ref: '#/components/schemas/CreditAutomatedInvoiceDeductionLedgerEntry'
-      - $ref: '#/components/schemas/CreditExpirationLedgerEntry'
-      - $ref: '#/components/schemas/CreditCanceledLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/CreditCreditedLedgerEntry'
-        x-mint:
-          groups:
-          - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-      - $ref: '#/components/schemas/CreditManualLedgerEntry'
-      - $ref: '#/components/schemas/CreditSeatBasedAdjustmentLedgerEntry'
-      - $ref: '#/components/schemas/CreditRolloverLedgerEntry'
-    UpdateCommitEndDatePayload:
-      type: object
-      required:
-      - customer_id
-      - commit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose commit is to be updated
-        commit_id:
-          type: string
-          format: uuid
-          description: ID of the commit to update. Only supports "PREPAID" commits.
-        access_ending_before:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when access to the commit will end and it will no longer be possible to draw it down (exclusive). If not provided, the access will not be updated.
-        invoices_ending_before:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp indicating when the commit will stop being invoiced (exclusive). If not provided, the invoice schedule will not be updated.
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
-        type: string
-    SeatBalance:
-      type: object
-      required:
-      - seat_id
-      - balances
-      properties:
-        seat_id:
-          type: string
-          description: The unique identifier for the seat
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeatBalanceByCreditType'
-        commits:
-          type:
-          - array
-          - 'null'
-          description: Array of commits applicable to this seat with their balances
-          items:
-            $ref: '#/components/schemas/SeatCommitBalance'
-        credits:
-          type: array
-          description: Array of credits applicable to this seat with their balances
-          items:
-            $ref: '#/components/schemas/SeatCreditBalance'
+        is_prorated:
+          type: boolean
+          description: Indicates whether a mid-period seat increase should be prorated.
     SeatCreditBalance:
       type: object
       required:
@@ -3087,131 +3244,35 @@ components:
           items:
             $ref: '#/components/schemas/SeatBalanceCreditLedger'
           description: Transaction history for this credit for this seat (only included if include_ledgers=true)
-    CommitHierarchyChildAccessNone:
+    ExcludeSpecifier:
+      type: object
+      properties:
+        product_tags:
+          type: array
+          items:
+            type: string
+          description: If provided, the specifier will not apply to products with all the specified tags.
+    CommitHierarchyConfiguration:
       type: object
       required:
-      - type
+      - child_access
       properties:
-        type:
-          type: string
-          enum:
-          - NONE
-          - none
-    PrepaidCommitAutomatedInvoiceDeductionLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    SeatBalanceCommitLedgerEntryType:
+        child_access:
+          oneOf:
+          - $ref: '#/components/schemas/CommitHierarchyChildAccessAll'
+          - $ref: '#/components/schemas/CommitHierarchyChildAccessNone'
+          - $ref: '#/components/schemas/CommitHierarchyChildAccessContractIds'
+    RecurringScheduleFrequency:
       type: string
       enum:
-      - PREPAID_COMMIT_SEGMENT_START
-      - PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
-      - PREPAID_COMMIT_ROLLOVER
-      - PREPAID_COMMIT_EXPIRATION
-      - PREPAID_COMMIT_CANCELED
-      - PREPAID_COMMIT_CREDITED
-      - PREPAID_COMMIT_MANUAL
-      - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
-    CreditCanceledLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - invoice_id
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_CANCELED
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
-        invoice_id:
-          type: string
-          format: uuid
-        contract_id:
-          x-mint:
-            groups:
-            - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-          type: string
-          format: uuid
-    Error:
-      required:
-      - message
-      type: object
-      properties:
-        message:
-          type: string
-    SeatBalanceCommitLedger:
-      type: object
-      required:
-      - type
-      - amount
-      - timestamp
-      properties:
-        type:
-          $ref: '#/components/schemas/SeatBalanceCommitLedgerEntryType'
-          description: Commit ledger type
-        amount:
-          type: number
-          description: Amount of the ledger entry
-        timestamp:
-          type: string
-          format: date-time
-          description: The datetime when the ledger is created
-    CreditSeatBasedAdjustmentLedgerEntry:
-      type: object
-      required:
-      - type
-      - timestamp
-      - amount
-      - segment_id
-      properties:
-        type:
-          type: string
-          enum:
-          - CREDIT_SEAT_BASED_ADJUSTMENT
-        timestamp:
-          type: string
-          format: date-time
-        amount:
-          type: number
-        segment_id:
-          type: string
-          format: uuid
+      - MONTHLY
+      - monthly
+      - QUARTERLY
+      - quarterly
+      - SEMI_ANNUAL
+      - semi_annual
+      - ANNUAL
+      - annual
     EditCommitPayload:
       type: object
       required:
@@ -3281,76 +3342,78 @@ components:
         hierarchy_configuration:
           $ref: '#/components/schemas/CommitHierarchyConfiguration'
           description: Optional configuration for commit hierarchy access control
-    UpdateCreditEndDatePayload:
+    PrepaidCommitSeatBasedAdjustmentLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_SEAT_BASED_ADJUSTMENT
+        timestamp:
+          type: string
+          format: date-time
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    ArchiveCreditPayload:
       type: object
       required:
       - customer_id
       - credit_id
-      - access_ending_before
       properties:
         customer_id:
           type: string
           format: uuid
-          description: ID of the customer whose credit is to be updated
+          description: ID of the customer whose credit is being archived
         credit_id:
           type: string
           format: uuid
-          description: ID of the commit to update
-        access_ending_before:
+          description: ID of the credit to archive
+    PrepaidCommitExpirationLedgerEntry:
+      type: object
+      required:
+      - type
+      - timestamp
+      - amount
+      - segment_id
+      properties:
+        type:
+          type: string
+          enum:
+          - PREPAID_COMMIT_EXPIRATION
+        timestamp:
           type: string
           format: date-time
-          description: RFC 3339 timestamp indicating when access to the credit will end and it will no longer be possible to draw it down (exclusive).
-    DisableCommitTrueupPayload:
-      type: object
+        amount:
+          type: number
+        segment_id:
+          type: string
+          format: uuid
+    Error:
       required:
-      - customer_id
-      - commit_id
-      - contract_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose commit is to be updated
-        commit_id:
-          type: string
-          format: uuid
-          description: ID of the commit to update
-        contract_id:
-          type: string
-          format: uuid
-          description: ID of the contract that the commit is on
-        amendment_id:
-          type: string
-          format: uuid
-          description: If applicable, the amendment ID that the commit is on
-    CreditType:
-      required:
-      - name
-      - id
+      - message
       type: object
       properties:
-        name:
+        message:
           type: string
-        id:
+    CommitHierarchyChildAccessNone:
+      type: object
+      required:
+      - type
+      properties:
+        type:
           type: string
-          format: uuid
-    UniquenessKeyForCommitsAndCredits:
-      type: string
-      minLength: 1
-      maxLength: 128
-      description: Prevents the creation of duplicates. If a request to create a commit or credit is made with a uniqueness key that was previously used to create a commit or credit, a new record will not be created and the request will fail with a 409 error.
-    SeatBalanceCreditLedgerEntryType:
-      type: string
-      enum:
-      - CREDIT_SEGMENT_START
-      - CREDIT_AUTOMATED_INVOICE_DEDUCTION
-      - CREDIT_EXPIRATION
-      - CREDIT_CANCELED
-      - CREDIT_CREDITED
-      - CREDIT_MANUAL
-      - CREDIT_SEAT_BASED_ADJUSTMENT
-      - CREDIT_ROLLOVER
-    CreditCreditedLedgerEntry:
+          enum:
+          - NONE
+          - none
+    PrepaidCommitAutomatedInvoiceDeductionLedgerEntry:
       type: object
       required:
       - type
@@ -3362,7 +3425,7 @@ components:
         type:
           type: string
           enum:
-          - CREDIT_CREDITED
+          - PREPAID_COMMIT_AUTOMATED_INVOICE_DEDUCTION
         timestamp:
           type: string
           format: date-time
@@ -3380,69 +3443,6 @@ components:
             - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
           type: string
           format: uuid
-    EditCreditPayload:
-      type: object
-      required:
-      - customer_id
-      - credit_id
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: ID of the customer whose credit is being edited
-        credit_id:
-          type: string
-          format: uuid
-          description: ID of the credit to edit
-        name:
-          type: string
-          description: Updated name for the credit
-        description:
-          type: string
-          description: Updated description for the credit
-        access_schedule:
-          $ref: '#/components/schemas/UpdateAccessScheduleInput'
-        applicable_product_ids:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-            format: uuid
-          description: Which products the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
-        applicable_product_tags:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: Which tags the credit applies to. If both applicable_product_ids and applicable_product_tags are not provided, the credit applies to all products.
-        specifiers:
-          type:
-          - array
-          - 'null'
-          description: List of filters that determine what kind of customer usage draws down a commit or credit. A customer's usage needs to meet the condition of at least one of the specifiers to contribute to a commit's or credit's drawdown. This field cannot be used together with `applicable_product_ids` or `applicable_product_tags`. Instead, to target usage by product or product tag, pass those values in the body of `specifiers`.
-          items:
-            $ref: '#/components/schemas/CommitSpecifierInput'
-        product_id:
-          type: string
-          format: uuid
-        priority:
-          type:
-          - number
-          - 'null'
-          description: If multiple commits are applicable, the one with the lower priority will apply first.
-        rate_type:
-          type: string
-          enum:
-          - LIST_RATE
-          - list_rate
-          - COMMIT_RATE
-          - commit_rate
-          description: If provided, updates the credit to use the specified rate type for current and future invoices. Previously finalized invoices will need to be voided and regenerated to reflect the rate type change.
-        hierarchy_configuration:
-          $ref: '#/components/schemas/CommitHierarchyConfiguration'
-          description: Optional configuration for credit hierarchy access control
   responses:
     NotFound:
       description: The specified resource was not found

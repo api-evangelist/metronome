@@ -197,6 +197,24 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    PaymentStatus:
+      type: string
+      enum:
+      - pending
+      - requires_intervention
+      - paid
+      - canceled
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
     RevenueSystemPayment:
       type: object
       required:
@@ -247,17 +265,6 @@ components:
                   type: string
                 decline_code:
                   type: string
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
     Payment:
       type: object
       required:
@@ -301,13 +308,6 @@ components:
           type: string
           format: date-time
           example: '2022-02-01T00:00:00Z'
-    PaymentStatus:
-      type: string
-      enum:
-      - pending
-      - requires_intervention
-      - paid
-      - canceled
   responses:
     NotFound:
       description: The specified resource was not found

@@ -919,58 +919,6 @@ paths:
               mode: replace
 components:
   schemas:
-    Tags:
-      type: array
-      items:
-        type: string
-    InvoiceType:
-      type: string
-      example: SCHEDULED or USAGE
-    PreviewEventsPayload:
-      type: object
-      required:
-      - events
-      additionalProperties: false
-      properties:
-        events:
-          type: array
-          minItems: 1
-          maxItems: 100
-          items:
-            $ref: '#/components/schemas/PreviewEvent'
-          description: 'Array of usage events to include in the preview calculation. Must contain at least one event in `merge` mode.
-
-            '
-        mode:
-          type: string
-          enum:
-          - replace
-          - merge
-          default: replace
-          description: 'Controls how the provided events are combined with existing usage data. Use `replace` to calculate the preview as if these are the only events for the customer, ignoring all historical usage.  Use `merge` to combine these events with the customer''s existing usage.  Defaults to `replace`.
-
-            '
-        skip_zero_qty_line_items:
-          type: boolean
-          default: false
-          description: When `true`, line items with zero quantity are excluded from the response.
-    InvoiceStatus:
-      type: string
-      example: DRAFT, VOID, or FINALIZED
-    TierMetadata:
-      required:
-      - level
-      - starting_at
-      type: object
-      properties:
-        size:
-          type:
-          - string
-          - 'null'
-        level:
-          type: number
-        starting_at:
-          type: string
     Tier:
       type: object
       required:
@@ -980,6 +928,64 @@ components:
           type: number
         price:
           type: number
+    SpendBreakdownInvoice:
+      required:
+      - id
+      - customer_id
+      - credit_type
+      - line_items
+      - status
+      - type
+      - breakdown_start_timestamp
+      - breakdown_end_timestamp
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceLineItem'
+        start_timestamp:
+          description: Beginning of the usage period this invoice covers (UTC)
+          type: string
+          format: date-time
+        end_timestamp:
+          description: End of the usage period this invoice covers (UTC)
+          type: string
+          format: date-time
+        issued_at:
+          description: When the invoice was issued (UTC)
+          type: string
+          format: date-time
+        created_at:
+          description: When the invoice was created (UTC). This field is present for correction invoices only.
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/InvoiceStatus'
+        type:
+          $ref: '#/components/schemas/InvoiceType'
+        contract_id:
+          type: string
+          format: uuid
+        breakdown_start_timestamp:
+          type: string
+          format: date-time
+        breakdown_end_timestamp:
+          type: string
+          format: date-time
+    CustomField:
+      type: object
+      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
+      additionalProperties:
+        type: string
     ExternalInvoice:
       required:
       - billing_provider_type
@@ -1035,6 +1041,527 @@ components:
         external_payment_id:
           type: string
           description: The ID of the payment in the external system, if available.
+    PreviewEventsPayload:
+      type: object
+      required:
+      - events
+      additionalProperties: false
+      properties:
+        events:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/PreviewEvent'
+          description: 'Array of usage events to include in the preview calculation. Must contain at least one event in `merge` mode.
+
+            '
+        mode:
+          type: string
+          enum:
+          - replace
+          - merge
+          default: replace
+          description: 'Controls how the provided events are combined with existing usage data. Use `replace` to calculate the preview as if these are the only events for the customer, ignoring all historical usage.  Use `merge` to combine these events with the customer''s existing usage.  Defaults to `replace`.
+
+            '
+        skip_zero_qty_line_items:
+          type: boolean
+          default: false
+          description: When `true`, line items with zero quantity are excluded from the response.
+    BillingProviderType:
+      type: string
+      enum:
+      - aws_marketplace
+      - stripe
+      - netsuite
+      - custom
+      - azure_marketplace
+      - quickbooks_online
+      - workday
+      - gcp_marketplace
+      - metronome
+      x-mint-enum:
+        netsuite:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        custom:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        workday:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+        gcp_marketplace:
+        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
+    RevenueSystemInvoice:
+      required:
+      - revenue_system_provider
+      - sync_status
+      - revenue_system_external_entity_type
+      type: object
+      properties:
+        revenue_system_provider:
+          type: string
+        revenue_system_external_entity_id:
+          type: string
+        sync_status:
+          type: string
+        revenue_system_external_entity_type:
+          type: string
+        error_message:
+          type: string
+          description: The error message from the revenue system, if available.
+    InvoiceType:
+      type: string
+      example: SCHEDULED or USAGE
+    CreditType:
+      required:
+      - name
+      - id
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+          format: uuid
+    SpendBreakdownInvoicesQueryPayload:
+      required:
+      - starting_on
+      - ending_before
+      type: object
+      additionalProperties: false
+      properties:
+        starting_on:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that start on or after this time.
+        ending_before:
+          type: string
+          format: date-time
+          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that end on or before this time.
+        skip_zero_qty_line_items:
+          type: boolean
+          description: If set, all zero quantity line items will be filtered out of the response.
+        credit_type_id:
+          type: string
+          format: uuid
+          description: If provided, only invoices with the specified credit type id will be included in the response.
+        sort:
+          type: string
+          description: Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc.
+          enum:
+          - date_asc
+          - date_desc
+          default: date_asc
+        window_size:
+          type: string
+          description: The granularity of the breakdowns to return. Defaults to "day".
+          enum:
+          - day
+          - none
+          - DAY
+          - NONE
+          - Day
+          - None
+        group_keys:
+          type: array
+          description: 'A list of keys that can be used to additionally segment the values of the billable metric when making usage queries. Must be valid keys that are present in the billable metrics or an empty list. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
+
+            '
+          items:
+            type: string
+        group_filters:
+          description: 'An object where the keys are the group keys and the values are arrays of group values. If the values is an empty array, the returned usage data will be aggregated across all values for that key. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
+
+            '
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        limit:
+          type: integer
+          description: Max number of results that should be returned. For daily and "none" breakdowns, the response can return up to 35 days worth of breakdowns. If there are more results, a cursor to the next page is returned.
+          minimum: 1
+          maximum: 100
+          default: 100
+        next_page:
+          type: string
+          description: Cursor that indicates where the next page of results should start.
+    ResellerType:
+      type: string
+      enum:
+      - AWS
+      - AWS_PRO_SERVICE
+      - GCP
+      - GCP_PRO_SERVICE
+    ExternalInvoiceStatus:
+      type: string
+      enum:
+      - DRAFT
+      - FINALIZED
+      - PAID
+      - PARTIALLY_PAID
+      - UNCOLLECTIBLE
+      - VOID
+      - DELETED
+      - PAYMENT_FAILED
+      - INVALID_REQUEST_ERROR
+      - SKIPPED
+      - SENT
+      - QUEUED
+    TierMetadata:
+      required:
+      - level
+      - starting_at
+      type: object
+      properties:
+        size:
+          type:
+          - string
+          - 'null'
+        level:
+          type: number
+        starting_at:
+          type: string
+    Rate:
+      type: object
+      required:
+      - rate_type
+      properties:
+        rate_type:
+          type: string
+          enum:
+          - FLAT
+          - flat
+          - PERCENTAGE
+          - percentage
+          - SUBSCRIPTION
+          - subscription
+          - CUSTOM
+          - custom
+          - TIERED
+          - tiered
+          - TIERED_PERCENTAGE
+          - tiered_percentage
+          x-mint-enum:
+            CUSTOM:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            custom:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+            SUBSCRIPTION:
+            - ff:legacy-subscriptions-enabled
+            subscription:
+            - ff:legacy-subscriptions-enabled
+            TIERED_PERCENTAGE:
+            - ff:support-charge-ga
+            tiered_percentage:
+            - ff:support-charge-ga
+          x-mint:
+            groups:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+        price:
+          type: number
+          description: Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
+        custom_rate:
+          x-mint:
+            groups:
+            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
+            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
+            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
+            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
+            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
+            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
+            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
+          type: object
+          additionalProperties: true
+          description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
+        quantity:
+          type: number
+          x-mint:
+            groups:
+            - ff:legacy-subscriptions-enabled
+          description: Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
+        is_prorated:
+          type: boolean
+          x-mint:
+            groups:
+            - ff:legacy-subscriptions-enabled
+          description: Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be set to true.
+        tiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tier'
+          description: Only set for TIERED rate_type.
+        minimum_config:
+          x-stainless-skip: true
+          x-mint:
+            groups:
+            - ff:support-charge-ga
+          $ref: '#/components/schemas/MinimumConfig'
+        pricing_group_values:
+          type: object
+          description: if pricing groups are used, this will contain the values used to calculate the price
+          additionalProperties:
+            type: string
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+    MinimumConfig:
+      type: object
+      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
+      required:
+      - minimum
+      properties:
+        minimum:
+          type: number
+    InvoiceLineItem:
+      required:
+      - name
+      - total
+      - credit_type
+      - type
+      type: object
+      properties:
+        name:
+          type: string
+        quantity:
+          type: number
+          description: The quantity associated with the line item.
+        total:
+          type: number
+        unit_price:
+          type: number
+          description: The unit price associated with the line item.
+        list_price:
+          $ref: '#/components/schemas/Rate'
+          description: 'Only present for contract invoices and when the `include_list_prices` query parameter is set to true. This will include the list rate for the charge if applicable.  Only present for usage and subscription line items.
+
+            '
+        product_id:
+          type: string
+          format: uuid
+          description: ID of the product associated with the line item.
+        product_custom_fields:
+          $ref: '#/components/schemas/CustomField'
+        product_tags:
+          $ref: '#/components/schemas/Tags'
+          description: The current product tags associated with the line item's `product_id`.
+        product_type:
+          type: string
+          description: 'The type of the line item''s product. Possible values are `FixedProductListItem` (for `FIXED` type products), `UsageProductListItem` (for `USAGE` type products), `SubscriptionProductListItem` (for `SUBSCRIPTION` type products) or `CompositeProductListItem` (for `COMPOSITE` type products).  For scheduled charges, commit and credit payments, the value is `FixedProductListItem`.
+
+            '
+        type:
+          type: string
+          description: 'The type of line item.
+
+
+            - `scheduled`: Line item is associated with a scheduled charge. View the scheduled_charge_id on the line item.
+
+            - `commit_purchase`: Line item is associated with a payment for a prepaid commit. View the commit_id on the line item.
+
+            - `usage`: Line item is associated with a usage product or composite product. View the product_id on the line item to determine which product.
+
+            - `subscription`: Line item is associated with a subscription. e.g. monthly recurring payment for an in-advance subscription.
+
+            - `applied_commit_or_credit`: On metronome invoices, applied commits and credits are associated with their own line items. These line items have negative totals. Use the applied_commit_or_credit object on the line item to understand the id of the applied commit or credit, and its type. Note that the application of a postpaid commit is associated with a line item, but the total on the line item is not included in the invoice''s total as postpaid commits are paid in-arrears.
+
+            - `cpu_conversion`: Line item converting between a custom pricing unit and fiat currency, using the conversion rate set on the rate card. This line item will appear when there are products priced in custom pricing units, and there is insufficient prepaid commit/credit in that custom pricing unit to fully cover the spend. Then, the outstanding spend in custom pricing units will be converted to fiat currency using a cpu_conversion line item.
+
+            '
+        netsuite_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+        is_prorated:
+          type: boolean
+          description: Indicates whether the line item is prorated for `SUBSCRIPTION` type product.
+        credit_type:
+          $ref: '#/components/schemas/CreditType'
+        starting_at:
+          type: string
+          format: date-time
+          description: The line item's start date (inclusive).
+        ending_before:
+          type: string
+          format: date-time
+          description: The line item's end date (exclusive).
+        commit_id:
+          type: string
+          format: uuid
+          description: For line items with product of `USAGE`, `SUBSCRIPTION`, or `COMPOSITE` types, the ID of the credit or commit that was applied to this line item. For line items with product type of `FIXED`, the ID of the prepaid or postpaid commit that is being paid for.
+        applied_commit_or_credit:
+          $ref: '#/components/schemas/AppliedCommitOrCredit'
+          description: Details about the credit or commit that was applied to this line item. Only present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE` types.
+        commit_custom_fields:
+          $ref: '#/components/schemas/CustomField'
+        commit_segment_id:
+          type: string
+          format: uuid
+        commit_type:
+          type: string
+          description: '`PrepaidCommit` (for commit types `PREPAID` and `CREDIT`) or `PostpaidCommit` (for commit type `POSTPAID`).'
+        commit_netsuite_sales_order_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+        commit_netsuite_item_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+        postpaid_commit:
+          description: Only present for line items paying for a postpaid commit true-up.
+          $ref: '#/components/schemas/PostpaidCommit'
+        reseller_type:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          $ref: '#/components/schemas/ResellerType'
+        custom_fields:
+          x-cf-entity: product
+          $ref: '#/components/schemas/CustomField'
+        pricing_group_values:
+          type: object
+          description: Includes the pricing group values associated with this line item if dimensional pricing is used.
+          additionalProperties:
+            type: string
+        presentation_group_values:
+          type: object
+          description: Includes the presentation group values associated with this line item if presentation group keys are used.
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+        metadata:
+          type: string
+        netsuite_invoice_billing_start:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          format: date-time
+          description: The start date for the billing period on the invoice.
+        netsuite_invoice_billing_end:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          format: date-time
+          description: The end date for the billing period on the invoice.
+        professional_service_id:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          type: string
+          format: uuid
+        professional_service_custom_fields:
+          x-mint:
+            groups:
+            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
+          $ref: '#/components/schemas/CustomField'
+        scheduled_charge_id:
+          type: string
+          format: uuid
+          description: ID of scheduled charge.
+        scheduled_charge_custom_fields:
+          $ref: '#/components/schemas/CustomField'
+        subscription_custom_fields:
+          $ref: '#/components/schemas/CustomField'
+        subscription_id:
+          type: string
+          format: uuid
+          description: ID of the subscription that this line item is associated with. Only present on line items with product of `SUBSCRIPTION` type.
+        tier:
+          $ref: '#/components/schemas/TierMetadata'
+          description: Populated if the line item has a tiered price.
+        discount_id:
+          type: string
+          format: uuid
+          description: ID of the discount applied to this line item.
+        discount_custom_fields:
+          x-cf-entity: discount
+          $ref: '#/components/schemas/CustomField'
+        origin:
+          type: object
+          description: Present on line items from invoices with type USAGE_CONSOLIDATED. Indicates the original customer, contract, invoice and line item from which this line item was copied.
+          required:
+          - line_item_id
+          - invoice_id
+          - customer_id
+          - contract_id
+          properties:
+            line_item_id:
+              type: string
+              format: uuid
+            invoice_id:
+              type: string
+              format: uuid
+            customer_id:
+              type: string
+              format: uuid
+            contract_id:
+              type: string
+              format: uuid
+    AppliedCommitOrCredit:
+      type: object
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - PREPAID
+          - POSTPAID
+          - CREDIT
+    BillableStatus:
+      type: string
+      enum:
+      - billable
+      - unbillable
+    PreviewEvent:
+      required:
+      - event_type
+      type: object
+      properties:
+        event_type:
+          type: string
+          minLength: 1
+        timestamp:
+          type: string
+          description: RFC 3339 formatted. If not provided, the current time will be used.
+        properties:
+          type: object
+          additionalProperties: true
+        transaction_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: 'Optional unique identifier for event deduplication. When provided, preview events are automatically deduplicated against historical events from the past 34 days.  Duplicate transaction IDs within the same request will return an error.
+
+            '
     PostpaidCommit:
       type: object
       required:
@@ -1233,496 +1760,13 @@ components:
               type: string
               format: uuid
           description: Required for account hierarchy usage invoices. An object containing the contract and customer UUIDs that pay for this invoice.
-    ResellerType:
-      type: string
-      enum:
-      - AWS
-      - AWS_PRO_SERVICE
-      - GCP
-      - GCP_PRO_SERVICE
-    BillableStatus:
-      type: string
-      enum:
-      - billable
-      - unbillable
-    ExternalInvoiceStatus:
-      type: string
-      enum:
-      - DRAFT
-      - FINALIZED
-      - PAID
-      - PARTIALLY_PAID
-      - UNCOLLECTIBLE
-      - VOID
-      - DELETED
-      - PAYMENT_FAILED
-      - INVALID_REQUEST_ERROR
-      - SKIPPED
-      - SENT
-      - QUEUED
-    BillingProviderType:
-      type: string
-      enum:
-      - aws_marketplace
-      - stripe
-      - netsuite
-      - custom
-      - azure_marketplace
-      - quickbooks_online
-      - workday
-      - gcp_marketplace
-      - metronome
-      x-mint-enum:
-        netsuite:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        custom:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        workday:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-        gcp_marketplace:
-        - client_id:11db091c-975b-4908-9f67-b1ceb126acdf
-    PreviewEvent:
-      required:
-      - event_type
-      type: object
-      properties:
-        event_type:
-          type: string
-          minLength: 1
-        timestamp:
-          type: string
-          description: RFC 3339 formatted. If not provided, the current time will be used.
-        properties:
-          type: object
-          additionalProperties: true
-        transaction_id:
-          type: string
-          minLength: 1
-          maxLength: 128
-          description: 'Optional unique identifier for event deduplication. When provided, preview events are automatically deduplicated against historical events from the past 34 days.  Duplicate transaction IDs within the same request will return an error.
-
-            '
-    MinimumConfig:
-      type: object
-      description: Only set for TIERED_PERCENTAGE or PERCENTAGE rate_type.
-      required:
-      - minimum
-      properties:
-        minimum:
-          type: number
-    SpendBreakdownInvoice:
-      required:
-      - id
-      - customer_id
-      - credit_type
-      - line_items
-      - status
-      - type
-      - breakdown_start_timestamp
-      - breakdown_end_timestamp
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        customer_id:
-          type: string
-          format: uuid
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        line_items:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvoiceLineItem'
-        start_timestamp:
-          description: Beginning of the usage period this invoice covers (UTC)
-          type: string
-          format: date-time
-        end_timestamp:
-          description: End of the usage period this invoice covers (UTC)
-          type: string
-          format: date-time
-        issued_at:
-          description: When the invoice was issued (UTC)
-          type: string
-          format: date-time
-        created_at:
-          description: When the invoice was created (UTC). This field is present for correction invoices only.
-          type: string
-          format: date-time
-        status:
-          $ref: '#/components/schemas/InvoiceStatus'
-        type:
-          $ref: '#/components/schemas/InvoiceType'
-        contract_id:
-          type: string
-          format: uuid
-        breakdown_start_timestamp:
-          type: string
-          format: date-time
-        breakdown_end_timestamp:
-          type: string
-          format: date-time
-    InvoiceLineItem:
-      required:
-      - name
-      - total
-      - credit_type
-      - type
-      type: object
-      properties:
-        name:
-          type: string
-        quantity:
-          type: number
-          description: The quantity associated with the line item.
-        total:
-          type: number
-        unit_price:
-          type: number
-          description: The unit price associated with the line item.
-        list_price:
-          $ref: '#/components/schemas/Rate'
-          description: 'Only present for contract invoices and when the `include_list_prices` query parameter is set to true. This will include the list rate for the charge if applicable.  Only present for usage and subscription line items.
-
-            '
-        product_id:
-          type: string
-          format: uuid
-          description: ID of the product associated with the line item.
-        product_custom_fields:
-          $ref: '#/components/schemas/CustomField'
-        product_tags:
-          $ref: '#/components/schemas/Tags'
-          description: The current product tags associated with the line item's `product_id`.
-        product_type:
-          type: string
-          description: 'The type of the line item''s product. Possible values are `FixedProductListItem` (for `FIXED` type products), `UsageProductListItem` (for `USAGE` type products), `SubscriptionProductListItem` (for `SUBSCRIPTION` type products) or `CompositeProductListItem` (for `COMPOSITE` type products).  For scheduled charges, commit and credit payments, the value is `FixedProductListItem`.
-
-            '
-        type:
-          type: string
-          description: 'The type of line item.
-
-
-            - `scheduled`: Line item is associated with a scheduled charge. View the scheduled_charge_id on the line item.
-
-            - `commit_purchase`: Line item is associated with a payment for a prepaid commit. View the commit_id on the line item.
-
-            - `usage`: Line item is associated with a usage product or composite product. View the product_id on the line item to determine which product.
-
-            - `subscription`: Line item is associated with a subscription. e.g. monthly recurring payment for an in-advance subscription.
-
-            - `applied_commit_or_credit`: On metronome invoices, applied commits and credits are associated with their own line items. These line items have negative totals. Use the applied_commit_or_credit object on the line item to understand the id of the applied commit or credit, and its type. Note that the application of a postpaid commit is associated with a line item, but the total on the line item is not included in the invoice''s total as postpaid commits are paid in-arrears.
-
-            - `cpu_conversion`: Line item converting between a custom pricing unit and fiat currency, using the conversion rate set on the rate card. This line item will appear when there are products priced in custom pricing units, and there is insufficient prepaid commit/credit in that custom pricing unit to fully cover the spend. Then, the outstanding spend in custom pricing units will be converted to fiat currency using a cpu_conversion line item.
-
-            '
-        netsuite_item_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-        is_prorated:
-          type: boolean
-          description: Indicates whether the line item is prorated for `SUBSCRIPTION` type product.
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-        starting_at:
-          type: string
-          format: date-time
-          description: The line item's start date (inclusive).
-        ending_before:
-          type: string
-          format: date-time
-          description: The line item's end date (exclusive).
-        commit_id:
-          type: string
-          format: uuid
-          description: For line items with product of `USAGE`, `SUBSCRIPTION`, or `COMPOSITE` types, the ID of the credit or commit that was applied to this line item. For line items with product type of `FIXED`, the ID of the prepaid or postpaid commit that is being paid for.
-        applied_commit_or_credit:
-          $ref: '#/components/schemas/AppliedCommitOrCredit'
-          description: Details about the credit or commit that was applied to this line item. Only present on line items with product of `USAGE`, `SUBSCRIPTION` or `COMPOSITE` types.
-        commit_custom_fields:
-          $ref: '#/components/schemas/CustomField'
-        commit_segment_id:
-          type: string
-          format: uuid
-        commit_type:
-          type: string
-          description: '`PrepaidCommit` (for commit types `PREPAID` and `CREDIT`) or `PostpaidCommit` (for commit type `POSTPAID`).'
-        commit_netsuite_sales_order_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-        commit_netsuite_item_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-        postpaid_commit:
-          description: Only present for line items paying for a postpaid commit true-up.
-          $ref: '#/components/schemas/PostpaidCommit'
-        reseller_type:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          $ref: '#/components/schemas/ResellerType'
-        custom_fields:
-          x-cf-entity: product
-          $ref: '#/components/schemas/CustomField'
-        pricing_group_values:
-          type: object
-          description: Includes the pricing group values associated with this line item if dimensional pricing is used.
-          additionalProperties:
-            type: string
-        presentation_group_values:
-          type: object
-          description: Includes the presentation group values associated with this line item if presentation group keys are used.
-          additionalProperties:
-            type:
-            - string
-            - 'null'
-        metadata:
-          type: string
-        netsuite_invoice_billing_start:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          format: date-time
-          description: The start date for the billing period on the invoice.
-        netsuite_invoice_billing_end:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          format: date-time
-          description: The end date for the billing period on the invoice.
-        professional_service_id:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          type: string
-          format: uuid
-        professional_service_custom_fields:
-          x-mint:
-            groups:
-            - client_id:e3147d6d-4101-4cd1-9888-ce3afeeac5b2
-          $ref: '#/components/schemas/CustomField'
-        scheduled_charge_id:
-          type: string
-          format: uuid
-          description: ID of scheduled charge.
-        scheduled_charge_custom_fields:
-          $ref: '#/components/schemas/CustomField'
-        subscription_custom_fields:
-          $ref: '#/components/schemas/CustomField'
-        subscription_id:
-          type: string
-          format: uuid
-          description: ID of the subscription that this line item is associated with. Only present on line items with product of `SUBSCRIPTION` type.
-        tier:
-          $ref: '#/components/schemas/TierMetadata'
-          description: Populated if the line item has a tiered price.
-        discount_id:
-          type: string
-          format: uuid
-          description: ID of the discount applied to this line item.
-        discount_custom_fields:
-          x-cf-entity: discount
-          $ref: '#/components/schemas/CustomField'
-        origin:
-          type: object
-          description: Present on line items from invoices with type USAGE_CONSOLIDATED. Indicates the original customer, contract, invoice and line item from which this line item was copied.
-          required:
-          - line_item_id
-          - invoice_id
-          - customer_id
-          - contract_id
-          properties:
-            line_item_id:
-              type: string
-              format: uuid
-            invoice_id:
-              type: string
-              format: uuid
-            customer_id:
-              type: string
-              format: uuid
-            contract_id:
-              type: string
-              format: uuid
-    Rate:
-      type: object
-      required:
-      - rate_type
-      properties:
-        rate_type:
-          type: string
-          enum:
-          - FLAT
-          - flat
-          - PERCENTAGE
-          - percentage
-          - SUBSCRIPTION
-          - subscription
-          - CUSTOM
-          - custom
-          - TIERED
-          - tiered
-          - TIERED_PERCENTAGE
-          - tiered_percentage
-          x-mint-enum:
-            CUSTOM:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            custom:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-            SUBSCRIPTION:
-            - ff:legacy-subscriptions-enabled
-            subscription:
-            - ff:legacy-subscriptions-enabled
-            TIERED_PERCENTAGE:
-            - ff:support-charge-ga
-            tiered_percentage:
-            - ff:support-charge-ga
-          x-mint:
-            groups:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-        price:
-          type: number
-          description: Default price. For FLAT rate_type, this must be >=0. For PERCENTAGE rate_type, this is a decimal fraction, e.g. use 0.1 for 10%; this must be >=0 and <=1.
-        custom_rate:
-          x-mint:
-            groups:
-            - client_id:5b9e3072-415b-4842-94f0-0b6700c8b6be
-            - client_id:179e395f-5349-4fe2-bf12-64ab4e5bc560
-            - client_id:f157d376-0781-4ef3-9db9-775a9052148e
-            - client_id:7dd2f652-7629-4925-9069-77f5c5d3db37
-            - client_id:c0ce3dc0-6d3e-4f6b-aadf-dfb90f2bf9f5
-            - client_id:cf874b25-ca3b-460b-b6fe-5f33b3c2ea33
-            - client_id:97c07a0c-70db-448a-a1d4-adcd2b8bd1c7
-          type: object
-          additionalProperties: true
-          description: Only set for CUSTOM rate_type. This field is interpreted by custom rate processors.
-        quantity:
-          type: number
-          x-mint:
-            groups:
-            - ff:legacy-subscriptions-enabled
-          description: Default quantity. For SUBSCRIPTION rate_type, this must be >=0.
-        is_prorated:
-          type: boolean
-          x-mint:
-            groups:
-            - ff:legacy-subscriptions-enabled
-          description: Default proration configuration. Only valid for SUBSCRIPTION rate_type. Must be set to true.
-        tiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tier'
-          description: Only set for TIERED rate_type.
-        minimum_config:
-          x-stainless-skip: true
-          x-mint:
-            groups:
-            - ff:support-charge-ga
-          $ref: '#/components/schemas/MinimumConfig'
-        pricing_group_values:
-          type: object
-          description: if pricing groups are used, this will contain the values used to calculate the price
-          additionalProperties:
-            type: string
-        credit_type:
-          $ref: '#/components/schemas/CreditType'
-    CustomField:
-      type: object
-      description: 'Custom fields to be added eg. { "key1": "value1", "key2": "value2" }'
-      additionalProperties:
+    Tags:
+      type: array
+      items:
         type: string
-    SpendBreakdownInvoicesQueryPayload:
-      required:
-      - starting_on
-      - ending_before
-      type: object
-      additionalProperties: false
-      properties:
-        starting_on:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that start on or after this time.
-        ending_before:
-          type: string
-          format: date-time
-          description: RFC 3339 timestamp. Breakdowns will only be returned for time windows that end on or before this time.
-        skip_zero_qty_line_items:
-          type: boolean
-          description: If set, all zero quantity line items will be filtered out of the response.
-        credit_type_id:
-          type: string
-          format: uuid
-          description: If provided, only invoices with the specified credit type id will be included in the response.
-        sort:
-          type: string
-          description: Invoice sort order by issued_at, e.g. date_asc or date_desc.  Defaults to date_asc.
-          enum:
-          - date_asc
-          - date_desc
-          default: date_asc
-        window_size:
-          type: string
-          description: The granularity of the breakdowns to return. Defaults to "day".
-          enum:
-          - day
-          - none
-          - DAY
-          - NONE
-          - Day
-          - None
-        group_keys:
-          type: array
-          description: 'A list of keys that can be used to additionally segment the values of the billable metric when making usage queries. Must be valid keys that are present in the billable metrics or an empty list. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
-
-            '
-          items:
-            type: string
-        group_filters:
-          description: 'An object where the keys are the group keys and the values are arrays of group values. If the values is an empty array, the returned usage data will be aggregated across all values for that key. The value will be ignored and the default keys will be used if: billable metric is MAX type; product uses tiered pricing model; product has quantity rounding enabled; there are contract overrides based on presentation group keys
-
-            '
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-        limit:
-          type: integer
-          description: Max number of results that should be returned. For daily and "none" breakdowns, the response can return up to 35 days worth of breakdowns. If there are more results, a cursor to the next page is returned.
-          minimum: 1
-          maximum: 100
-          default: 100
-        next_page:
-          type: string
-          description: Cursor that indicates where the next page of results should start.
+    InvoiceStatus:
+      type: string
+      example: DRAFT, VOID, or FINALIZED
     Error:
       required:
       - message
@@ -1730,35 +1774,6 @@ components:
       properties:
         message:
           type: string
-    RevenueSystemInvoice:
-      required:
-      - revenue_system_provider
-      - sync_status
-      - revenue_system_external_entity_type
-      type: object
-      properties:
-        revenue_system_provider:
-          type: string
-        revenue_system_external_entity_id:
-          type: string
-        sync_status:
-          type: string
-        revenue_system_external_entity_type:
-          type: string
-        error_message:
-          type: string
-          description: The error message from the revenue system, if available.
-    CreditType:
-      required:
-      - name
-      - id
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
     BreakdownInvoice:
       allOf:
       - $ref: '#/components/schemas/Invoice'
@@ -1773,21 +1788,13 @@ components:
           breakdown_end_timestamp:
             type: string
             format: date-time
-    AppliedCommitOrCredit:
-      type: object
-      required:
-      - id
-      - type
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - PREPAID
-          - POSTPAID
-          - CREDIT
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     SkipZeroQtyLineItems:
       name: skip_zero_qty_line_items
@@ -1796,35 +1803,15 @@ components:
       required: false
       schema:
         type: boolean
-    IncludeListPrices:
-      name: include_list_prices
+    PageLimit:
+      name: limit
       in: query
-      description: If set, list prices will be returned for each contract usage and subscription line item.
+      description: Max number of results that should be returned
       required: false
       schema:
-        type: boolean
-    InvoiceStatusNonVoid:
-      name: status
-      in: query
-      description: Invoice status, e.g. DRAFT or FINALIZED
-      required: false
-      schema:
-        type: string
-    InvoiceId:
-      name: invoice_id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      example: 6a37bb88-8538-48c5-b37b-a41c836328bd
-    InvoiceStatus:
-      name: status
-      in: query
-      description: Invoice status, e.g. DRAFT, FINALIZED, or VOID
-      required: false
-      schema:
-        type: string
+        type: integer
+        minimum: 1
+        maximum: 100
     InvoiceType:
       name: type
       in: query
@@ -1836,10 +1823,39 @@ components:
         - USAGE
         - USAGE_CONSOLIDATED
         - SCHEDULED
+    InvoiceId:
+      name: invoice_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 6a37bb88-8538-48c5-b37b-a41c836328bd
+    IncludeListPrices:
+      name: include_list_prices
+      in: query
+      description: If set, list prices will be returned for each contract usage and subscription line item.
+      required: false
+      schema:
+        type: boolean
+    InvoiceStatus:
+      name: status
+      in: query
+      description: Invoice status, e.g. DRAFT, FINALIZED, or VOID
+      required: false
+      schema:
+        type: string
     NextPage:
       name: next_page
       in: query
       description: Cursor that indicates where the next page of results should start.
+      required: false
+      schema:
+        type: string
+    InvoiceStatusNonVoid:
+      name: status
+      in: query
+      description: Invoice status, e.g. DRAFT or FINALIZED
       required: false
       schema:
         type: string
@@ -1851,22 +1867,6 @@ components:
         type: string
         format: uuid
       example: d7abd0cd-4ae9-4db7-8676-e986a4ebd8dc
-    PageLimit:
-      name: limit
-      in: query
-      description: Max number of results that should be returned
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-  responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http
