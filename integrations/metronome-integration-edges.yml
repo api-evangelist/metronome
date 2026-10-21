@@ -57,8 +57,26 @@ edges:
     builder: 'community (Meltano Hub variant maintainers: hotgluexyz)'
   detected_by: sweep-data-integration.py
   first_seen: '2026-10-18'
+- partner_name: Terraform (terraform-registry)
+  partner: terraform
+  partner_match: mirror
+  mirror_match: register
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: terraform-registry
+  evidence: https://registry.terraform.io/providers/Metronome-Industries/metronome
+  mirror_of: terraform/integrations/terraform-integration-edges.yml
+  apps:
+  - Metronome-Industries/metronome
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  category: infrastructure-as-code provider registry listing
 method: searched
 checked:
 - https://github.com/meltano/hub
 - https://www.twilio.com/docs/segment/connections/destinations/catalog/metronome-actions
+- terraform/integrations/terraform-integration-edges.yml
 source: https://www.twilio.com/docs/segment/connections/destinations/catalog/metronome-actions
