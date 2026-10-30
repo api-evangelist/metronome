@@ -1,4 +1,4 @@
-# Metronome (metronome)
+# Metronome
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,59 +66,152 @@
 
 Metronome is a usage-based billing platform providing real-time metering, pricing, invoicing, and revenue recognition for API and cloud services.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/metronome/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/metronome/refs/heads/main/apis.yml)
+**Areas:** Billing · FinOps · Metering · Pricing · Usage-Based Billing
 
-## Scope
+## Metronome on APIs.io
 
-- **Type:** Index
+Everything profiled for Metronome is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/metronome/](https://apis.io/providers/metronome/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (18)
 
-- Billing
-- FinOps
-- Metering
-- Pricing
-- Usage-Based Billing
+- [Metronome Alerts API](https://apis.io/apis/metronome/metronome-alerts-api/) — [Alerts](https://docs.metronome.com/connecting-metronome/alerts/) monitor customer spending, balances, and other billing factors. Use these endpoints to…
+- [Metronome Billable Metrics API](https://apis.io/apis/metronome/metronome-billable-metrics-api/) — The Billable Metrics API from Metronome — 5 operation(s) for billable metrics.
+- [Metronome Contracts API](https://apis.io/apis/metronome/metronome-contracts-api/) — A contract defines a customer’s products, pricing, discounts, commitments, and more. Use these endpoints to create and update contracts data.
+- [Metronome Credits and commits API](https://apis.io/apis/metronome/metronome-credits-and-commits-api/) — Credits and commits are used to manage customer balances.
+- [Metronome Custom fields API](https://apis.io/apis/metronome/metronome-custom-fields-api/) — [Custom fields](https://docs.metronome.com/integrations/custom-fields/) enable adding additional data to Metronome entities. Use these endpoints to create,…
+- [Metronome Customers API](https://apis.io/apis/metronome/metronome-customers-api/) — [Customers](https://docs.metronome.com/provisioning/create-customers/) in Metronome represent your users for all billing and reporting. Use these endpoints…
+- [Metronome Integrations API](https://apis.io/apis/metronome/metronome-integrations-api/) — The Integrations API from Metronome — 1 operation(s) for integrations.
+- [Metronome Invoices API](https://apis.io/apis/metronome/metronome-invoices-api/) — [Invoices](https://docs.metronome.com/invoicing/) reflect how much a customer spent during a period, which is the basis for billing. Metronome automatically…
+- [Metronome Named schedules API](https://apis.io/apis/metronome/metronome-named-schedules-api/) — Named schedules are used for storing custom data that can change over time. Named schedules are often used in custom pricing logic.
+- [Metronome Notifications API](https://apis.io/apis/metronome/metronome-notifications-api/) — The Notifications API from Metronome — 6 operation(s) for notifications.
+- [Metronome Packages API](https://apis.io/apis/metronome/metronome-packages-api/) — The Packages API from Metronome — 3 operation(s) for packages.
+- [Metronome Payments API](https://apis.io/apis/metronome/metronome-payments-api/) — The Payments API from Metronome — 3 operation(s) for payments.
+- [Metronome Products API](https://apis.io/apis/metronome/metronome-products-api/) — Products are the items that customers purchase.
+- [Metronome Rate cards API](https://apis.io/apis/metronome/metronome-rate-cards-api/) — Rate cards are used to define default pricing for products.
+- [Metronome Security API](https://apis.io/apis/metronome/metronome-security-api/) — [Security](https://docs.metronome.com/developer-resources/security/) endpoints allow you to retrieve security-related data.
+- [Metronome Settings API](https://apis.io/apis/metronome/metronome-settings-api/) — Use these endpoints to configure a billing API key, a webhook secret, or invoice finalization behavior.
+- [Metronome Threshold billing API](https://apis.io/apis/metronome/metronome-threshold-billing-api/) — The Threshold billing API from Metronome — 1 operation(s) for threshold billing.
+- [Metronome Usage API](https://apis.io/apis/metronome/metronome-usage-api/) — [Usage events](https://docs.metronome.com/connecting-metronome/send-usage-data/) are the basis for billable metrics. Use these endpoints to send usage…
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-03-27
-- **Modified:** 2026-05-19
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### Agentic access (1)
 
-### Metronome API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-The Metronome API provides usage-based billing capabilities including customers, contracts, invoices, products, rate cards, billable metrics, usage event ingestion, alerts, credits, commits, and webhook notifications for real-time pricing and revenue recognition.
+- [Metronome Agentic Access](https://apis.io/agentic-access/metronome/metronome-agentic-access/)
 
-- **Human URL:** [https://docs.metronome.com/](https://docs.metronome.com/)
-- **Base URL:** `https://api.metronome.com`
+#### Collections (19)
 
-#### Tags
+Postman and Open Collection request collections.
 
-- Billing
-- FinOps
-- Metering
-- Usage-Based Billing
+- [Metronome](https://apis.io/collections/metronome/open-metronome/)
+- [Metronome Alerts API](https://apis.io/collections/metronome/open-metronome-alerts-api/)
+- [Metronome Alerts Billable Metrics API](https://apis.io/collections/metronome/open-metronome-billable-metrics-api/)
+- [Metronome Alerts Contracts API](https://apis.io/collections/metronome/open-metronome-contracts-api/)
+- [Metronome Alerts Credits and commits API](https://apis.io/collections/metronome/open-metronome-credits-and-commits-api/)
+- [Metronome Alerts Custom fields API](https://apis.io/collections/metronome/open-metronome-custom-fields-api/)
+- [Metronome Alerts Customers API](https://apis.io/collections/metronome/open-metronome-customers-api/)
+- [Metronome Alerts Integrations API](https://apis.io/collections/metronome/open-metronome-integrations-api/)
+- [Metronome Alerts Invoices API](https://apis.io/collections/metronome/open-metronome-invoices-api/)
+- [Metronome Alerts Named schedules API](https://apis.io/collections/metronome/open-metronome-named-schedules-api/)
+- [Metronome Alerts Notifications API](https://apis.io/collections/metronome/open-metronome-notifications-api/)
+- [Metronome Alerts Packages API](https://apis.io/collections/metronome/open-metronome-packages-api/)
+- [Metronome Alerts Payments API](https://apis.io/collections/metronome/open-metronome-payments-api/)
+- [Metronome Alerts Products API](https://apis.io/collections/metronome/open-metronome-products-api/)
+- [Metronome Alerts Rate cards API](https://apis.io/collections/metronome/open-metronome-rate-cards-api/)
+- [Metronome Alerts Security API](https://apis.io/collections/metronome/open-metronome-security-api/)
+- [Metronome Alerts Settings API](https://apis.io/collections/metronome/open-metronome-settings-api/)
+- [Metronome Alerts Threshold billing API](https://apis.io/collections/metronome/open-metronome-threshold-billing-api/)
+- [Metronome Alerts Usage API](https://apis.io/collections/metronome/open-metronome-usage-api/)
 
-#### Properties
+#### Security (3)
 
-- [Documentation](https://docs.metronome.com/)
-- [Getting Started](https://docs.metronome.com/)
-- [OpenAPI](https://raw.githubusercontent.com/api-evangelist/metronome/refs/heads/main/openapi/metronome-openapi.json) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/metronome.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/metronome.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Authentication, trust centre, and vulnerability disclosure.
 
-## Common Properties
+- [Metronome Authentication](https://apis.io/security/metronome/metronome-authentication/)
+- [Metronome Domain Security](https://apis.io/security/metronome/metronome-domain-security/)
+- [Metronome Trust Center](https://apis.io/security/metronome/metronome-trust-center/)
 
-- [GitHub Organization](https://github.com/Metronome-Industries)
-- [LinkedIn](https://www.linkedin.com/company/getmetronome)
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Metronome Plans Pricing](https://apis.io/plans/metronome/metronome-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Metronome Rate Limits](https://apis.io/rate-limits/metronome/metronome-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Metronome Finops](https://apis.io/finops/metronome/metronome-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://metronome.com/)
 - [Documentation](https://docs.metronome.com/)
-- [Status Page](https://status.metronome.com/)
-- [L L Ms Txt](https://docs.metronome.com/llms.txt)
+- [Blog](https://metronome.com/blog)
+- [GitHub](https://github.com/Metronome-Industries)
+- [Status](https://status.metronome.com/)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 37.4** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 64.3 |
+| Contract quality | 51.0 |
+| Contract governance | 0.0 |
+| Operational transparency | 26.3 |
+| Developer ergonomics | 35.7 |
+| Access clarity | 15.8 |
+
+**Agent readiness 30.4** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 16.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/metronome/](https://apis.io/providers/metronome/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Metronome: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/metronome/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
